@@ -1,0 +1,35 @@
+/* Pravděpodobně zde nemusí být, pokud prolog a uzavírací značka nebudou tokeny z lex. analýzy
+	<program> -> <prolog> <program_body> <ending_symbol>
+	<prolog> -> <?php declare(strict_types=1);
+	<ending_symbol> -> ?> | e 
+*/
+
+<program_body> -> <func_list> <program_body> | <stmt_list> <program_body> | e		
+	
+	<stmt_list> -> <stmt> <stmt_list> | e
+
+		<stmt> -> if ( <exp> ) { <stmt_list> } else { <stmt_list> }
+		<stmt> -> while ( <exp> ) { <stmt_list> }
+		<stmt> -> return <exp> ;
+
+		// asi potřeba upravit, viz. poznámky k tvorbě LL gramatiky na elearningu
+		<stmt> -> id ( <arg_list> ) ;
+		<stmt> -> $ id =  id ( <arg_list> ) ;
+		<stmt> -> $ id =  <exp> ;
+		// pozn. je <exp>; výraz?, je to povoleno? -> kdyžtak další pravidlo <stmt> -> <exp> ;
+
+			<arg_list> -> <arg> <arg_next> | e
+			<arg_next> -> , <arg> <arg_next> | e
+
+				<arg> -> id | string_literal | integer_literal | float_literal | null
+
+	<func_list> -> <func> <func_list> | e
+
+		<func> -> function id ( <param_list> ) : <return_type> { <stmt_list> }
+
+			<param_list> -> <type> $id <param_next> | e
+			<param_next> -> , <type> $id <param_next> | e
+
+			<return_type> -> <type> | void
+
+				<type> -> int | ?int | float | ?float | string | ?string
