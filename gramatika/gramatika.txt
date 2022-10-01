@@ -4,7 +4,7 @@
 	<ending_symbol> -> ?> | e 
 */
 
-<program_body> -> <func_list> <program_body> | <stmt_list> <program_body> | e		
+<program_body> -> <func> <program_body> | <stmt_list> <program_body> | e		
 	
 	<stmt_list> -> <stmt> <stmt_list> | e
 
@@ -12,24 +12,28 @@
 		<stmt> -> while ( <exp> ) { <stmt_list> }
 		<stmt> -> return <exp> ;
 
-		// asi potřeba upravit, viz. poznámky k tvorbě LL gramatiky na elearningu
-		<stmt> -> id ( <arg_list> ) ;
-		<stmt> -> $ id =  id ( <arg_list> ) ;
-		<stmt> -> $ id =  <exp> ;
+		<stmt> -> func_id ( <arg_list> ) ;
+
+		// toto pravidlo a pravidlo podtím kolidují
+		// v případě že se jedná o přiřazení výsledku volání funkce, syntaktický analyzátor sám o sobě, bez sémantické analýzy, 
+		// nemůže rozpoznat rozdíl mezi těmito dvěmi pravidli, obě by byly namatchovány
+		<stmt> -> $var_id =  func_id ( <arg_list> ) ;
+		<stmt> -> $var_id =  <exp> ;
+		// možnosti: přesunout zpracování přiřazení výsledku volání funkce do zpracování výrazů
+
 		// pozn. je <exp>; výraz?, je to povoleno? -> kdyžtak další pravidlo <stmt> -> <exp> ;
 
 			<arg_list> -> <arg> <arg_next> | e
 			<arg_next> -> , <arg> <arg_next> | e
 
-				<arg> -> id | string_literal | integer_literal | float_literal | null
+				<arg> -> $var_id | string_literal | integer_literal | float_literal | null
+				// může být argument výraz nebo funkce s n8vratovou hodnotou f(g())
 
-	<func_list> -> <func> <func_list> | e
+	<func> -> function func_id ( <param_list> ) : <return_type> { <stmt_list> }
 
-		<func> -> function id ( <param_list> ) : <return_type> { <stmt_list> }
+		<param_list> -> <type> $var_id <param_next> | e
+		<param_next> -> , <type> $var_id <param_next> | e
 
-			<param_list> -> <type> $id <param_next> | e
-			<param_next> -> , <type> $id <param_next> | e
+		<return_type> -> <type> | void
 
-			<return_type> -> <type> | void
-
-				<type> -> int | ?int | float | ?float | string | ?string
+			<type> -> int | ?int | float | ?float | string | ?string
