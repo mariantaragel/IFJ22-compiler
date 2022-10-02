@@ -87,4 +87,31 @@
 		- **iii)** symbol funkce X má odkazy na funkce, které nebyly definovány
 		  - ERROR
 
+## **Chyba 5 - použitie nedefinovanej premennej**
+- **Každá premenná musí byť definovaná pred jej použitím**
+	```
+	$x = 5;
+	$result = $x + $y;
+	$y = 10;
+	```
+- ### **Riešenie**:
+  - dostanem token definície premennej -> vyhľadám premennú X v tabuľke symbolov
+  	- **A)** premenná X nemá v tabuľke symbol
+  	  - pridám do tabuľky nový symbol aj s hodnotou a oznažím X za definovanú premennú
+  	  - OK
+  	- **B)** premenná X má v tabuľke symbol, ale je nedefinovaná
+  	  - pridám do tabuľky hodnotu symbolu a označím X za definovanú premennú
+  	  - OK
+  	- **C)** premenná X má v tabuľke symbol a je definovaná
+  	  - zmením hodnotu premennej v tabuľke
+  	  - OK
+  - dostanem token premennej vo výraze -> vyhľadám premennú X v tabuľke symbolov
+  	- **A)** premenná X nemá v tabuľke symbol
+  	  - ERROR
+  	- **B)** premenná X má v tabuľke symbol, ale je nedefinovaná
+  	  - ERROR
+  	- **C)** premenná X má v tabuľke symbol a je definovaná
+  	  - použijem hodnotu premennej
+  	  - OK
+
 pozn. běhové chyby, které nelze zjistit při kompilaci, je nutné vyřešit, tak, že do vygenerováného kódu jsou přidány typové kontroly TYPE a v případě, že typ není správný, tak je program ukončen s určitým chybovým kódem
