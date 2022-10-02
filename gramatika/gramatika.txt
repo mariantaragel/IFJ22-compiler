@@ -6,28 +6,23 @@
 
 <program_body> -> <func> <program_body> | <stmt_list> <program_body> | e		
 	
-	<stmt_list> -> <stmt> <stmt_list> | e
+	<stmt_list> -> <stmt> <stmt_list> | { <stmt_list> } | e // přidána podpora pro složený příkaz
 
 		<stmt> -> if ( <exp> ) { <stmt_list> } else { <stmt_list> }
 		<stmt> -> while ( <exp> ) { <stmt_list> }
 		<stmt> -> return <exp> ;
 
+		<stmt> -> <exp> ; // dle strany 6, část "$id =" při příkazu přiřazení lze vynechat a hodnota výrazu nebude nikam přiřazena 
+		
 		<stmt> -> func_id ( <arg_list> ) ;
-
-		// toto pravidlo a pravidlo podtím kolidují
-		// v případě že se jedná o přiřazení výsledku volání funkce, syntaktický analyzátor sám o sobě, bez sémantické analýzy, 
-		// nemůže rozpoznat rozdíl mezi těmito dvěmi pravidli, obě by byly namatchovány
 		<stmt> -> $var_id =  func_id ( <arg_list> ) ;
 		<stmt> -> $var_id =  <exp> ;
-		// možnosti: přesunout zpracování přiřazení výsledku volání funkce do zpracování výrazů
-
-		// pozn. je <exp>; výraz?, je to povoleno? -> kdyžtak další pravidlo <stmt> -> <exp> ;
 
 			<arg_list> -> <arg> <arg_next> | e
 			<arg_next> -> , <arg> <arg_next> | e
 
 				<arg> -> $var_id | string_literal | integer_literal | float_literal | null
-				// může být argument výraz nebo funkce s n8vratovou hodnotou f(g())
+				// může být argument výraz nebo funkce s návratovou hodnotou f(g())
 
 	<func> -> function func_id ( <param_list> ) : <return_type> { <stmt_list> }
 
