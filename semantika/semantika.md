@@ -88,3 +88,10 @@
 		  - ERROR
 
 pozn. běhové chyby, které nelze zjistit při kompilaci, je nutné vyřešit, tak, že do vygenerováného kódu jsou přidány typové kontroly TYPE a v případě, že typ není správný, tak je program ukončen s určitým chybovým kódem
+
+pozn. "return výraz ;"
+- hlavní tělo programu nemusí return obsahovat
+- void funkce nemusí return obsahovat
+- pokud void funkce obsahuje return musí být jedině bez výrazu(pouze return;), jinak chyba 6
+- chybí-li ve funkci vracející hodnotu výraz příkazu return či samotný příkaz return => chyba 6
+
