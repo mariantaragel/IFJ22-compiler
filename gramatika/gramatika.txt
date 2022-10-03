@@ -1,28 +1,24 @@
-/* Pravděpodobně zde nemusí být, pokud prolog a uzavírací značka nebudou tokeny z lex. analýzy
-	<program> -> <prolog> <program_body> <ending_symbol>
-	<prolog> -> <?php declare(strict_types=1);
-	<ending_symbol> -> ?> | e 
-*/
+<program> -> <php_start> <program_body> <php_end> EOF
+<php_start> -> '<?php' func_id '(' 'strict_types' '=' integer_literal ')' ';'
+<php_end> -> '?>' | e
 
 <program_body> -> <func> <program_body> | <stmt_list> <program_body> | e		
 	
-	<stmt_list> -> <stmt> <stmt_list> | { <stmt_list> } | e // přidána podpora pro složený příkaz
+	<stmt_list> -> <stmt> <stmt_list> | { <stmt_list> } | e
 
 		<stmt> -> if ( <exp> ) { <stmt_list> } else { <stmt_list> }
 		<stmt> -> while ( <exp> ) { <stmt_list> }
 		<stmt> -> return <exp> ;
 
-		<stmt> -> <exp> ; // dle strany 6, část "$id =" při příkazu přiřazení lze vynechat a hodnota výrazu nebude nikam přiřazena 
-		
+		<stmt> -> <exp> ;
 		<stmt> -> func_id ( <arg_list> ) ;
-		<stmt> -> $var_id =  func_id ( <arg_list> ) ;
-		<stmt> -> $var_id =  <exp> ;
+		<stmt> -> $var_id = <assignment> ;
+		<assignment> -> func_id ( <arg_list> ) | <exp>
 
 			<arg_list> -> <arg> <arg_next> | e
 			<arg_next> -> , <arg> <arg_next> | e
 
 				<arg> -> $var_id | string_literal | integer_literal | float_literal | null
-				// může být argument výraz nebo funkce s návratovou hodnotou f(g())
 
 	<func> -> function func_id ( <param_list> ) : <return_type> { <stmt_list> }
 
