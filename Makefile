@@ -6,3 +6,7 @@ scanner: scanner.o
 
 clean:
 	rm -f scanner *.o
+
+run:
+	make scanner
+	cat test.php | ./scanner

@@ -19,33 +19,19 @@
 #include <ctype.h>
 #include "scanner.h"
 
-
-// Comment out main when not testing.
 int main() {
 	token_t * token;
-	FILE * fp = fopen("test.php", "r");
-	if(fp == NULL) {
-		fprintf(stderr, "file error");
-		return 1;
-	}
-	token = get_token(fp);
-	token = get_token(fp);
-	token = get_token(fp);
+	token = get_token();
+	token = get_token();
+	token = get_token();
 	
-	/*
-	int i = 48;
-	while(i != 58) {
-		printf("case %d: ", i);
-		i++;
-	}
-	*/
 	if(token)
 		return 1;
 	return 0;
 }
 
 // TODO: Lexer error handling.
-token_t * get_token(FILE * fp) {
+token_t * get_token() {
 	lexeme_t lexeme = lex_init();
 	if(lexeme.lex == NULL) {
 		//TODO: COMPILER MEMORY ERROR.
@@ -53,20 +39,22 @@ token_t * get_token(FILE * fp) {
 	}
 	int c = 0;
 	
-	do { // Eat up all leading whitespace.
-		//printf("Skipping \"%c\"", c);
+	do { 
+	/* Eat up leading whitespace. TODO: EOF checks if EOF found?? */
 		continue;
-	} while( (c = fgetc(fp)) != EOF && isspace(c) != 0); // watchout for file.
-	// TODO: EOF checks?
+	} while( (c = fgetc(stdin)) != EOF && isspace(c) != 0); // watchout for file.
+
+	if(c == EOF) {
+		lex_dstr(lexeme);
+		return NULL;
+	}
 	
-	//printf("first char->%c\n", c);
-	// ! CHECK MACROS IN scanner.h before changing case statements.
-	switch(c) { // Identify beginning of tokens based on regexes...
+	switch(c) {
 		/* */
-		case letter case '_': vik_handler(&c, fp, &lexeme); break;
+		case letter case '_': vik_handler(&c, &lexeme); break;
 		case digit printf("digit or real number"); break;
-		case '$': vik_handler(&c, fp, &lexeme); break;
-		case '"': s_handler(&c, fp, &lexeme); break;
+		case '$': vik_handler(&c, &lexeme); break;
+		case '"': s_handler(&c, &lexeme); break;
 		
 		/* ARITHMETIC TOKENS */
 		case '+': printf("add"); break;
@@ -89,7 +77,6 @@ token_t * get_token(FILE * fp) {
 		case '<': printf("lt or lte"); break;
 		case '>': printf("gt or gte"); break;
 		
-			
 		default: fprintf(stderr, "err"); break;
 	}
 	lex_dstr(lexeme);
@@ -97,24 +84,32 @@ token_t * get_token(FILE * fp) {
 	
 }
 
-void vik_handler(int * c, FILE * fp, lexeme_t * lexeme) {
+/* return keyword token in case of match on identifier. */
+// void match_keyword();
+
+void vik_handler(int * c, lexeme_t * lexeme) {
 	do {
 		lexeme->lex[lexeme->wi] = *c;
 		lexeme->wi++;
-	} while( (*c = fgetc(fp)) != EOF && (isalnum(*c) != 0 || *c == '_') && isspace(*c) == 0); // watchout for file.
-	ungetc(*c, fp);
+		if(lexeme->wi == lexeme->size + 1) { // Resize in case size limit is reached...
+			*lexeme = lex_resize(*lexeme);
+		}
+	} while( (*c = fgetc(stdin)) != EOF && (isalnum(*c) != 0 || *c == '_') && isspace(*c) == 0); // watchout for file.
+	ungetc(*c, stdin);
 	printf("%s\n", lexeme->lex);
-	// keyword matching...
 }
 
-void s_handler(int * c, FILE * fp, lexeme_t * lexeme) { // dispose of '"'
-	do {
+void s_handler(int * c, lexeme_t * lexeme) {
+	printf("String start c = '%c'\n", *c);
+	while( (*c = fgetc(stdin)) != EOF && *c != '"') {
 		lexeme->lex[lexeme->wi] = *c;
 		lexeme->wi++;
-		// lexeme size checking... if wi == 100 ... resize lexeme...
-	} while( (*c = fgetc(fp)) != EOF && *c != '"'); // watchout for file.
+		if(lexeme->wi == lexeme->size + 1) {
+			*lexeme = lex_resize(*lexeme);
+		}
+	}
 	printf("%s\n", lexeme->lex);
-	//printf("%s\n", lexeme->lex);
+	printf("String start c = '%c'\n", *c);
 }
 
 
