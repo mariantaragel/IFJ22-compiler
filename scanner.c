@@ -18,6 +18,7 @@
 #include <stdbool.h>
 #include <ctype.h>
 #include "scanner.h"
+#include "dynamic_string.h"
 
 int main() {
 	token_t * token;
@@ -30,6 +31,8 @@ int main() {
 	return 0;
 }
 
+
+
 // TODO: Lexer error handling.
 token_t * get_token() {
 	lexeme_t lexeme = lex_init();
@@ -39,6 +42,7 @@ token_t * get_token() {
 	}
 	int c = 0;
 	
+	//else
 	do { 
 	/* Eat up leading whitespace. TODO: EOF checks if EOF found?? */
 		continue;
@@ -48,7 +52,7 @@ token_t * get_token() {
 		lex_dstr(lexeme);
 		return NULL;
 	}
-	
+	// e
 	switch(c) {
 		/* */
 		case letter case '_': vik_handler(&c, &lexeme); break;
@@ -89,6 +93,7 @@ token_t * get_token() {
 
 void vik_handler(int * c, lexeme_t * lexeme) {
 	do {
+
 		lexeme->lex[lexeme->wi] = *c;
 		lexeme->wi++;
 		if(lexeme->wi == lexeme->size + 1) { // Resize in case size limit is reached...
