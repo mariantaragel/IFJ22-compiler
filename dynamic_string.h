@@ -46,6 +46,6 @@ void ds_dstr(dynamic_string_t * ds);
  * @param c Character to write.
  * @returns 0 when successful, non-zero on error.
  */
-unsigned ds_write(dynamic_string_t * ds, char c);
+unsigned ds_write(dynamic_string_t * ds, int c);
 
 #endif // __DYNAMIC_STRING_H__

@@ -35,30 +35,29 @@ int main() {
 
 // TODO: Lexer error handling.
 token_t * get_token() {
-	lexeme_t lexeme = lex_init();
-	if(lexeme.lex == NULL) {
+	dynamic_string_t * ds = ds_init();
+	if(ds == NULL) {
 		//TODO: COMPILER MEMORY ERROR.
 		return NULL;
 	}
 	int c = 0;
 	
-	//else
 	do { 
 	/* Eat up leading whitespace. TODO: EOF checks if EOF found?? */
 		continue;
 	} while( (c = fgetc(stdin)) != EOF && isspace(c) != 0); // watchout for file.
 
 	if(c == EOF) {
-		lex_dstr(lexeme);
+		ds_dstr(ds);
 		return NULL;
 	}
 	// e
 	switch(c) {
 		/* */
-		case letter case '_': vik_handler(&c, &lexeme); break;
+		case letter case '_': vik_handler(ds, &c); break;
 		case digit printf("digit or real number"); break;
-		case '$': vik_handler(&c, &lexeme); break;
-		case '"': s_handler(&c, &lexeme); break;
+		case '$': vik_handler(ds, &c); break;
+		case '"': s_handler(ds, &c); break;
 		
 		/* ARITHMETIC TOKENS */
 		case '+': printf("add"); break;
@@ -83,7 +82,7 @@ token_t * get_token() {
 		
 		default: fprintf(stderr, "err"); break;
 	}
-	lex_dstr(lexeme);
+	ds_dstr(ds);
 	return NULL;
 	
 }
@@ -91,57 +90,26 @@ token_t * get_token() {
 /* return keyword token in case of match on identifier. */
 // void match_keyword();
 
-void vik_handler(int * c, lexeme_t * lexeme) {
+void vik_handler(dynamic_string_t * ds, int * c) {
 	do {
-
-		lexeme->lex[lexeme->wi] = *c;
-		lexeme->wi++;
-		if(lexeme->wi == lexeme->size + 1) { // Resize in case size limit is reached...
-			*lexeme = lex_resize(*lexeme);
+		if(ds_write(ds, *c)) { // Write character.
+			//TODO: Internal compiler error.
+			return;
 		}
 	} while( (*c = fgetc(stdin)) != EOF && (isalnum(*c) != 0 || *c == '_') && isspace(*c) == 0); // watchout for file.
 	ungetc(*c, stdin);
-	printf("%s\n", lexeme->lex);
+	printf("%s\n", ds->str);
 }
 
-void s_handler(int * c, lexeme_t * lexeme) {
+void s_handler(dynamic_string_t * ds, int * c) {
 	printf("String start c = '%c'\n", *c);
 	while( (*c = fgetc(stdin)) != EOF && *c != '"') {
-		lexeme->lex[lexeme->wi] = *c;
-		lexeme->wi++;
-		if(lexeme->wi == lexeme->size + 1) {
-			*lexeme = lex_resize(*lexeme);
+		if(ds_write(ds, *c)) {
+			//TODO: Internal compiler error.
+			return;
 		}
 	}
-	printf("%s\n", lexeme->lex);
+	printf("%s\n", ds->str);
 	printf("String start c = '%c'\n", *c);
-}
-
-
-
-lexeme_t lex_init() {
-	lexeme_t lexeme;
-	lexeme.size = 100;
-	lexeme.wi = 0;
-	lexeme.lex  = (char*) calloc(1,lexeme.size*sizeof(char));
-	if(lexeme.lex == NULL) {
-		// TODO: COMPILER MEMORY ERROR.
-		return lexeme;
-	}
-	return lexeme;
-}
-
-void lex_dstr(lexeme_t lexeme) {
-	free(lexeme.lex);
-}
-
-lexeme_t lex_resize(lexeme_t lexeme) {
-	char * new_lex = (char*) realloc((void*) lexeme.lex, lexeme.size + 100);
-	if(new_lex == NULL) {
-		// TODO: COMPILER MEMORY ERROR.
-		return lexeme; // Correct?
-	}
-	lexeme.size += 100;
-	return lexeme;
 }
 

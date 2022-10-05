@@ -12,12 +12,13 @@
  * @date 2022-10-05
  */
 
+#include <stdlib.h>
 #include "dynamic_string.h"
 
-#define DS_SIZE 128
+#define DS_SIZE (128)
 
 dynamic_string_t * ds_init() {
-	dynamic_string_t * ds = (char*) calloc(1, sizeof(dynamic_string_t + char*DS_SIZE));
+	dynamic_string_t * ds = (dynamic_string_t*) calloc(1, sizeof(dynamic_string_t) + DS_SIZE*sizeof(char));
 	if(ds == NULL) {
 		return NULL;
 	}
@@ -43,7 +44,7 @@ void ds_dstr(dynamic_string_t * ds) {
 	free(ds); // Free self.
 }
 
-unsigned ds_write(dynamic_string_t * ds, char c) {
+unsigned ds_write(dynamic_string_t * ds, int c) {
 	ds->str[ds->wi] = c;
 	ds->wi++;
 	if(ds->wi == ds->size) { // Resize if string limit reached.

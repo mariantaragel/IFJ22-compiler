@@ -52,6 +52,8 @@ TOKENS:
 		FLT_T, NFLT_T, STR_T, NSTR_T, INT_T, NINT_T, NULL_T, VOID
 */
 
+#include "dynamic_string.h"
+
 #ifndef __SCANNER_H__
 #define __SCANNER_H__
 
@@ -75,12 +77,6 @@ typedef struct {
     };
 } token_t;
 
-typedef struct {
-   	char * lex; // Token string.
-    	size_t size; // Size of lex.
-	unsigned wi; // Write index.
-} lexeme_t;
-
 /**
  * @brief Scanner generates a token upon request from parser.
  * @returns Pointer to allocated token_t struct, NULL on failure.
@@ -88,33 +84,16 @@ typedef struct {
 token_t * get_token();
 
 /**
- * @brief Initialization of a lexeme upon new token request. 
- * @returns lexeme_t struct. lexeme_t.lex requires check for NULL pointer, which is returned on failure.
- */
-lexeme_t lex_init();
-
-/**
- * @brief Deinitialization of a lexeme after token generation.
- */
-void lex_dstr(lexeme_t lexeme);
-
-/**
- * @brief Resizing of a lexeme.
- * @returns Resized lexeme, requires a check for lexeme_t.size.
- */
-lexeme_t lex_resize(lexeme_t lexeme);
-
-/**
  * @brief Handles initialization of a keyword or identifer lexeme.
  * @returns
  */
-void vik_handler(int * c, lexeme_t * lexeme);
+void vik_handler(dynamic_string_t * ds, int * c);
 
 
 /**
  * @brief Handles initialization of a keyword or identifer lexeme.
  * @returns
  */
-void s_handler(int * c, lexeme_t * lexeme);
+void s_handler(dynamic_string_t * ds, int * c);
 
 #endif // __SCANNER_H__
