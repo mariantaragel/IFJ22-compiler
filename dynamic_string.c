@@ -13,15 +13,24 @@
  */
 
 #include <stdlib.h>
+#include <stdio.h>
 #include "dynamic_string.h"
 
-#define DS_SIZE (128)
+#define DS_SIZE 128
+
+// TODO: Test resizing + free + memory leaks.
 
 dynamic_string_t * ds_init() {
-	dynamic_string_t * ds = (dynamic_string_t*) calloc(1, sizeof(dynamic_string_t) + DS_SIZE*sizeof(char));
+	dynamic_string_t * ds = (dynamic_string_t*) calloc(1, sizeof(dynamic_string_t)); // Allocate ds struct.
 	if(ds == NULL) {
 		return NULL;
 	}
+	char * str = (char*) calloc(1, DS_SIZE*sizeof(char)); // Allocate string.
+	if(str == NULL) {
+		free(ds);
+		return NULL;
+	}
+	ds->str = str;
 	ds->size = DS_SIZE;
 	ds->wi = 0;
 	return ds;
@@ -41,6 +50,7 @@ unsigned ds_resize(dynamic_string_t * ds) {
 void ds_dstr(dynamic_string_t * ds) {
 	ds->size = 0;
 	ds->wi = 0;
+	free(ds->str);
 	free(ds); // Free self.
 }
 

@@ -21,13 +21,20 @@
 #include "dynamic_string.h"
 
 int main() {
+	/*
 	token_t * token;
 	token = get_token();
 	token = get_token();
 	token = get_token();
-	
-	if(token)
-		return 1;
+	*/
+
+	dynamic_string_t * ds = ds_init();
+	ds_write(ds, 'a');
+	ds_write(ds, 'h');
+	ds_write(ds, 'o');
+	ds_write(ds, 'j');
+	printf("%s\n", ds->str);
+	ds_dstr(ds);
 	return 0;
 }
 
@@ -51,9 +58,9 @@ token_t * get_token() {
 		ds_dstr(ds);
 		return NULL;
 	}
-	// e
+
 	switch(c) {
-		/* */
+		/* ATTRIBUTED TOKENS */
 		case letter case '_': vik_handler(ds, &c); break;
 		case digit printf("digit or real number"); break;
 		case '$': vik_handler(ds, &c); break;
@@ -102,7 +109,7 @@ void vik_handler(dynamic_string_t * ds, int * c) {
 }
 
 void s_handler(dynamic_string_t * ds, int * c) {
-	printf("String start c = '%c'\n", *c);
+	// printf("String start c = '%c'\n", *c);
 	while( (*c = fgetc(stdin)) != EOF && *c != '"') {
 		if(ds_write(ds, *c)) {
 			//TODO: Internal compiler error.
@@ -110,6 +117,6 @@ void s_handler(dynamic_string_t * ds, int * c) {
 		}
 	}
 	printf("%s\n", ds->str);
-	printf("String start c = '%c'\n", *c);
+	// printf("String start c = '%c'\n", *c);
 }
 
