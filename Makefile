@@ -9,4 +9,4 @@ clean:
 
 run:
 	make scanner
-	cat test.php | ./scanner
+	cat ./tests/test1.php | ./scanner > ./tests/res1.txt

@@ -140,15 +140,12 @@ void vik_handler(dynamic_string_t * ds, token_t * t, int * c) {
 }
 
 void s_handler(dynamic_string_t * ds, token_t * t, int * c) {
-	// printf("String start c = '%c'\n", *c);
 	while( (*c = fgetc(stdin)) != EOF && *c != '"') {
 		if(ds_write(ds, *c)) {
 			//TODO: Internal compiler error.
 			return;
 		}
 	}
-	//printf("%s\n", ds->str);
-	t_dstr(t);
-	// printf("String start c = '%c'\n", *c);
+	t->type = STR_LIT;
 }
 

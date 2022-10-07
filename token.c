@@ -97,7 +97,14 @@ void t_print(token_t * t) {
 	} else if(t->type == VOID_T) {
 		printf("\ttype: VOID_T\n");
 	}
-	printf("\taaa\n");
-	printf("\tbbb\n");
+	if(t->type == FUNC_ID || t->type == VAR_ID || t->type == STR_LIT) {
+		printf("\tassociated value: string\n");
+	}
+	if(t->type == INT_LIT) {
+		printf("\tassociated value: int\n");
+	}
+	if(t->type == FLT_LIT) {
+		printf("\tassociated value: flt\n");
+	}
 	printf("}\n");
 }
