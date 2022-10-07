@@ -17,18 +17,19 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <ctype.h>
+#include <string.h>
 #include "scanner.h"
 #include "dynamic_string.h"
 #include "token.h"
 
+#define KEYWORD_CNT 5
+
+
 int main() {
 	token_t * token;
-	token = get_token();
-	token = get_token();
-	token = get_token();
-	token = get_token();
-	token = get_token();
-	token = get_token();
+	while( (token = get_token()) != NULL) {
+		t_print(token);
+	}
 	/*
 	dynamic_string_t * ds = ds_init();
 	ds_write(ds, 'a');
@@ -52,6 +53,12 @@ token_t * get_token() {
 		//TODO: COMPILER MEMORY ERROR.
 		return NULL;
 	}
+	token_t * t = t_init(); // Initialize token...
+	if(t == NULL) {
+		//TODO: COMPILER MEMORY ERROR.
+		return NULL;
+	}
+	
 	int c = 0;
 	
 	do { 
@@ -66,10 +73,10 @@ token_t * get_token() {
 
 	switch(c) {
 		/* ATTRIBUTED TOKENS */
-		case letter case '_': vik_handler(ds, &c); break;
+		case letter case '_': vik_handler(ds, t, &c); break;
 		case digit printf("digit or real number"); break;
-		case '$': vik_handler(ds, &c); break;
-		case '"': s_handler(ds, &c); break;
+		case '$': vik_handler(ds, t, &c); break;
+		case '"': s_handler(ds, t, &c); break;
 		
 		/* ARITHMETIC TOKENS */
 		case '+': printf("add"); break;
@@ -95,14 +102,15 @@ token_t * get_token() {
 		default: fprintf(stderr, "err"); break;
 	}
 	ds_dstr(ds);
-	return NULL;
+	return t;
 	
 }
 
 /* return keyword token in case of match on identifier. */
-// void match_keyword();
 
-void vik_handler(dynamic_string_t * ds, int * c) {
+void vik_handler(dynamic_string_t * ds, token_t * t, int * c) {
+	static const char * keywords[] = {"else", "function", "if", "return", "while"};
+	
 	do {
 		if(ds_write(ds, *c)) { // Write character.
 			//TODO: Internal compiler error.
@@ -110,10 +118,28 @@ void vik_handler(dynamic_string_t * ds, int * c) {
 		}
 	} while( (*c = fgetc(stdin)) != EOF && (isalnum(*c) != 0 || *c == '_') && isspace(*c) == 0); // watchout for file.
 	ungetc(*c, stdin);
-	printf("%s\n", ds->str);
+
+	for(int i = 0; i < KEYWORD_CNT; i++) {
+		if(strcmp(keywords[i], ds->str) == 0) {
+			switch(i) {
+				case 0: t->type = ELSE; break;
+				case 1: t->type = FUNCTION; break;
+				case 2: t->type = IF; break;
+				case 3: t->type = RETURN; break;
+				case 4: t->type = WHILE; break;
+				default: break;
+			}
+			return;
+		}
+		if(i == KEYWORD_CNT - 1) {
+			t->type = FUNC_ID;
+			// set sval to func name...
+		}
+	}
+	
 }
 
-void s_handler(dynamic_string_t * ds, int * c) {
+void s_handler(dynamic_string_t * ds, token_t * t, int * c) {
 	// printf("String start c = '%c'\n", *c);
 	while( (*c = fgetc(stdin)) != EOF && *c != '"') {
 		if(ds_write(ds, *c)) {
@@ -121,7 +147,8 @@ void s_handler(dynamic_string_t * ds, int * c) {
 			return;
 		}
 	}
-	printf("%s\n", ds->str);
+	//printf("%s\n", ds->str);
+	t_dstr(t);
 	// printf("String start c = '%c'\n", *c);
 }
 

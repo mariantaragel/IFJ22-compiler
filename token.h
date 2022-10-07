@@ -18,8 +18,8 @@
 TOKENS:
 
     Attributed TOKENS:
-        IDENTIFIER - identifier, attribute: {myfunc}
-        VAR - variable, attribute: {$myvar}
+        FUNC_ID - identifier, attribute: {myfunc}
+        VAR_ID - variable, attribute: {$myvar}
         STR_LIT - string literal, attribute: VALUE {"text"}
         INT_LIT - integer numeric value, attribute: VALUE {7}
         FLT_LIT - real numeric value, attribute: VALUE {0.8}
@@ -56,10 +56,10 @@ TOKENS:
 #ifndef __TOKEN_H__
 #define __TOKEN_H__
 
-typedef enum {IDENTIFIER,VAR,STR_LIT,INT_LIT,FLT_LIT,REL,ADD,SUB,MUL,DIV,COMMA,COLON,SCOLON,LB,RB,LCB,RCB,ASSIGN,ELSE,FUNCTION,IF,RETURN,WHILE,FLT_T,NFLT_T,STR_T,NSTR_T,INT_T,NINT_T,NULL_T,VOID_T} token_type_t;
+typedef enum {FUNC_ID,VAR_ID,STR_LIT,INT_LIT,FLT_LIT,REL,ADD,SUB,MUL,DIV,COMMA,COLON,SCOLON,LB,RB,LCB,RCB,ASSIGN,ELSE,FUNCTION,IF,RETURN,WHILE,FLT_T,NFLT_T,STR_T,NSTR_T,INT_T,NINT_T,NULL_T,VOID_T} token_type_t;
 
 typedef struct {
-	const token_type_t type;
+	token_type_t type;
 	union {
 		char * sval;
 		int ival;
@@ -78,5 +78,13 @@ token_t * t_init();
  * @param t Token to deallocate.
  */
 void t_dstr(token_t * t);
+
+
+/**
+ * @brief Prints token attributes for logging.
+ * @param t Token to print.
+ */
+void t_print(token_t * t);
+
 
 #endif // __TOKEN_H__

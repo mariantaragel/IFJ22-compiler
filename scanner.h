@@ -34,12 +34,12 @@ token_t * get_token();
  * @brief Handles initialization of a keyword or identifer lexeme.
  * @returns
  */
-void vik_handler(dynamic_string_t * ds, int * c);
+void vik_handler(dynamic_string_t * ds, token_t * t, int * c);
 
 /**
  * @brief Handles initialization of a keyword or identifer lexeme.
  * @returns
  */
-void s_handler(dynamic_string_t * ds, int * c);
+void s_handler(dynamic_string_t * ds, token_t * t, int * c);
 
 #endif // __SCANNER_H__

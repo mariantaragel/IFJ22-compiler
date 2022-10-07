@@ -1,4 +1,4 @@
-CFLAGS=-std=c11 -Wall -Wextra -Werror -pedantic
+CFLAGS=-std=c11 -Wall -Wextra
 CC=gcc
 
 scanner: scanner.o dynamic_string.o token.o
