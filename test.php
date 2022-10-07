@@ -1,1 +1,1 @@
-$a
+$a$abc"abc""ahoj"$var else

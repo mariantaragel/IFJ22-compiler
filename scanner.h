@@ -12,47 +12,8 @@
  * @date 2022-10-01
  */
 
-
-/* 
-TOKENS:
-
-    Attributed TOKENS:
-        IDENTIFIER - identifier, attribute: {myfunc}
-        VAR - variable, attribute: {$myvar}
-        STR_LIT - string literal, attribute: VALUE {"text"}
-        INT_LIT - integer numeric value, attribute: VALUE {7}
-        FLT_LIT - real numeric value, attribute: VALUE {0.8}
-        REL - relation token, attribute: {gt, lt, gte, lte, eq, neq}
-        
-
-    Un-Attributed TOKENS:
-        Arithmetic:
-            ADD - add: +
-            SUB - minus: -
-            MUL - mul: *
-            DIV - div: /
-    
-        Punctuation:
-            COMMA - comma: ,
-            COLON - colon: :
-            SCOLON - semicolon: ;
-            LB - left bracket: (
-            RB - right bracket: )
-            LCB - left curly bracket: {
-            RCB - right curly bracket: }
-            ASSIGN - assign: =
-        
-        TODO: Proper keyword tokens.
-        Keywords: Due to C reserved keywords, shortened versions where chosen.
-            	ELSE, FUNCTION, IF, RETURN, WHILE
-    
-        Type keywords: Due to C reserved keywords, shortened versions where chosen.
-		float, ?float, string, ?string, int, ?int,   null,   void
-		^^
-		FLT_T, NFLT_T, STR_T, NSTR_T, INT_T, NINT_T, NULL_T, VOID
-*/
-
 #include "dynamic_string.h"
+#include "token.h"
 
 #ifndef __SCANNER_H__
 #define __SCANNER_H__
@@ -62,20 +23,6 @@ TOKENS:
 
 // 0-9
 #define digit 48: case 49: case 50: case 51: case 52: case 53: case 54: case 55: case 56: case 57:
-
-typedef enum {IDENTIFIER,VAR,STR_LIT,INT_LIT,FLT_LIT,REL,ADD,SUB,MUL,DIV,COMMA,COLON,SCOLON,LB,RB,LCB,RCB,ASSIGN,ELSE,FUNCTION,IF,RETURN,WHILE,FLT_T,NFLT_T,STR_T,NSTR_T,INT_T,NINT_T,NULL_T,VOID} token_type_t;
-
-typedef enum {GT, LT, GTE, LTE, EQ, NEQ} rel_type_t;
-
-typedef struct {
-    const token_type_t type;
-    union {
-        char * sval;
-        int ival;
-        float fval;
-        const rel_type_t rel_type;
-    };
-} token_t;
 
 /**
  * @brief Scanner generates a token upon request from parser.
@@ -88,7 +35,6 @@ token_t * get_token();
  * @returns
  */
 void vik_handler(dynamic_string_t * ds, int * c);
-
 
 /**
  * @brief Handles initialization of a keyword or identifer lexeme.

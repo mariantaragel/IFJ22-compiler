@@ -19,15 +19,17 @@
 #include <ctype.h>
 #include "scanner.h"
 #include "dynamic_string.h"
+#include "token.h"
 
 int main() {
-	/*
 	token_t * token;
 	token = get_token();
 	token = get_token();
 	token = get_token();
-	*/
-
+	token = get_token();
+	token = get_token();
+	token = get_token();
+	/*
 	dynamic_string_t * ds = ds_init();
 	ds_write(ds, 'a');
 	ds_write(ds, 'h');
@@ -35,6 +37,9 @@ int main() {
 	ds_write(ds, 'j');
 	printf("%s\n", ds->str);
 	ds_dstr(ds);
+	*/
+	if(token)
+		return 1;
 	return 0;
 }
 
