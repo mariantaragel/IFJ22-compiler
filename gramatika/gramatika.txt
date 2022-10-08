@@ -2,7 +2,7 @@
 <php_start> -> '<?php' func_id '(' 'strict_types' '=' integer_literal ')' ';'
 <php_end> -> '?>' | e
 
-<program_body> -> <func> <program_body> | <stmt_list> <program_body> | e		
+<program_body> -> <func_def> <program_body> | <stmt_list> <program_body> | e		
 	
 	<stmt_list> -> <stmt> <stmt_list> | { <stmt_list> } | e
 
@@ -10,17 +10,45 @@
 		<stmt> -> while ( <exp> ) { <stmt_list> }
 		<stmt> -> return <exp> ;
 
+		<stmt> -> <func_call> ;
+			<func_call> -> func_id ( <arg_list> )
+				<arg_list> -> <arg> <arg_next> | e
+				<arg_next> -> , <arg> <arg_next> | e
+					<arg> -> $var_id | string_literal | integer_literal | float_literal | null
+
+==============================
+		Problematická část:
 		<stmt> -> <exp> ;
-		<stmt> -> func_id ( <arg_list> ) ;
 		<stmt> -> $var_id = <assignment> ;
 		<assignment> -> func_id ( <arg_list> ) | <exp>
 
-			<arg_list> -> <arg> <arg_next> | e
-			<arg_next> -> , <arg> <arg_next> | e
+		Řešení 1:
+			<stmt> -> <exp_not_starting_with_id> ;
+				<exp_not_starting_with_id> -> <exp_terminal_without_id> <exp_rest> // pokud je zde namatchován <exp_terminal_without_id>, tak top-down analýza předá řízení bottom-up analýze
 
-				<arg> -> $var_id | string_literal | integer_literal | float_literal | null
+			<stmt> -> $var_id <exp/assignement> ;
+				<exp/assignement> -> <exp> | <assignement>
+					<assignement> -> = <assignement_rhs>
+						<assignement_rhs> -> <exp> | <func_call>
 
-	<func> -> function func_id ( <param_list> ) : <return_type> { <stmt_list> }
+					<exp> -> <exp_terminal> <exp_rest> // pokud je zde namatchován <exp_terminal>, tak top-down analýza předá řízení bottom-up analýze
+						<exp_terminal_without_id> -> STR_LIT | INT_LIT | FLT_LT | null | ( | ) | - | + | * | / | . | < | > | <= | >= | === | !== | e
+						<exp_terminal> -> $var_id | <exp_terminal_without_id>
+
+		Řešení 2:
+			// pokud ani jedno pravidlo vycházející z <stmt> nebylo namatchováno, bude se postupovat podle této sémantické akce
+			if (token == "$var_id" && next_token == "=")
+				if(next_next_token == "func_id")
+					<stmt> -> <func_call_assignement> ;
+						<func_call_assignement> -> $var_id = <func_call> ;
+				else
+					<stmt> -> <exp_assignement> ;
+						<exp_assignement> -> $var_id = <exp> ; // zde top-down analýza předá řízení bottom-up analýze
+			else
+				<stmt> -> <exp> ; // zde top-down analýza předá řízení bottom-up analýze
+==============================
+			
+	<func_def> -> function func_id ( <param_list> ) : <return_type> { <stmt_list> }
 
 		<param_list> -> <type> $var_id <param_next> | e
 		<param_next> -> , <type> $var_id <param_next> | e
