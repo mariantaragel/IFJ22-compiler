@@ -1,11 +1,14 @@
 CFLAGS=-std=c11 -Wall -Wextra -pedantic
 CC=gcc
 
+parser: parser.o scanner.o dynamic_string.o token.o
+	$(CC) $(CFLAGS) -o $@ $^
+
 scanner: scanner.o dynamic_string.o token.o
 	$(CC) $(CFLAGS) -o $@ $^
 
 clean:
-	rm -f scanner *.o
+	rm -f scanner parser *.o
 
 run:
 	make scanner
