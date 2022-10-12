@@ -3,25 +3,25 @@
 
 // INDEXES
  typedef enum {
-	ADD_SUB_INDEX,		    // +,-
-	MUL_DIV_INDEX,		    // *,/
-	OP_TYPE_INDEX,		    // ===,!==
-	REL_INDEX,		    // rel
-	LEFT_BR_INDEX,		    // (
-	RIGHT_BR_INDEX,	      	    // )
-  CONCATENATION_INDEX,  	    // .
-	LIT_INDEX,		    // i
-	DOLLAR_INDEX		    // $
-} precedence_index;
+	ADD_SUB_INDEX,	    	// +,-
+	MUL_DIV_INDEX,	    	// *,/
+	OP_TYPE_INDEX,	    	// ===,!==
+	REL_INDEX,	    	// rel
+	LEFT_BR_INDEX,	    	// (
+	RIGHT_BR_INDEX,		// )
+	CONCAT_INDEX,          	// .
+	LIT_INDEX,		// i
+	DOLLAR_INDEX		// $
+} figure_to_index;
 
 typedef enum {
 	L, // > (Lower)
- 	S, // < (Shift)
- 	R, // = (Remain)
- 	N  // # (ERR)
+    	S, // < (Shift)
+	R, // = (Remain)
+	N  // # (ERR)
 } precedence_table_sign;
 
-int precedence_table[9][9] = {
+const precedence_table_sign p_table[9][9] = {
     //	        |+,-|*,/|===|rel| ( | ) | . | i | $ |
     /* +,- */   { L , S , L , L , S , L , L , S , L }, 
     /* *,/ */   { L , L , L , L , S , L , L , S , L },
