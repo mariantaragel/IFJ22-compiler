@@ -6,19 +6,19 @@
 	ADD_SUB_INDEX,		    // +,-
 	MUL_DIV_INDEX,		    // *,/
 	OP_TYPE_INDEX,		    // ===,!==
-	REL_INDEX,			      // rel
+	REL_INDEX,		    // rel
 	LEFT_BR_INDEX,		    // (
-	RIGHT_BR_INDEX,	      // )
-  CONCATENATION_INDEX,  // .
-	LIT_INDEX,			      // i
-	DOLLAR_INDEX		      // $
+	RIGHT_BR_INDEX,	      	    // )
+  CONCATENATION_INDEX,  	    // .
+	LIT_INDEX,		    // i
+	DOLLAR_INDEX		    // $
 } precedence_index;
 
 typedef enum {
 	L, // > (Lower)
-  S, // < (Shift)
-	R, // = (Remain)
-	N  // # (ERR)
+ 	S, // < (Shift)
+ 	R, // = (Remain)
+ 	N  // # (ERR)
 } precedence_table_sign;
 
 int precedence_table[9][9] = {
@@ -37,18 +37,18 @@ int precedence_table[9][9] = {
 /*
 // FIGURES
 typedef enum {
-	ADDITION,			   // +
-	SUBTRACTION,		 // -
+	ADDITION,	 // +
+	SUBTRACTION,	 // -
 	MULTIPLICATION,	 // *
-	DIVISION,			   // /
-	EQU,				     // = // ?????
-  RELATION_OP,     // rel
-	LEFT_BR,	       // (
-	RIGHT_BR,	       // )		           
-	ITG,    		     // int
-	DBL,        	   // double
-  //ID ??
-	DOLLAR,			     // $
+	DIVISION,	 // /
+	EQU,		 // = // ?????
+ 	RELATION_OP,   	 // rel
+	LEFT_BR,	 // (
+	RIGHT_BR,	 // )		           
+	ITG,    	 // int
+	DBL,        	 // double
+  	//ID ??
+	DOLLAR,		 // $
 } precedence_figure;
 */
 
