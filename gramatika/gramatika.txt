@@ -1,19 +1,21 @@
-<program> -> <php_start> <program_body> <php_end> EOF
+<program> -> <php_start> <program_body> 
 <php_start> -> '<?php' func_id '(' 'strict_types' '=' integer_literal ')' ';'
-<php_end> -> '?>' | e
+<php_end> -> '?>' EOF | EOF
 
-<program_body> -> <func_def> <program_body> | <stmt_list> <program_body> | e		
-	
-	<stmt_list> -> <stmt> <stmt_list> | { <stmt_list> } | e
+<program_body> -> <func_def> <program_body> | <stmt_list> <program_body> | <php_end>
 
-		<stmt> -> if ( <exp> ) { <stmt_list> } else { <stmt_list> }
-		<stmt> -> while ( <exp> ) { <stmt_list> }
+	<stmt_list_bracket_end> -> } | <stmt_list> }
+
+	<stmt_list> -> <stmt> <stmt_list> | { <stmt_list_bracket_end>  
+
+		<stmt> -> if ( <exp> ) { <stmt_list_bracket_end> else { <stmt_list_bracket_end>
+		<stmt> -> while ( <exp> ) { <stmt_list_bracket_end>
 		<stmt> -> return <exp> ;
 
 		<stmt> -> <func_call> ;
-			<func_call> -> func_id ( <arg_list> )
-				<arg_list> -> <arg> <arg_next> | e
-				<arg_next> -> , <arg> <arg_next> | e
+			<func_call> -> func_id ( <arg_list>
+				<arg_list> -> <arg> <arg_next> | )
+				<arg_next> -> , <arg> <arg_next> | )
 					<arg> -> $var_id | string_literal | integer_literal | float_literal | null
 
 ==============================
@@ -48,11 +50,14 @@
 				<stmt> -> <exp> ; // zde top-down analýza předá řízení bottom-up analýze
 ==============================
 			
-	<func_def> -> function func_id ( <param_list> ) : <return_type> { <stmt_list> }
+	<func_def> -> function func_id ( <param_list> : <return_type> { <stmt_list> }
 
-		<param_list> -> <type> $var_id <param_next> | e
-		<param_next> -> , <type> $var_id <param_next> | e
+		<param_list> -> <type> $var_id <param_next> | )
+		<param_next> -> , <type> $var_id <param_next> | )
 
 		<return_type> -> <type> | void
 
 			<type> -> int | ?int | float | ?float | string | ?string
+
+
+
