@@ -50,7 +50,7 @@
 				<stmt> -> <exp> ; // zde top-down analýza předá řízení bottom-up analýze
 ==============================
 			
-	<func_def> -> function func_id ( <param_list> : <return_type> { <stmt_list> }
+	<func_def> -> function func_id ( <param_list> : <return_type> { <stmt_list_bracket_end>
 
 		<param_list> -> <type> $var_id <param_next> | )
 		<param_next> -> , <type> $var_id <param_next> | )
