@@ -2,18 +2,18 @@
  * @name parser.h
  * @brief Interface of top-down parser
  * @authors Marián Tarageľ
- * @date 12.10.2022
+ * @date 15.10.2022
  */
 
-#ifndef _PARSER_H
-#define _PARSER_H
+#ifndef PARSER_H
+#define PARSER_H
 
 #include "token.h"
 
 #define TRUE 1
 #define FALSE 0
-#define SYNTAX_CORRECT 1
-#define SYNTAX_ERROR 0
+
+typedef enum error {SYNTAX_CORRECT, LEXICAL_ERROR, SYNTAX_ERROR, SEMANTIC_ERROR} return_t;
 
 int program();
 
@@ -35,5 +35,6 @@ int type(token_t *token);
 
 int param_next();
 
-#endif
+int stmt_list_bracket_end();
 
+#endif
