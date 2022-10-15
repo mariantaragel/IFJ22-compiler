@@ -22,23 +22,13 @@
 #include "dynamic_string.h"
 #include "token.h"
 
-#define KEYWORD_CNT 5
-
+#define RESERVED_WORD_CNT 10
 
 int main() {
 	token_t * token;
 	while( (token = get_token()) != NULL) {
 		t_print(token);
 	}
-	/*
-	dynamic_string_t * ds = ds_init();
-	ds_write(ds, 'a');
-	ds_write(ds, 'h');
-	ds_write(ds, 'o');
-	ds_write(ds, 'j');
-	printf("%s\n", ds->str);
-	ds_dstr(ds);
-	*/
 	if(token)
 		return 1;
 	return 0;
@@ -77,6 +67,7 @@ token_t * get_token() {
 		case digit printf("digit or real number"); break;
 		case '$': vik_handler(ds, t, &c); break;
 		case '"': s_handler(ds, t, &c); break;
+		case '?': printf("possible null type"); break;
 		
 		/* ARITHMETIC TOKENS */
 		case '+': printf("add"); break;
@@ -109,8 +100,7 @@ token_t * get_token() {
 /* return keyword token in case of match on identifier. */
 
 void vik_handler(dynamic_string_t * ds, token_t * t, int * c) {
-	static const char * keywords[] = {"else", "function", "if", "return", "while"};
-	
+	static const char * reserved_words[] = {"else", "function", "if", "return", "while", "float", "string", "int", "null", "void"};
 	do {
 		if(ds_write(ds, *c)) { // Write character.
 			//TODO: Internal compiler error.
@@ -119,25 +109,45 @@ void vik_handler(dynamic_string_t * ds, token_t * t, int * c) {
 	} while( (*c = fgetc(stdin)) != EOF && (isalnum(*c) != 0 || *c == '_') && isspace(*c) == 0); // watchout for file.
 	ungetc(*c, stdin);
 
-	for(int i = 0; i < KEYWORD_CNT; i++) {
-		if(strcmp(keywords[i], ds->str) == 0) {
+	for(int i = 0; i < RESERVED_WORD_CNT; i++) {
+		/* Try matching with reserved keywords */
+		if(strcmp(reserved_words[i], ds->str) == 0) {
 			switch(i) {
 				case 0: t->type = ELSE; break;
 				case 1: t->type = FUNCTION; break;
 				case 2: t->type = IF; break;
 				case 3: t->type = RETURN; break;
 				case 4: t->type = WHILE; break;
+				case 5: t->type = FLT_T; break;
+				case 6: t->type = STR_T; break;
+				case 7: t->type = INT_T; break;
+				case 8: t->type = NULL_T; break;
+				case 9: t->type = VOID_T; break;
 				default: break;
 			}
-			return;
+			return; // ???
 		}
-		if(i == KEYWORD_CNT - 1) {
-			t->type = FUNC_ID;
-			// set sval to func name...
+		/* No keywords matched, set string as function identifier. */
+		if(i == RESERVED_WORD_CNT - 1) {
+			if(ds->str[0] == '$') {
+				t->type = VAR_ID;
+			} else {
+				t->type = FUNC_ID;
+			}
+
+			/* Attach attribute */
+			t->sval = malloc(strlen(ds->str) + 1);
+			if(t->sval == NULL) {
+				/* TODO */
+			}
+			strcpy(t->sval, ds->str);
+			
 		}
 	}
-	
 }
+
+// void single_char_token_hadnler(token * t, int * c);
+
 
 void s_handler(dynamic_string_t * ds, token_t * t, int * c) {
 	while( (*c = fgetc(stdin)) != EOF && *c != '"') {
@@ -147,5 +157,10 @@ void s_handler(dynamic_string_t * ds, token_t * t, int * c) {
 		}
 	}
 	t->type = STR_LIT;
+	t->sval = malloc(strlen(ds->str) + 1);
+	if(t->sval == NULL) {
+		/* INTERNAL COMPILER ERROR */
+	}
+	strcpy(t->sval, ds->str);
 }
 

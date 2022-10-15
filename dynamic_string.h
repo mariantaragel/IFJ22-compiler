@@ -15,6 +15,8 @@
 #ifndef __DYNAMIC_STRING_H__
 #define __DYNAMIC_STRING_H__
 
+#include <stdlib.h>
+
 typedef struct {
 	char * str; // String.
 	size_t size; // String length.
