@@ -16,7 +16,7 @@ TOKEN: {
 	Associated value: "$x"
 }
 TOKEN: {
-	type: COLON
+	type: COMMA
 }
 TOKEN: {
 	type: STR_T
@@ -42,7 +42,7 @@ TOKEN: {
 	Associated value: "$x"
 }
 TOKEN: {
-	type: ASSIGN
+	type: CONCAT
 }
 TOKEN: {
 	type: VAR_ID
@@ -62,6 +62,10 @@ TOKEN: {
 	type: RCB
 }
 TOKEN: {
+	type: VAR_ID
+	Associated value: "$var"
+}
+TOKEN: {
 	type: FUNCTION
 }
 TOKEN: {
@@ -79,7 +83,7 @@ TOKEN: {
 	Associated value: "$a"
 }
 TOKEN: {
-	type: COLON
+	type: COMMA
 }
 TOKEN: {
 	type: NFLT_T
@@ -105,7 +109,8 @@ TOKEN: {
 	Associated value: "$a"
 }
 TOKEN: {
-	type: ASSIGN
+	type: FUNC_ID
+	Associated value: "(null)"
 }
 TOKEN: {
 	type: STR_LIT

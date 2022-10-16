@@ -1,0 +1,59 @@
+TOKEN: {
+	type: FUNCTION
+}
+TOKEN: {
+	type: FUNC_ID
+	Associated value: "test"
+}
+TOKEN: {
+	type: LB
+}
+TOKEN: {
+	type: INT_T
+}
+TOKEN: {
+	type: VAR_ID
+	Associated value: "$a"
+}
+TOKEN: {
+	type: COMMA
+}
+TOKEN: {
+	type: INT_T
+}
+TOKEN: {
+	type: VAR_ID
+	Associated value: "$b"
+}
+TOKEN: {
+	type: RB
+}
+TOKEN: {
+	type: COLON
+}
+TOKEN: {
+	type: INT_T
+}
+TOKEN: {
+	type: LCB
+}
+TOKEN: {
+	type: RETURN
+}
+TOKEN: {
+	type: VAR_ID
+	Associated value: "$a"
+}
+TOKEN: {
+	type: DIV
+}
+TOKEN: {
+	type: VAR_ID
+	Associated value: "$b"
+}
+TOKEN: {
+	type: SCOLON
+}
+TOKEN: {
+	type: RCB
+}

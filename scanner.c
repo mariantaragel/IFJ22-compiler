@@ -1,5 +1,5 @@
 /****
- ** children.h
+ ** scanner.c
  ** Řešení IFJ-PROJEKT, 01.10.2022
  ** Autor: xhorva17
  ** Přeloženo:
@@ -50,15 +50,40 @@ token_t * get_token() {
 	
 	int c = 0;
 	
-	do { 
+	do {
 	/* Eat up leading whitespace. TODO: EOF checks if EOF found?? */
-		continue;
-	} while( (c = fgetc(stdin)) != EOF && isspace(c) != 0); // watchout for file.
+		c = fgetc(stdin);
+		/* Eat up if comment... */
+		if(c == '/') {
+			c = fgetc(stdin);
+			if(c == '/') {
+				do { 
+					continue;
+				} while( (c = fgetc(stdin)) != EOF && c != '\n');
+			} else if (c == '*') {
+				bool in_comment =  true;
+				while(in_comment && c != EOF) {
+					c = fgetc(stdin);
+					if(c == '*') {
+						if((c = fgetc(stdin)) == '/') {
+							in_comment = false;
+							c = fgetc(stdin);
+						}
+					}
+				}
+			} else {
+				ungetc(c, stdin); // Return false read.
+				c = '/'; // Set char to original.
+			}
+		}
+	} while ( c != EOF && isspace(c) != 0);
 
 	if(c == EOF) {
 		ds_dstr(ds);
 		return NULL;
 	}
+	
+	/* Skip comments. */
 
 	switch(c) {
 		/* ATTRIBUTED TOKENS, KEYWORDS AND TYPES*/
@@ -71,14 +96,14 @@ token_t * get_token() {
 		/* UNATTRIBUTED TOKENS */
 		/* Operators */
 		case '*': t->type = MUL; break; // MUL
-		case '/': break; // TODO --> DIV, COMMENT SKIPPING.
+		case '/': t->type = DIV; break; // DIV
 		case '+': t->type = ADD; break; // ADD
 		case '-': t->type = SUB; break; // SUB
 		case '.': t->type = CONCAT; break; // CONCAT
-		case '<': break; // TODO --> LT, LTE, PROLOG
-		case '>': break; // TODO --> GT, GTE
-		case '!': break; // TODO --> NEQ
-		case '=': break; // TODO --> ASSIGN, EQ
+		case '<': lp_handler(t, &c); break; // TODO --> LT, LTE, PROLOG
+		case '>': g_handler(t, &c); break; // TODO --> GT, GTE
+		case '!': neq_handler(t, &c); break; // TODO --> NEQ
+		case '=': aeq_handler(t, &c); break; // TODO --> ASSIGN, EQ
 		/* Punctuation */
 		case ',': t->type = COMMA; break; // COMMA
 		case ':': t->type = COLON; break; // COLON
@@ -211,5 +236,57 @@ void s_handler(dynamic_string_t * ds, token_t * t, int * c) {
 		/* INTERNAL COMPILER ERROR */
 	}
 	strcpy(t->sval, ds->str);
+}
+
+void g_handler(token_t * t, int * c) {
+	*c = fgetc(stdin);
+	if(*c == '=') {
+		t->type = GTE;
+	} else {
+		t->type = GT;
+		ungetc(*c, stdin);
+	}
+}
+
+void aeq_handler(token_t * t, int * c) {
+	*c = fgetc(stdin);
+	if(*c == '=') {
+		*c = fgetc(stdin);
+		if(*c == '=') {
+			t->type = EQ;
+		} else {
+			fprintf(stderr, "Lexeme error.");
+		}
+	} else {
+		t->type = ASSIGN;
+		ungetc(*c, stdin);
+	}
+}
+
+/* rewrite */
+void neq_handler(token_t * t, int * c) {
+	*c = fgetc(stdin);
+	if(*c != '=') {
+		// Lexeme error.
+	} else {
+		*c = fgetc(stdin);
+		if(*c != '=') {
+			// Lexeme error.
+		} else {
+			t->type = NEQ;
+			return;
+		}
+	}
+}
+
+void lp_handler(token_t * t, int * c) {
+	*c = fgetc(stdin);
+	if(*c == '=') {
+		t->type = LTE;
+	} else {
+		t->type = LT;
+		ungetc(*c, stdin);
+	}
+	
 }
 
