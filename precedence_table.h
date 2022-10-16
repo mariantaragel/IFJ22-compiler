@@ -1,59 +1,46 @@
-#ifndef _PRECEDENCE_H
-#define _PRECEDENCE_H
+#ifndef PRECEDENCE_TABLE_H
+#define PRECEDENCE_TABLE_H
 
-// INDEXES
+/**
+ * @brief Precedence table index type.
+ * 
+ */
  typedef enum {
-	ADD_SUB_INDEX,	    	// +,-
-	MUL_DIV_INDEX,	    	// *,/
-	OP_TYPE_INDEX,	    	// ===,!==
-	REL_INDEX,	    	// rel
-	LEFT_BR_INDEX,	    	// (
+	ADD_SUB_CONC_INDEX,	// +,-,.
+	MUL_DIV_INDEX,		// *,/
+	IDENTITY_INDEX,		// ===,!==
+	REL_INDEX,			// rel
+	LEFT_BR_INDEX,		// (
 	RIGHT_BR_INDEX,		// )
-	CONCAT_INDEX,          	// .
-	LIT_INDEX,		// i
+	LIT_INDEX,			// i
 	DOLLAR_INDEX		// $
-} figure_to_index;
+} prec_table_index_t;
 
+/**
+ * @brief Precedence table operation type.
+ * 
+ */
 typedef enum {
-	L, // > (Lower)
-    	S, // < (Shift)
-	R, // = (Remain)
-	N  // # (ERR)
-} precedence_table_sign;
+	S, // < (Shift)
+	R, // > (Reduce)
+	E, // = (Equal)
+	X  // # (ERR)
+} prec_parser_operation_t;
 
-const precedence_table_sign p_table[9][9] = {
-    //	        |+,-|*,/|===|rel| ( | ) | . | i | $ |
-    /* +,- */   { L , S , L , L , S , L , L , S , L }, 
-    /* *,/ */   { L , L , L , L , S , L , L , S , L },
-    /* === */   { S , S , L , S , S , L , S , S , L }, 
-    /* rel */   { S , S , L , L , S , L , S , S , L }, 
-    /* ( */     { S , S , S , S , S , R , S , S , N },
-    /* ) */     { L , L , L , L , N , L , L , N , L },
-    /* . */     { L , S , L , L , S , L , L , S , L },
-    /* i */     { L , L , L , L , N , L , L , N , L },
-    /* $ */     { S , S , S , S , S , N , S , S , N }      
+/**
+ * @brief Precedence table.
+ * 
+ */
+const prec_parser_operation_t precedence_table[9][9] = {
+    //	        |+,-,.| *,/ | === | rel |  (  |  )  |  i  |  $  |
+    /* +,-,. */ {  R  ,  S  ,  R  ,  R  ,  S  ,  R  ,  S  ,  R  }, 
+    /*  *,/  */ {  R  ,  R  ,  R  ,  R  ,  S  ,  R  ,  S  ,  R  },
+    /*  ===  */ {  S  ,  S  ,  X  ,  S  ,  S  ,  R  ,  S  ,  R  }, 
+    /*  rel  */ {  S  ,  S  ,  R  ,  X  ,  S  ,  R  ,  S  ,  R  }, 
+    /*   (   */ {  S  ,  S  ,  S  ,  S  ,  S  ,  E  ,  S  ,  X  },
+    /*   )   */ {  R  ,  R  ,  R  ,  R  ,  X  ,  R  ,  X  ,  R  },
+    /*   i   */ {  R  ,  R  ,  R  ,  R  ,  X  ,  R  ,  X  ,  R  },
+    /*   $   */ {  S  ,  S  ,  S  ,  S  ,  S  ,  X  ,  S  ,  X  }      
 };
 
-/*
-// FIGURES
-typedef enum {
-	ADDITION,	 // +
-	SUBTRACTION,	 // -
-	MULTIPLICATION,	 // *
-	DIVISION,	 // /
-	EQU,		 // = // ?????
- 	RELATION_OP,   	 // rel
-	LEFT_BR,	 // (
-	RIGHT_BR,	 // )		           
-	ITG,    	 // int
-	DBL,        	 // double
-  	//ID ??
-	DOLLAR,		 // $
-} precedence_figure;
-*/
-
-/*
-// EXPRESION PARSING RULES ??
-*/
-
-#endif //_PRECEDENCE_H
+#endif //PRECEDENCE_TABLE_H
