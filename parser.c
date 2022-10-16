@@ -137,7 +137,7 @@ int param_list()
     token_t *token = get_token();
     if (token == NULL)
         return LEXICAL_ERROR;
-    if (token->type == LB) {
+    if (token->type == RB) {
         return SYNTAX_CORRECT;
     }
     if (!type(token)) {
@@ -158,7 +158,7 @@ int param_next()
     token_t *token = get_token();
     if (token == NULL)
         return LEXICAL_ERROR;
-    if (token->type == LB) {
+    if (token->type == RB) {
         return SYNTAX_CORRECT;
     }
     if (token->type == COMMA) {
@@ -177,4 +177,32 @@ int param_next()
         }
     }
     return SYNTAX_ERROR;
+}
+
+int stmt_list_bracket_end()
+{
+    token_t *token = get_token();
+    if (token == NULL)
+        return LEXICAL_ERROR;
+    if (token->type == RCB) {
+        return SYNTAX_CORRECT;
+    }
+    if (!stmt_list(token)) {
+        token = get_token();
+        if (token == NULL)
+            return LEXICAL_ERROR;
+        if (token->type == RCB) {
+            return SYNTAX_CORRECT;
+        }
+    }
+    
+    return SYNTAX_ERROR;
+}
+
+int stmt_list(token_t *token)
+{
+    if (token->type == IF) {
+        return SYNTAX_CORRECT;
+    }
+    return SYNTAX_CORRECT;
 }

@@ -25,7 +25,7 @@ int php_end();
 
 int func_def();
 
-int stmt_list();
+int stmt_list(token_t *token);
 
 int param_list();
 
