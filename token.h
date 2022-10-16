@@ -15,48 +15,59 @@
 
 
 /* 
-TOKENS:
-
+TOKEN TABLE:
     Attributed TOKENS:
-        FUNC_ID - identifier, attribute: {myfunc}
-        VAR_ID - variable, attribute: {$myvar}
-        STR_LIT - string literal, attribute: VALUE {"text"}
-        INT_LIT - integer numeric value, attribute: VALUE {7}
-        FLT_LIT - real numeric value, attribute: VALUE {0.8}
-        REL - relation token, attribute: {gt, lt, gte, lte, eq, neq}
-        
+	function_identifier -> FUNC_ID : {string(function_identifier}
+	$variable_identifier -> VAR_ID : {string(variable_identifier)}
+	"A string literal" -> STR_LIT : {string(string_literal)}
+	integer_literal -> INT_LIT : {int(value)}
+	float_literal -> FLT_LIT : {float(value)}
 
-    Un-Attributed TOKENS:
-        Arithmetic:
-            ADD - add: +
-            SUB - minus: -
-            MUL - mul: *
-            DIV - div: /
-    
+    Unattributed TOKENS:
+	Operators:
+		* -> MUL
+		/ -> DIV
+		+ -> ADD
+		- -> SUB
+		. -> CONCAT
+		< -> LT
+		> -> GT
+		<= -> LTE
+		>= -> GTE
+		=== -> EQ
+		!== -> NEQ
         Punctuation:
-            COMMA - comma: ,
-            COLON - colon: :
-            SCOLON - semicolon: ;
-            LB - left bracket: (
-            RB - right bracket: )
-            LCB - left curly bracket: {
-            RCB - right curly bracket: }
-            ASSIGN - assign: =
-        
-        TODO: Proper keyword tokens.
-        Keywords: Due to C reserved keywords, shortened versions where chosen.
-            	ELSE, FUNCTION, IF, RETURN, WHILE
-    
-        Type keywords: Due to C reserved keywords, shortened versions where chosen.
-		float, ?float, string, ?string, int, ?int,   null,   void
-		^^
-		FLT_T, NFLT_T, STR_T, NSTR_T, INT_T, NINT_T, NULL_T, VOID_T
+		, -> COMMA
+		: -> COLON
+		; -> SCOLON
+		( -> LB
+		) -> RB
+		{ -> LCB
+		} -> RCB
+		= -> ASSIGN
+        Types:
+		float -> FLT_T
+		string -> STR_T
+		int -> INT_T
+		void -> VOID_T
+		null -> NULL_T
+		?float -> NFLT_T
+		?int -> NINT_T
+		?string -> NSTR_T
+	Keywords:
+		else -> ELSE
+		function -> FUNCTION
+		if -> IF
+		return -> RETURN
+		while -> WHILE	
+	Other:
+		
 */
 
 #ifndef __TOKEN_H__
 #define __TOKEN_H__
 
-typedef enum {FUNC_ID,VAR_ID,STR_LIT,INT_LIT,FLT_LIT,REL,ADD,SUB,MUL,DIV,COMMA,COLON,SCOLON,LB,RB,LCB,RCB,ASSIGN,ELSE,FUNCTION,IF,RETURN,WHILE,FLT_T,NFLT_T,STR_T,NSTR_T,INT_T,NINT_T,NULL_T,VOID_T} token_type_t;
+typedef enum {FUNC_ID,VAR_ID,STR_LIT,INT_LIT,FLT_LIT,MUL,DIV,ADD,SUB,CONCAT,LT,GT,LTE,GTE,EQ,NEQ,COMMA,COLON,SCOLON,LB,RB,LCB,RCB,ASSIGN,FLT_T,STR_T,INT_T,VOID_T,NULL_T,NFLT_T,NINT_T,NSTR_T,ELSE,FUNCTION,IF,RETURN,WHILE} token_type_t;
 
 typedef struct {
 	token_type_t type;

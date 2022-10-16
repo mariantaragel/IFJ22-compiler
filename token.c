@@ -44,24 +44,22 @@ void t_print(token_t * t) {
 		printf("\ttype: INT_LIT\n");
 	} else if(t->type == FLT_LIT) {
 		printf("\ttype: FLT_LIT\n");
-	} else if(t->type == REL) {
-		printf("\ttype: REL\n");
-	} else if(t->type == ADD) {
-		printf("\ttype: ADD\n");
-	} else if(t->type == SUB) {
-		printf("\ttype: SUB\n");
 	} else if(t->type == MUL) {
 		printf("\ttype: MUL\n");
 	} else if(t->type == DIV) {
 		printf("\ttype: DIV\n");
-	} else if(t->type == COMMA) {
-		printf("\ttype: COMMA\n");
-	} else if(t->type == COLON) {
-		printf("\ttype: COLON\n");
-	} else if(t->type == SCOLON) {
-		printf("\ttype: SCOLON\n");
-	} else if(t->type == LB) {
-		printf("\ttype: LB\n");
+	} else if(t->type == ADD) {
+		printf("\ttype: ADD\n");
+	} else if(t->type == SUB) {
+		printf("\ttype: SUB\n");
+	} else if(t->type == CONCAT) {
+		printf("\ttype: CONCAT\n");
+	} else if(t->type == LT) {
+		printf("\ttype: LT\n");
+	} else if(t->type == GT) {
+		printf("\ttype: GT\n");
+	} else if(t->type == LTE) {
+		printf("\ttype: GTE\n");
 	} else if(t->type == RB) {
 		printf("\ttype: RB\n");
 	} else if(t->type == LCB) {
