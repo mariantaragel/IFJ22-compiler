@@ -31,7 +31,6 @@ void t_dstr(token_t * t) {
 }
 
 
-/* picovina */
 void t_print(token_t * t) {
 	printf("TOKEN: {\n");
 	if(t->type == FUNC_ID) {
@@ -59,7 +58,21 @@ void t_print(token_t * t) {
 	} else if(t->type == GT) {
 		printf("\ttype: GT\n");
 	} else if(t->type == LTE) {
+		printf("\ttype: LTE\n");
+	} else if(t->type == GTE) {
 		printf("\ttype: GTE\n");
+	} else if(t->type == EQ) {
+		printf("\ttype: EQ\n");
+	} else if(t->type == NEQ) {
+		printf("\ttype: NEQ\n");
+	} else if(t->type == COMMA) {
+		printf("\ttype: COMMA\n");
+	} else if(t->type == COLON) {
+		printf("\ttype: COLON\n");
+	} else if(t->type == SCOLON) {
+		printf("\ttype: SCOLON\n");
+	} else if(t->type == LB) {
+		printf("\ttype: LB\n");
 	} else if(t->type == RB) {
 		printf("\ttype: RB\n");
 	} else if(t->type == LCB) {
@@ -68,6 +81,22 @@ void t_print(token_t * t) {
 		printf("\ttype: RCB\n");
 	} else if(t->type == ASSIGN) {
 		printf("\ttype: ASSIGN\n");
+	} else if(t->type == FLT_T) {
+		printf("\ttype: FLT_T\n");
+	} else if(t->type == STR_T) {
+		printf("\ttype: STR_T\n");
+	} else if(t->type == INT_T) {
+		printf("\ttype: INT_T\n");
+	} else if(t->type == VOID_T) {
+		printf("\ttype: VOID_T\n");
+	} else if(t->type == NULL_T) {
+		printf("\ttype: NULL_T\n");
+	} else if(t->type == NFLT_T) {
+		printf("\ttype: NFLT_T\n");
+	} else if(t->type == NINT_T) {
+		printf("\ttype: NINT_T\n");
+	} else if(t->type == NSTR_T) {
+		printf("\ttype: NSTR_T\n");
 	} else if(t->type == ELSE) {
 		printf("\ttype: ELSE\n");
 	} else if(t->type == FUNCTION) {
@@ -78,31 +107,21 @@ void t_print(token_t * t) {
 		printf("\ttype: RETURN\n");
 	} else if(t->type == WHILE) {
 		printf("\ttype: WHILE\n");
-	} else if(t->type == FLT_T) {
-		printf("\ttype: FLT_T\n");
-	} else if(t->type == NFLT_T) {
-		printf("\ttype: NFLT_T\n");
-	} else if(t->type == STR_T) {
-		printf("\ttype: STR_T\n");
-	} else if(t->type == NSTR_T) {
-		printf("\ttype: NSTR_T\n");
-	} else if(t->type == INT_T) {
-		printf("\ttype: INT_T\n");
-	} else if(t->type == NINT_T) {
-		printf("\ttype: NINT_T\n");
-	} else if(t->type == NULL_T) {
-		printf("\ttype: NULL_T\n");
-	} else if(t->type == VOID_T) {
-		printf("\ttype: VOID_T\n");
+	} else if(t->type == PROLOG) {
+		printf("\ttype: PROLOG\n");
+	} else if(t->type == EPILOG) {
+		printf("\ttype: EPILOG\n");
+	} else if(t->type == END) {
+		printf("\ttype: END\n");
 	}
 	if(t->type == FUNC_ID || t->type == VAR_ID || t->type == STR_LIT) {
-		printf("\t%s\n", t->sval);
+		printf("Associated value: \t\"%s\"\n", t->sval);
 	}
 	if(t->type == INT_LIT) {
-		printf("\t%d\n", t->ival);
+		printf("\tAssociated value: %d\n", t->ival);
 	}
 	if(t->type == FLT_LIT) {
-		printf("\t%lf\n", t->fval);
+		printf("\tAssociated value: %lf\n", t->fval);
 	}
 	printf("}\n");
 }
