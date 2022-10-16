@@ -24,6 +24,7 @@
 #include "token.h"
 
 #define RESERVED_WORD_CNT 10
+#define NULL_TYPE_CNT 3
 
 int main() {
 	token_t * token;
@@ -68,7 +69,7 @@ token_t * get_token() {
 		case digit fi_handler(ds, t, &c); break;
 		case '$': vik_handler(ds, t, &c); break;
 		case '"': s_handler(ds, t, &c); break;
-		case '?': printf("null type handler"); break;
+		case '?': null_t_handler(ds, t, &c); break;
 		
 		/* ARITHMETIC TOKENS */
 		case '+': t->type = ADD; break;
@@ -185,6 +186,34 @@ void single_chart_token_handler(dynamic_string_t * ds, token_t * t, int * c) {
 	}
 }
 */
+
+void null_t_handler(dynamic_string_t * ds, token_t * t, int * c) {
+	static const char * null_types[] = {"?float", "?string", "?int"};
+	do {
+		if(ds_write(ds, *c)) { // Write character.
+			//TODO: Internal compiler error.
+			return;
+		}
+	} while( (*c = fgetc(stdin)) != EOF && isalpha(*c) != 0 && isspace(*c) == 0); // watchout for file.
+	ungetc(*c, stdin);
+	
+	for(int i = 0; i < NULL_TYPE_CNT; i++) {
+		/* Try matching with reserved keywords */
+		if(strcmp(null_types[i], ds->str) == 0) {
+			switch(i) {
+				case 0: t->type = NFLT_T; break;
+				case 1: t->type = NSTR_T; break;
+				case 2: t->type = NINT_T; break;
+				default: break;
+			}
+			return; // ???
+		}
+		if( i == NULL_TYPE_CNT - 1) {
+			/* lexical error */
+			fprintf(stderr, "Lexical errr...\n");
+		}
+	}
+}
 
 void s_handler(dynamic_string_t * ds, token_t * t, int * c) {
 	while( (*c = fgetc(stdin)) != EOF && *c != '"') {

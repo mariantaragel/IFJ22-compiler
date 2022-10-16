@@ -61,3 +61,76 @@ TOKEN: {
 TOKEN: {
 	type: RCB
 }
+TOKEN: {
+	type: FUNCTION
+}
+TOKEN: {
+	type: FUNC_ID
+	nulltest
+}
+TOKEN: {
+	type: LB
+}
+TOKEN: {
+	type: NSTR_T
+}
+TOKEN: {
+	type: VAR_ID
+	$a
+}
+TOKEN: {
+	type: COLON
+}
+TOKEN: {
+	type: NFLT_T
+}
+TOKEN: {
+	type: VAR_ID
+	$float
+}
+TOKEN: {
+	type: RB
+}
+TOKEN: {
+	type: COLON
+}
+TOKEN: {
+	type: NINT_T
+}
+TOKEN: {
+	type: LCB
+}
+TOKEN: {
+	type: VAR_ID
+	$a
+}
+TOKEN: {
+	type: ASSIGN
+}
+TOKEN: {
+	type: STR_LIT
+	A testing string.
+}
+TOKEN: {
+	type: SCOLON
+}
+TOKEN: {
+	type: RETURN
+}
+TOKEN: {
+	type: VAR_ID
+	$float
+}
+TOKEN: {
+	type: ADD
+}
+TOKEN: {
+	type: INT_LIT
+	1
+}
+TOKEN: {
+	type: SCOLON
+}
+TOKEN: {
+	type: RCB
+}

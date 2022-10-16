@@ -47,4 +47,6 @@ void fi_handler(dynamic_string_t * ds, token_t * t, int * c);
 
 void single_char_token_handler(dynamic_string_t * ds, token_t * t, int * c);
 
+void null_t_handler(dynamic_string_t * ds, token_t * t, int * c);
+
 #endif // __SCANNER_H__
