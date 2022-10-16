@@ -1,0 +1,63 @@
+TOKEN: {
+	type: FUNCTION
+}
+TOKEN: {
+	type: FUNC_ID
+	concat
+}
+TOKEN: {
+	type: LB
+}
+TOKEN: {
+	type: STR_T
+}
+TOKEN: {
+	type: VAR_ID
+	$x
+}
+TOKEN: {
+	type: COLON
+}
+TOKEN: {
+	type: STR_T
+}
+TOKEN: {
+	type: VAR_ID
+	$y
+}
+TOKEN: {
+	type: RB
+}
+TOKEN: {
+	type: COLON
+}
+TOKEN: {
+	type: STR_T
+}
+TOKEN: {
+	type: LCB
+}
+TOKEN: {
+	type: VAR_ID
+	$x
+}
+TOKEN: {
+	type: ASSIGN
+}
+TOKEN: {
+	type: VAR_ID
+	$x
+}
+TOKEN: {
+	type: ADD
+}
+TOKEN: {
+	type: VAR_ID
+	$y
+}
+TOKEN: {
+	type: SCOLON
+}
+TOKEN: {
+	type: RCB
+}

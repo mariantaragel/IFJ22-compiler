@@ -101,10 +101,10 @@ void t_print(token_t * t) {
 		printf("\t%s\n", t->sval);
 	}
 	if(t->type == INT_LIT) {
-		printf("\tassociated value: int\n");
+		printf("\t%d\n", t->ival);
 	}
 	if(t->type == FLT_LIT) {
-		printf("\tassociated value: flt\n");
+		printf("\t%lf\n", t->fval);
 	}
 	printf("}\n");
 }

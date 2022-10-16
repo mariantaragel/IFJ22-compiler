@@ -42,4 +42,9 @@ void vik_handler(dynamic_string_t * ds, token_t * t, int * c);
  */
 void s_handler(dynamic_string_t * ds, token_t * t, int * c);
 
+
+void fi_handler(dynamic_string_t * ds, token_t * t, int * c);
+
+void single_char_token_handler(dynamic_string_t * ds, token_t * t, int * c);
+
 #endif // __SCANNER_H__

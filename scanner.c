@@ -18,6 +18,7 @@
 #include <stdbool.h>
 #include <ctype.h>
 #include <string.h>
+#include <inttypes.h>
 #include "scanner.h"
 #include "dynamic_string.h"
 #include "token.h"
@@ -64,28 +65,28 @@ token_t * get_token() {
 	switch(c) {
 		/* ATTRIBUTED TOKENS */
 		case letter case '_': vik_handler(ds, t, &c); break;
-		case digit printf("digit or real number"); break;
+		case digit fi_handler(ds, t, &c); break;
 		case '$': vik_handler(ds, t, &c); break;
 		case '"': s_handler(ds, t, &c); break;
-		case '?': printf("possible null type"); break;
+		case '?': printf("null type handler"); break;
 		
 		/* ARITHMETIC TOKENS */
-		case '+': printf("add"); break;
-		case '-': printf("minus"); break;
-		case '*': printf("mul"); break;
+		case '+': t->type = ADD; break;
+		case '-': t->type = SUB; break;
+		case '*': t->type = MUL; break;
 		case '/': printf("division or comment"); break;
 		
 		/* PUNCTUATION */
-		case ',': printf("comma"); break;
-		case ':': printf("colon"); break;
-		case ';': printf("semicolon"); break;
-		case '(': printf("left bracket"); break;
-		case ')': printf("right bracket"); break;
-		case '{': printf("left curly bracket"); break;
-		case '}': printf("right curly bracket"); break;
+		case ',': t->type = COLON; break;
+		case ':': t->type = COLON; break;
+		case ';': t->type = SCOLON; break;
+		case '(': t->type = LB; break;
+		case ')': t->type = RB; break;
+		case '{': t->type = LCB; break;
+		case '}': t->type = RCB; break;
 	
-		/* RELATIONAL */
-		case '=': printf("assignment or equality"); break;
+		/* RELATIONAL --> create fsm... */
+		case '=': t->type = ASSIGN; break;
 		case '!': printf("negation"); break;
 		case '<': printf("lt or lte"); break;
 		case '>': printf("gt or gte"); break;
@@ -146,8 +147,44 @@ void vik_handler(dynamic_string_t * ds, token_t * t, int * c) {
 	}
 }
 
-// void single_char_token_hadnler(token * t, int * c);
+void fi_handler(dynamic_string_t * ds, token_t * t, int * c) {
+	do {
+		if(ds_write(ds, *c)) {
+			// internal compiler error
+			return;
+		}
+	} while( (*c = fgetc(stdin)) != EOF && isdigit(*c));
+	if(*c != '.') {
+		ungetc(*c, stdin);
+		t->ival = strtoimax(ds->str, NULL, 10); 
+		t->type = INT_LIT;
+	} else {
+		do {
+			if(ds_write(ds, *c)) {
+				// internal compiler error
+				return;
+			}
+		} while( (*c = fgetc(stdin)) != EOF && isdigit(*c));
+		ungetc(*c, stdin);
+		t->fval = strtod(ds->str, NULL);
+		t->type = FLT_LIT;
+		//strtof
+	}
+}
 
+/*
+void single_chart_token_handler(dynamic_string_t * ds, token_t * t, int * c) {
+	switch(c) {
+		case ',': printf("comma"); break;
+		case ':': printf("colon"); break;
+		case ';': printf("semicolon"); break;
+		case '(': printf("left bracket"); break;
+		case ')': printf("right bracket"); break;
+		case '{': printf("left curly bracket"); break;
+		case '}': printf("right curly bracket"); break;
+	}
+}
+*/
 
 void s_handler(dynamic_string_t * ds, token_t * t, int * c) {
 	while( (*c = fgetc(stdin)) != EOF && *c != '"') {

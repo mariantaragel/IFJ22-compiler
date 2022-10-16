@@ -63,7 +63,7 @@ typedef struct {
 	union {
 		char * sval;
 		int ival;
-		float fval;
+		double fval;
 	};
 } token_t;
 
