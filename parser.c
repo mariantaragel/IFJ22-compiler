@@ -2,7 +2,7 @@
  * @name parser.c
  * @brief Implementation of top-down parser
  * @authors Marián Tarageľ
- * @date 15.10.2022
+ * @date 16.10.2022
  */
 
 #include "parser.h"
@@ -11,63 +11,76 @@
 
 int program()
 {
-    if (!php_start()) {
-        if (!program_body()) {
+    token_t *token = get_token();
+    if (token == NULL)
+        return LEXICAL_ERROR;
+    if (!php_start(token)) {
+        token = get_token();
+        if (token == NULL)
+            return LEXICAL_ERROR;
+        if (!program_body(token)) {
             return SYNTAX_CORRECT;
         }
     }
     return SYNTAX_ERROR;
 }
 
-int php_start()
+int php_start(token_t *token)
 {
-    for (int i = 0; i < 8; i++) {
-        token_t *token = get_token();
+    // TODO: verify tokens '<?php' func_id '(' 'strict_types' '=' integer_literal ')' ';'
+    return SYNTAX_ERROR;
+}
+
+int program_body(token_t *token)
+{
+    if (!func_def(token)) {
+        token = get_token();
         if (token == NULL)
             return LEXICAL_ERROR;
-        // TODO: verify tokens '<?php' func_id '(' 'strict_types' '=' integer_literal ')' ';'
+        if (!program_body(token)) {
+            return SYNTAX_CORRECT;
+        }
     }
-    return SYNTAX_CORRECT;
+    
+    if (!stmt_list(token)) {
+        token = get_token();
+        if (token == NULL)
+            return LEXICAL_ERROR;
+        if (!program_body(token)) {
+            return SYNTAX_CORRECT;
+        }
+    }
+
+    if (!php_end(token)) {
+        return SYNTAX_CORRECT;
+    }
+
+    return SYNTAX_ERROR;
 }
 
-int program_body()
+int php_end(token_t *token)
 {
-    func_def();
-    program_body();
-
-    //stmt_list();
-    program_body();
-
-    return SYNTAX_CORRECT;
+    // TODO: verify '?>' EOF | EOF
+    return SYNTAX_ERROR;
 }
 
-int php_end()
+int func_def(token_t *token)
 {
-    token_t *token = get_token();
-    if (token == NULL)
-        return LEXICAL_ERROR;
-    // TODO: verify '?>'
-    return SYNTAX_CORRECT;
-}
-
-int func_def()
-{
-    token_t *token;
-    for (int i = 0; i < 3; i++) {
+    if (token != FUNCTION) {
+        return SYNTAX_ERROR;
+    }
+    
+    for (int i = 0; i < 2; i++) {
         token = get_token();
         if (token == NULL)
             return LEXICAL_ERROR;
         
         switch (i) {
         case 0:
-            if (token->type != FUNCTION) {
-                return SYNTAX_ERROR;
-            } break;
-        case 1:
             if (token->type != FUNC_ID) {
                 return SYNTAX_ERROR;
             } break;
-        case 2:
+        case 1:
             if (token->type != LB) {
                 return SYNTAX_ERROR;
             } break;
@@ -75,7 +88,10 @@ int func_def()
         }
     }
 
-    if (param_list()) {
+    token = get_token();
+    if (token == NULL)
+        return LEXICAL_ERROR;
+    if (param_list(token)) {
         return SYNTAX_ERROR;
     }
 
@@ -100,7 +116,10 @@ int func_def()
         return SYNTAX_ERROR;
     }
 
-    if (stmt_list_bracket_end()) {
+    token = get_token();
+    if (token == NULL)
+        return LEXICAL_ERROR;
+    if (stmt_list_bracket_end(token)) {
         return SYNTAX_ERROR;
     }
 
@@ -132,11 +151,8 @@ int type(token_t *token)
     return SYNTAX_ERROR;
 }
 
-int param_list()
+int param_list(token_t *token)
 {
-    token_t *token = get_token();
-    if (token == NULL)
-        return LEXICAL_ERROR;
     if (token->type == RB) {
         return SYNTAX_CORRECT;
     }
@@ -145,7 +161,10 @@ int param_list()
         if (token == NULL)
             return LEXICAL_ERROR;
         if (token->type == VAR_ID) {
-            if (!param_next()) {
+            token = get_token();
+            if (token == NULL)
+                return LEXICAL_ERROR;
+            if (!param_next(token)) {
                 return SYNTAX_CORRECT;
             }
         }
@@ -153,11 +172,8 @@ int param_list()
     return SYNTAX_ERROR;
 }
 
-int param_next()
+int param_next(token_t *token)
 {
-    token_t *token = get_token();
-    if (token == NULL)
-        return LEXICAL_ERROR;
     if (token->type == RB) {
         return SYNTAX_CORRECT;
     }
@@ -170,7 +186,10 @@ int param_next()
             if (token == NULL)
                 return LEXICAL_ERROR;
             if (token->type == VAR_ID) {
-                if (!param_next()) {
+                token = get_token();
+                if (token == NULL)
+                    return LEXICAL_ERROR;
+                if (!param_next(token)) {
                     return SYNTAX_CORRECT;
                 }
             }
@@ -179,11 +198,8 @@ int param_next()
     return SYNTAX_ERROR;
 }
 
-int stmt_list_bracket_end()
+int stmt_list_bracket_end(token_t *token)
 {
-    token_t *token = get_token();
-    if (token == NULL)
-        return LEXICAL_ERROR;
     if (token->type == RCB) {
         return SYNTAX_CORRECT;
     }
@@ -201,8 +217,23 @@ int stmt_list_bracket_end()
 
 int stmt_list(token_t *token)
 {
-    if (token->type == IF) {
-        return SYNTAX_CORRECT;
+    if (token->type == LCB) {
+        token = get_token();
+        if (token == NULL)
+            return LEXICAL_ERROR;
+        if (!stmt_list_bracket_end(token)) {
+            return SYNTAX_CORRECT;
+        }
     }
-    return SYNTAX_CORRECT;
+
+    if (!stmt(token)) {
+        token = get_token();
+        if (token == NULL)
+            return LEXICAL_ERROR;        
+        if (!stmt_list(token)) {
+            return SYNTAX_CORRECT;
+        }
+    }
+    
+    return SYNTAX_ERROR;
 }
