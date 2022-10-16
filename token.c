@@ -1,6 +1,6 @@
 /****
  ** token.c
- ** Řešení IFJ-PROJ, 7.10.2022
+ ** Řešení IFJ-PROJEKT, 7.10.2022
  ** Autor: xhorva17
  ** Přeloženo:
  **/
@@ -115,7 +115,7 @@ void t_print(token_t * t) {
 		printf("\ttype: END\n");
 	}
 	if(t->type == FUNC_ID || t->type == VAR_ID || t->type == STR_LIT) {
-		printf("Associated value: \t\"%s\"\n", t->sval);
+		printf("\tAssociated value: \"%s\"\n", t->sval);
 	}
 	if(t->type == INT_LIT) {
 		printf("\tAssociated value: %d\n", t->ival);

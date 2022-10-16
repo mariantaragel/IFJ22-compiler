@@ -1,7 +1,7 @@
 /****
  ** token.h
  ** Řešení IFJ-PROJEKT, 7.10.2022
- ** Autor: 
+ ** Autor: xhorva17
  ** Přeloženo: 
  **/
 

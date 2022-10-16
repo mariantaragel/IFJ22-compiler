@@ -1,6 +1,6 @@
 /****
  ** dynamic_string.h
- ** Řešení IFJ-PROJ, 5.10.2022
+ ** Řešení IFJ-PROJEKT, 5.10.2022
  ** Autor: xhorva17
  ** Přeloženo:
  **/

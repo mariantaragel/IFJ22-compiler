@@ -3,7 +3,7 @@ TOKEN: {
 }
 TOKEN: {
 	type: FUNC_ID
-	concat
+	Associated value: "concat"
 }
 TOKEN: {
 	type: LB
@@ -13,7 +13,7 @@ TOKEN: {
 }
 TOKEN: {
 	type: VAR_ID
-	$x
+	Associated value: "$x"
 }
 TOKEN: {
 	type: COLON
@@ -23,7 +23,7 @@ TOKEN: {
 }
 TOKEN: {
 	type: VAR_ID
-	$y
+	Associated value: "$y"
 }
 TOKEN: {
 	type: RB
@@ -39,21 +39,21 @@ TOKEN: {
 }
 TOKEN: {
 	type: VAR_ID
-	$x
+	Associated value: "$x"
 }
 TOKEN: {
 	type: ASSIGN
 }
 TOKEN: {
 	type: VAR_ID
-	$x
+	Associated value: "$x"
 }
 TOKEN: {
 	type: ADD
 }
 TOKEN: {
 	type: VAR_ID
-	$y
+	Associated value: "$y"
 }
 TOKEN: {
 	type: SCOLON
@@ -66,7 +66,7 @@ TOKEN: {
 }
 TOKEN: {
 	type: FUNC_ID
-	nulltest
+	Associated value: "nulltest"
 }
 TOKEN: {
 	type: LB
@@ -76,7 +76,7 @@ TOKEN: {
 }
 TOKEN: {
 	type: VAR_ID
-	$a
+	Associated value: "$a"
 }
 TOKEN: {
 	type: COLON
@@ -86,7 +86,7 @@ TOKEN: {
 }
 TOKEN: {
 	type: VAR_ID
-	$float
+	Associated value: "$float"
 }
 TOKEN: {
 	type: RB
@@ -102,14 +102,14 @@ TOKEN: {
 }
 TOKEN: {
 	type: VAR_ID
-	$a
+	Associated value: "$a"
 }
 TOKEN: {
 	type: ASSIGN
 }
 TOKEN: {
 	type: STR_LIT
-	A testing string.
+	Associated value: "A testing string."
 }
 TOKEN: {
 	type: SCOLON
@@ -119,14 +119,14 @@ TOKEN: {
 }
 TOKEN: {
 	type: VAR_ID
-	$float
+	Associated value: "$float"
 }
 TOKEN: {
 	type: ADD
 }
 TOKEN: {
 	type: INT_LIT
-	1
+	Associated value: 1
 }
 TOKEN: {
 	type: SCOLON

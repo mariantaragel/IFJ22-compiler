@@ -1,13 +1,13 @@
 /****
  ** scanner.h
  ** Řešení IFJ-PROJEKT, 01.10.2022
- ** Autor: 
+ ** Autor: xhorva17
  ** Přeloženo: 
  **/
 
 /**
  * @file children.h
- * @author
+ * @author xhorva17
  * @brief Scanner header file.
  * @date 2022-10-01
  */
@@ -43,6 +43,9 @@ void vik_handler(dynamic_string_t * ds, token_t * t, int * c);
 void s_handler(dynamic_string_t * ds, token_t * t, int * c);
 
 
+/**
+ * @brief Handles...
+ */
 void fi_handler(dynamic_string_t * ds, token_t * t, int * c);
 
 void single_char_token_handler(dynamic_string_t * ds, token_t * t, int * c);

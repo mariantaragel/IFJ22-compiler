@@ -1,13 +1,13 @@
 /****
  ** children.h
  ** Řešení IFJ-PROJEKT, 01.10.2022
- ** Autor: 
+ ** Autor: xhorva17
  ** Přeloženo:
  **/
 
 /**
  * @file scanner.c
- * @author 
+ * @author xhorva17
  * @brief Scanner function implementations.
  * @date 2022-10-01
  */
@@ -22,9 +22,6 @@
 #include "scanner.h"
 #include "dynamic_string.h"
 #include "token.h"
-
-#define RESERVED_WORD_CNT 10
-#define NULL_TYPE_CNT 3
 
 int main() {
 	token_t * token;
@@ -64,35 +61,33 @@ token_t * get_token() {
 	}
 
 	switch(c) {
-		/* ATTRIBUTED TOKENS */
-		case letter case '_': vik_handler(ds, t, &c); break;
-		case digit fi_handler(ds, t, &c); break;
-		case '$': vik_handler(ds, t, &c); break;
-		case '"': s_handler(ds, t, &c); break;
-		case '?': null_t_handler(ds, t, &c); break;
+		/* ATTRIBUTED TOKENS, KEYWORDS AND TYPES*/
+		case letter case '_': vik_handler(ds, t, &c); break; // FUNC_ID, FLT_T, STR_T, INT_T, VOID_T, NULL_T, ELSE, FUNCTION, IF, RETURN, WHILE
+		case digit fi_handler(ds, t, &c); break; // INT_LIT, FLT_LIT
+		case '$': vik_handler(ds, t, &c); break; // VAR_ID
+		case '"': s_handler(ds, t, &c); break; // STR_LIT
+		case '?': null_t_handler(ds, t, &c); break; // NFLT_T, NINT_T, NSTR_T, EPILOG
 		
-		/* ARITHMETIC TOKENS */
-		case '+': t->type = ADD; break;
-		case '-': t->type = SUB; break;
-		case '*': t->type = MUL; break;
-		case '/': printf("division or comment"); break;
-		
-		/* PUNCTUATION */
-		case ',': t->type = COLON; break;
-		case ':': t->type = COLON; break;
-		case ';': t->type = SCOLON; break;
-		case '(': t->type = LB; break;
-		case ')': t->type = RB; break;
-		case '{': t->type = LCB; break;
-		case '}': t->type = RCB; break;
-	
-		/* RELATIONAL --> create fsm... */
-		case '=': t->type = ASSIGN; break;
-		case '!': printf("negation"); break;
-		case '<': printf("lt or lte"); break;
-		case '>': printf("gt or gte"); break;
-		
-		default: fprintf(stderr, "err"); break;
+		/* UNATTRIBUTED TOKENS */
+		/* Operators */
+		case '*': t->type = MUL; break; // MUL
+		case '/': break; // TODO --> DIV, COMMENT SKIPPING.
+		case '+': t->type = ADD; break; // ADD
+		case '-': t->type = SUB; break; // SUB
+		case '.': t->type = CONCAT; break; // CONCAT
+		case '<': break; // TODO --> LT, LTE, PROLOG
+		case '>': break; // TODO --> GT, GTE
+		case '!': break; // TODO --> NEQ
+		case '=': break; // TODO --> ASSIGN, EQ
+		/* Punctuation */
+		case ',': t->type = COMMA; break; // COMMA
+		case ':': t->type = COLON; break; // COLON
+		case ';': t->type = SCOLON; break; // SCOLON
+		case '(': t->type = LB; break; // LB
+		case ')': t->type = RB; break; // RB
+		case '{': t->type = LCB; break; // LCB
+		case '}': t->type = RCB; break; // RCB
+		default: fprintf(stderr, "err"); break; // Throw LEXICAL error.
 	}
 	ds_dstr(ds);
 	return t;
@@ -103,6 +98,7 @@ token_t * get_token() {
 
 void vik_handler(dynamic_string_t * ds, token_t * t, int * c) {
 	static const char * reserved_words[] = {"else", "function", "if", "return", "while", "float", "string", "int", "null", "void"};
+	static const int reserved_words_count = 10;
 	do {
 		if(ds_write(ds, *c)) { // Write character.
 			//TODO: Internal compiler error.
@@ -111,7 +107,7 @@ void vik_handler(dynamic_string_t * ds, token_t * t, int * c) {
 	} while( (*c = fgetc(stdin)) != EOF && (isalnum(*c) != 0 || *c == '_') && isspace(*c) == 0); // watchout for file.
 	ungetc(*c, stdin);
 
-	for(int i = 0; i < RESERVED_WORD_CNT; i++) {
+	for(int i = 0; i < reserved_words_count; i++) {
 		/* Try matching with reserved keywords */
 		if(strcmp(reserved_words[i], ds->str) == 0) {
 			switch(i) {
@@ -130,7 +126,7 @@ void vik_handler(dynamic_string_t * ds, token_t * t, int * c) {
 			return; // ???
 		}
 		/* No keywords matched, set string as function identifier. */
-		if(i == RESERVED_WORD_CNT - 1) {
+		if(i == reserved_words_count - 1) {
 			if(ds->str[0] == '$') {
 				t->type = VAR_ID;
 			} else {
@@ -173,22 +169,9 @@ void fi_handler(dynamic_string_t * ds, token_t * t, int * c) {
 	}
 }
 
-/*
-void single_chart_token_handler(dynamic_string_t * ds, token_t * t, int * c) {
-	switch(c) {
-		case ',': printf("comma"); break;
-		case ':': printf("colon"); break;
-		case ';': printf("semicolon"); break;
-		case '(': printf("left bracket"); break;
-		case ')': printf("right bracket"); break;
-		case '{': printf("left curly bracket"); break;
-		case '}': printf("right curly bracket"); break;
-	}
-}
-*/
-
 void null_t_handler(dynamic_string_t * ds, token_t * t, int * c) {
-	static const char * null_types[] = {"?float", "?string", "?int"};
+	static const char * reserved_words[] = {"?float", "?string", "?int", "?>"};
+	static const int reserved_words_count = 4;
 	do {
 		if(ds_write(ds, *c)) { // Write character.
 			//TODO: Internal compiler error.
@@ -197,9 +180,9 @@ void null_t_handler(dynamic_string_t * ds, token_t * t, int * c) {
 	} while( (*c = fgetc(stdin)) != EOF && isalpha(*c) != 0 && isspace(*c) == 0); // watchout for file.
 	ungetc(*c, stdin);
 	
-	for(int i = 0; i < NULL_TYPE_CNT; i++) {
+	for(int i = 0; i < reserved_words_count; i++) {
 		/* Try matching with reserved keywords */
-		if(strcmp(null_types[i], ds->str) == 0) {
+		if(strcmp(reserved_words[i], ds->str) == 0) {
 			switch(i) {
 				case 0: t->type = NFLT_T; break;
 				case 1: t->type = NSTR_T; break;
@@ -208,7 +191,7 @@ void null_t_handler(dynamic_string_t * ds, token_t * t, int * c) {
 			}
 			return; // ???
 		}
-		if( i == NULL_TYPE_CNT - 1) {
+		if(i == reserved_words_count - 1) {
 			/* lexical error */
 			fprintf(stderr, "Lexical errr...\n");
 		}
