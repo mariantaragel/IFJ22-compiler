@@ -38,20 +38,12 @@ void token_array_free(token_array_t* token_array);
 int token_array_add_token(token_array_t* token_array, token_t *token);
 
 /**
- * @brief Concatenates(joins) two token arrays into one token array and then frees them both.
- * 
- * @param token_array1 First token array.
- * @param token_array2 Second token array.
- * @return token_array_t* New token array structure.
- */
-
-/**
  * @brief Appends all tokens from token_array2 to token_array1. 
- * Afterwards token_array2 is freed.
+ * On success, token_array2 is freed, otherwise both token arrays remain unchanged.
  * 
  * @param token_array1 
  * @param token_array2 
- * @return int 
+ * @return int Returns 0 on success, otherwise non zero value is returned.
  */
 int token_array_append_tokens(token_array_t* token_array1, token_array_t* token_array2);
 
