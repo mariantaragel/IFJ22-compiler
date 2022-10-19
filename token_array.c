@@ -2,11 +2,11 @@
 #include <stdint.h> // SIZE_MAX
 
 #include "token_array.h"
-
+#include "token.h"
 
 token_array_t* token_array_create(){
     // allocate token_array structure
-    token_array_t* token_array = malloc(sizeof(token_array));
+    token_array_t* token_array = malloc(sizeof(*token_array));
     if(token_array == NULL) return NULL;
 
     // initialize structure
@@ -14,7 +14,7 @@ token_array_t* token_array_create(){
     token_array->token_count = 0;
 
     // allocate token array to size 1
-    token_array->array = malloc(sizeof(token_t*));
+    token_array->array = malloc(sizeof(*(token_array->array)));
 
     // check for allocation error
     if(token_array->array == NULL){
@@ -131,4 +131,7 @@ int token_array_append_tokens(token_array_t* token_array1, token_array_t* token_
     // set token count of second array to zero and then free it
     token_array2->token_count = 0;
     token_array_free(token_array2);
+
+	// return success
+	return 0;
 }
