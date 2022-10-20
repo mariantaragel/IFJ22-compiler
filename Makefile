@@ -1,7 +1,7 @@
 CFLAGS=-std=c11 -Wall -Wextra -pedantic
 CC=gcc
 
-parser: parser.o scanner.o dynamic_string.o token.o
+parser: parser.o scanner.o dynamic_string.o token.o error.o
 	$(CC) $(CFLAGS) -o $@ $^
 
 scanner: scanner.o dynamic_string.o token.o

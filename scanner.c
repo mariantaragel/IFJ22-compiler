@@ -23,6 +23,7 @@
 #include "dynamic_string.h"
 #include "token.h"
 
+/*
 int main() {
 	token_t * token;
 	while( (token = get_token()) != NULL) {
@@ -32,7 +33,7 @@ int main() {
 		return 1;
 	return 0;
 }
-
+*/
 
 
 // TODO: Lexer error handling.

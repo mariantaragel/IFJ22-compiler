@@ -18,8 +18,8 @@
 
 		<stmt> -> <func_call> ;
 			<func_call> -> func_id ( <arg_list>
-				<arg_list> -> <arg> <arg_next> | )
-				<arg_next> -> , <arg> <arg_next> | )
+				<arg_list> -> ) | <arg> <arg_next>
+				<arg_next> -> ) | , <arg> <arg_next>
 					<arg> -> $var_id | string_literal | integer_literal | float_literal | null
 
 ==============================

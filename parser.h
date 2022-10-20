@@ -129,4 +129,28 @@ void if_stmt(token_t *token);
  */
 void while_stmt(token_t *token);
 
+/**
+ * @brief Checks syntax of an argument list
+ * 
+ * @param token one input symbol at each step, to make parsing action decision - LL(1) grammar
+ * @return 0 if syntax is correct, otherwise error code
+ */
+void arg_list(token_t *token);
+
+/**
+ * @brief Checks syntax of a next agrument
+ * 
+ * @param token one input symbol at each step, to make parsing action decision - LL(1) grammar
+ * @return 0 if syntax is correct, otherwise error code
+ */
+void arg_next(token_t *token);
+
+/**
+ * @brief Checks syntax of an argument
+ * 
+ * @param token one input symbol at each step, to make parsing action decision - LL(1) grammar
+ * @return 0 if syntax is correct, otherwise error code
+ */
+void arg(token_t *token);
+
 #endif
