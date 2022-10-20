@@ -2,7 +2,7 @@
  * @name parser.h
  * @brief Interface of top-down parser
  * @authors Marián Tarageľ
- * @date 16.10.2022
+ * @date 20.10.2022
  */
 
 #ifndef PARSER_H
@@ -10,17 +10,12 @@
 
 #include "token.h"
 
-#define TRUE 1
-#define FALSE 0
-
-typedef enum error {SYNTAX_CORRECT, LEXICAL_ERROR, SYNTAX_ERROR, SEMANTIC_ERROR} return_t;
-
 /**
  * @brief Checks syntax of a program
  * 
  * @return 0 if syntax is correct, otherwise error code
  */
-int program();
+void program();
 
 /**
  * @brief Checks syntax of a prolog
@@ -28,7 +23,7 @@ int program();
  * @param token one input symbol at each step, to make parsing action decision - LL(1) grammar
  * @return 0 if syntax is correct, otherwise error code
  */
-int php_start(token_t *token);
+void php_start(token_t *token);
 
 /**
  * @brief Chesks syntax of a program body
@@ -36,7 +31,7 @@ int php_start(token_t *token);
  * @param token one input symbol at each step, to make parsing action decision - LL(1) grammar
  * @return 0 if syntax is correct, otherwise error code
  */
-int program_body(token_t *token);
+void program_body(token_t *token);
 
 /**
  * @brief Checks syntax of a program ending
@@ -44,7 +39,7 @@ int program_body(token_t *token);
  * @param token one input symbol at each step, to make parsing action decision - LL(1) grammar
  * @return 0 if syntax is correct, otherwise error code
  */
-int php_end(token_t *token);
+void php_end(token_t *token);
 
 /**
  * @brief Checks syntax of a function definition
@@ -52,7 +47,7 @@ int php_end(token_t *token);
  * @param token one input symbol at each step, to make parsing action decision - LL(1) grammar
  * @return 0 if syntax is correct, otherwise error code
  */
-int func_def(token_t *token);
+void func_def(token_t *token);
 
 /**
  * @brief Checks syntax of a statement list
@@ -60,7 +55,7 @@ int func_def(token_t *token);
  * @param token one input symbol at each step, to make parsing action decision - LL(1) grammar
  * @return 0 if syntax is correct, otherwise error code
  */
-int stmt_list(token_t *token);
+void stmt_list(token_t *token);
 
 /**
  * @brief Checks syntax of a parameter list
@@ -68,7 +63,7 @@ int stmt_list(token_t *token);
  * @param token one input symbol at each step, to make parsing action decision - LL(1) grammar
  * @return 0 if syntax is correct, otherwise error code
  */
-int param_list(token_t *token);
+void param_list(token_t *token);
 
 /**
  * @brief Checks syntax of a return type
@@ -76,7 +71,7 @@ int param_list(token_t *token);
  * @param token one input symbol at each step, to make parsing action decision - LL(1) grammar
  * @return 0 if syntax is correct, otherwise error code
  */
-int return_type(token_t *token);
+void return_type(token_t *token);
 
 /**
  * @brief Checks syntax of a types
@@ -84,7 +79,7 @@ int return_type(token_t *token);
  * @param token one input symbol at each step, to make parsing action decision - LL(1) grammar
  * @return 0 if syntax is correct, otherwise error code
  */
-int type(token_t *token);
+void type(token_t *token);
 
 /**
  * @brief Checks syntax of a next parameters
@@ -92,7 +87,7 @@ int type(token_t *token);
  * @param token one input symbol at each step, to make parsing action decision - LL(1) grammar
  * @return 0 if syntax is correct, otherwise error code
  */
-int param_next(token_t *token);
+void param_next(token_t *token);
 
 /**
  * @brief Checks syntax of a statement list ending
@@ -100,7 +95,7 @@ int param_next(token_t *token);
  * @param token one input symbol at each step, to make parsing action decision - LL(1) grammar
  * @return 0 if syntax is correct, otherwise error code
  */
-int stmt_list_bracket_end(token_t *token);
+void stmt_list_bracket_end(token_t *token);
 
 /**
  * @brief Checks syntax of a statement
@@ -108,7 +103,7 @@ int stmt_list_bracket_end(token_t *token);
  * @param token one input symbol at each step, to make parsing action decision - LL(1) grammar
  * @return 0 if syntax is correct, otherwise error code
  */
-int stmt(token_t *token);
+void stmt(token_t *token);
 
 /**
  * @brief Checks syntax of a function call
@@ -116,7 +111,7 @@ int stmt(token_t *token);
  * @param token one input symbol at each step, to make parsing action decision - LL(1) grammar
  * @return 0 if syntax is correct, otherwise error code 
  */
-int func_call(token_t *token);
+void func_call(token_t *token);
 
 /**
  * @brief Checks syntax of a if statement
@@ -124,7 +119,7 @@ int func_call(token_t *token);
  * @param token one input symbol at each step, to make parsing action decision - LL(1) grammar
  * @return 0 if syntax is correct, otherwise error code
  */
-int if_stmt(token_t *token);
+void if_stmt(token_t *token);
 
 /**
  * @brief Checks syntax of a while statement
@@ -132,6 +127,6 @@ int if_stmt(token_t *token);
  * @param token one input symbol at each step, to make parsing action decision - LL(1) grammar
  * @return 0 if syntax is correct, otherwise error code
  */
-int while_stmt(token_t *token);
+void while_stmt(token_t *token);
 
 #endif
