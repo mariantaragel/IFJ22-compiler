@@ -32,7 +32,7 @@ typedef struct pstack pstack_t;
 
 
 /**
- * @brief Creates precedence stack, adds first DOLLAR element and returns pointer to it.
+ * @brief Creates precedence stack and returns pointer to it.
  * 
  * @return pstack_t* Pointer to created precedence stack on sucess. Otherwise NULL is returned.
  */
