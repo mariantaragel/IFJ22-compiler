@@ -108,6 +108,30 @@ int stmt_list_bracket_end(token_t *token);
  * @param token one input symbol at each step, to make parsing action decision - LL(1) grammar
  * @return 0 if syntax is correct, otherwise error code
  */
-int stmt(token_t *token)
+int stmt(token_t *token);
+
+/**
+ * @brief Checks syntax of a function call
+ * 
+ * @param token one input symbol at each step, to make parsing action decision - LL(1) grammar
+ * @return 0 if syntax is correct, otherwise error code 
+ */
+int func_call(token_t *token);
+
+/**
+ * @brief Checks syntax of a if statement
+ * 
+ * @param token one input symbol at each step, to make parsing action decision - LL(1) grammar
+ * @return 0 if syntax is correct, otherwise error code
+ */
+int if_stmt(token_t *token);
+
+/**
+ * @brief Checks syntax of a while statement
+ * 
+ * @param token one input symbol at each step, to make parsing action decision - LL(1) grammar
+ * @return 0 if syntax is correct, otherwise error code
+ */
+int while_stmt(token_t *token);
 
 #endif

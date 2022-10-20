@@ -9,7 +9,7 @@
 #include "scanner.h"
 #include <stdio.h>
 
-int program()
+int main()
 {
     token_t *token = get_token();
     if (token == NULL)
@@ -19,16 +19,19 @@ int program()
         if (token == NULL)
             return LEXICAL_ERROR;
         if (!program_body(token)) {
+            printf("great!");
             return SYNTAX_CORRECT;
         }
     }
+    printf("error!");
     return SYNTAX_ERROR;
 }
 
 int php_start(token_t *token)
 {
     // TODO: verify tokens '<?php' func_id '(' 'strict_types' '=' integer_literal ')' ';'
-    return SYNTAX_ERROR;
+    token = NULL;
+    return SYNTAX_CORRECT;
 }
 
 int program_body(token_t *token)
@@ -61,12 +64,13 @@ int program_body(token_t *token)
 int php_end(token_t *token)
 {
     // TODO: verify '?>' EOF | EOF
-    return SYNTAX_ERROR;
+    token = NULL;
+    return SYNTAX_CORRECT;
 }
 
 int func_def(token_t *token)
 {
-    if (token != FUNCTION) {
+    if (token->type != FUNCTION) {
         return SYNTAX_ERROR;
     }
     
@@ -236,4 +240,121 @@ int stmt_list(token_t *token)
     }
     
     return SYNTAX_ERROR;
+}
+
+int stmt(token_t *token)
+{
+    switch (token->type)
+    {
+    case IF:
+        token = get_token();
+        if (token == NULL)
+            return LEXICAL_ERROR;
+        if (!if_stmt(token)) {
+            return SYNTAX_CORRECT;
+        }
+        break;
+    
+    case WHILE:
+        token = get_token();
+        if (token == NULL)
+            return LEXICAL_ERROR;
+        if (!while_stmt(token)) {
+            return SYNTAX_CORRECT;
+        }
+        break;
+    
+    case RETURN:
+        token = get_token();
+        if (token == NULL)
+            return LEXICAL_ERROR;
+        // TODO: <exp> verification
+        if (token->type == SCOLON) {
+            return SYNTAX_CORRECT;
+        }
+        break;
+    
+    default:
+        token = get_token();
+        if (token == NULL)
+            return LEXICAL_ERROR;
+        if (!func_call(token)) {
+            token = get_token();
+            if (token == NULL)
+                return LEXICAL_ERROR;
+            if (token->type == SCOLON) {
+                return SYNTAX_CORRECT;
+            }
+            
+        }
+        break;
+    }
+    
+    return SYNTAX_ERROR;
+}
+
+int while_stmt(token_t *token)
+{
+    if (token->type == LB) {
+        // TODO: verify <exp>
+        token = get_token();
+        if (token == NULL)
+            return LEXICAL_ERROR;
+        if (token->type == RB) {
+            token = get_token();
+            if (token == NULL)
+                return LEXICAL_ERROR;
+            if (token->type == LCB) {
+                token = get_token();
+                if (token == NULL)
+                    return LEXICAL_ERROR;
+                if (!stmt_list_bracket_end(token)) {
+                    return SYNTAX_CORRECT;
+                }
+            }
+        }
+    }
+
+    return SYNTAX_ERROR;
+}
+
+int if_stmt(token_t *token)
+{
+    if (token->type == LB) {
+        // TODO: verify <exp>
+        token = get_token();
+        if (token == NULL)
+            return LEXICAL_ERROR;
+        if (token->type == RB) {
+            token = get_token();
+            if (token == NULL)
+                return LEXICAL_ERROR;
+            if (token->type == LCB) {
+                token = get_token();
+                if (token == NULL)
+                    return LEXICAL_ERROR;
+                if (!stmt_list_bracket_end(token)) {
+                    token = get_token();
+                    if (token == NULL)
+                        return LEXICAL_ERROR;
+                    if (token->type == ELSE) {
+                        token = get_token();
+                        if (token == NULL)
+                            return LEXICAL_ERROR;
+                        if (!stmt_list_bracket_end(token)) {
+                            return SYNTAX_CORRECT;
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    return SYNTAX_ERROR;
+}
+
+int func_call(token_t *token)
+{
+    token = NULL;
+    return SYNTAX_CORRECT;
 }

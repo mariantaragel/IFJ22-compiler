@@ -8,8 +8,12 @@
 
 	<stmt_list> -> <stmt> <stmt_list> | { <stmt_list_bracket_end>  
 
-		<stmt> -> if ( <exp> ) { <stmt_list_bracket_end> else { <stmt_list_bracket_end>
-		<stmt> -> while ( <exp> ) { <stmt_list_bracket_end>
+		<stmt> -> if <if_stmt>
+		<if_stmt> -> ( <exp> ) { <stmt_list_bracket_end> else { <stmt_list_bracket_end>
+		
+		<stmt> ->  while
+		<while_stmt> -> ( <exp> ) { <stmt_list_bracket_end>
+		
 		<stmt> -> return <exp> ;
 
 		<stmt> -> <func_call> ;
