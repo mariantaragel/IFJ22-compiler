@@ -1,7 +1,7 @@
 CFLAGS=-std=c11 -Wall -Wextra -pedantic
 CC=gcc
 
-parser: parser.o scanner.o dynamic_string.o token.o error.o
+parser: parser.o scanner.o dynamic_string.o token.o
 	$(CC) $(CFLAGS) -o $@ $^
 
 scanner: scanner.o dynamic_string.o token.o
@@ -36,7 +36,7 @@ TEST_token_array_clean:
 	rm -f token_array_test *.o
 
 # TEST precedence parser
-precedence_parser_test: precedence_parser_test.o precedence_parser.o precedence_stack.o token_array.o token.o
+precedence_parser_test: precedence_parser_test.o precedence_parser.o precedence_stack.o precedence_rules.o precedence_table.o token_array.o token.o
 	$(CC) $(CFLAGS) -g $^ -o $@
 
 TEST_precedence_parser: precedence_parser_test
