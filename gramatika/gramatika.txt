@@ -2,11 +2,11 @@
 <php_start> -> '<?php' func_id '(' 'strict_types' '=' integer_literal ')' ';'
 <php_end> -> '?>' EOF | EOF
 
-<program_body> -> <func_def> <program_body> | <stmt_list_bracket_start> <program_body> | <php_end>
+<program_body> -> <func_def> <program_body> | <stmt> <program_body> | <stmt_list_bracket_start> <program_body> | <php_end>
 
-	<stmt_list_bracket_end> -> } | <stmt> <stmt_list_bracket_end>
+    <stmt_list_bracket_end> -> } | <stmt> <stmt_list_bracket_end> | <stmt_list_bracket_start> <stmt_list_bracket_end>
 
-	<stmt_list_bracket_start> -> { <stmt_list_bracket_end> | <stmt>
+    <stmt_list_bracket_start> -> { <stmt_list_bracket_end>
 
 		<stmt> -> if <if_stmt>
 		<if_stmt> -> ( <exp> ) { <stmt_list_bracket_end> else { <stmt_list_bracket_end>

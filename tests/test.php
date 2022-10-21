@@ -1,3 +1,3 @@
 declare(strict_types=1);
 
-write("Zadejte cislo pro vypocet faktorialu: ");
+{f(); f(); {f(); f();} f(); f();}

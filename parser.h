@@ -10,6 +10,9 @@
 
 #include "token.h"
 
+#define TRUE 1
+#define FALSE 0
+
 /**
  * @brief Checks syntax of a program
  * 
@@ -55,7 +58,7 @@ void func_def(token_t *token);
  * @param token one input symbol at each step, to make parsing action decision - LL(1) grammar
  * @return 0 if syntax is correct, otherwise error code
  */
-void stmt_list(token_t *token);
+void stmt_list_bracket_start(token_t *token);
 
 /**
  * @brief Checks syntax of a parameter list
