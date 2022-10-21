@@ -12,7 +12,7 @@ pstack_symbol_t* create_dollar_pstack_symbol(){
 
 	// initialize new symbol to be DOLLAR symbol
 	pstack_symbol->handle_start = false;
-	pstack_symbol->prec_rule_element = (prec_rule_elem_t){TERM, -1};
+	pstack_symbol->prec_rule_element = PREC_RULE_ELEM_TERM(-1);
 	pstack_symbol->prec_table_index = DOLLAR_INDEX;
 	pstack_symbol->token_array = NULL;
 
@@ -43,7 +43,7 @@ pstack_symbol_t* create_terminal_pstack_symbol(token_t* token){
 
 	// initialize new symbol to be TERMINAL symbol
 	pstack_symbol->handle_start = false;
-	pstack_symbol->prec_rule_element = (prec_rule_elem_t){TERM, token->type};
+	pstack_symbol->prec_rule_element = PREC_RULE_ELEM_TERM(token->type);
 	pstack_symbol->prec_table_index = DOLLAR_INDEX; // TODO assign correct prec_table_index
 	pstack_symbol->token_array = token_array;
 
