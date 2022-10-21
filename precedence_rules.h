@@ -1,7 +1,9 @@
 #ifndef PRECEDENCE_RULES_H
 #define PRECEDENCE_RULES_H
 
-#include "token.h"
+#include <stdbool.h> // bool
+
+#include "token.h" 
 
 /**
  * @brief Category of precedence rule element.
@@ -10,36 +12,73 @@
 typedef enum{
 	TERM,	// terminal
 	EXPR, 	// expression
-	NAN		// nothing
+	NAN = -1// nothing
 }prec_rule_elem_category_t;
 
 /**
- * @brief Element of precedence rule structure type.
+ * @brief Element of precedence rule.
  * Element category can be either:
  * 		nonterminal (EXPR),
  * 		terminal (TERM),
  * 		nothing  (NAN).
- * If component is EXPR or NAN, token type has invalid value -1.
- * If element is TERM token type has valid value.
+ * If component is EXPR or NAN, token type should have invalid value -1.
+ * If element is TERM token type should have valid value.
  * 
  */
-typedef struct{
+typedef struct prec_rule_elem{
 	prec_rule_elem_category_t category;	// category of rule component
 	token_type_t token_type;			// type of token
 }prec_rule_elem_t;
 
-/**
- * @brief Number of precedence rules.
- */
-#define PRECEDENCE_RULE_COUNT 16
+
 
 /**
- * @brief Maximum number of elements in precedence rule.
+ * @brief NAN precedence rule element.
+ * 
  */
-#define PRECEDENCE_RULE_SIZE 3
+#define PREC_RULE_ELEM_NAN ((prec_rule_elem_t){NAN, -1})
 
 /**
- * @brief Table of precedence rules.
+ * @brief EXPR precedence rule element.
+ * 
  */
-extern const prec_rule_elem_t precedence_rules[PRECEDENCE_RULE_COUNT][PRECEDENCE_RULE_SIZE];
+#define PREC_RULE_ELEM_EXPR ((prec_rule_elem_t){EXPR, -1})
+
+/**
+ * @brief TERM precedence rule element.
+ * 
+ */
+#define PREC_RULE_ELEM_TERM(token_type) ((prec_rule_elem_t){TERM, token_type})
+
+
+
+/**
+ * @brief Checks whether rule element is TERM.
+ * 
+ * @param elem Element to be checked.
+ * @return true if element is TERM,
+ * @return false if element is not TERM
+ */
+bool is_prec_rule_elem_term(prec_rule_elem_t elem);
+
+
+
+/**
+ * @brief Type of action linked to precedence rule.
+ * 
+ */
+typedef enum {ERROR_ACTION = -1, CONVERT_TO_EXPR , REMOVE_BRACKETS, POSTFIX_MERGE} prec_rule_action_t;
+
+
+
+/**
+ * @brief Matches rule consiting of three rule elements to associated action.
+ * 
+ * @param e1 Rule element 1.
+ * @param e2 Rule element 2.
+ * @param e3 Rule element 3.
+ * @return prec_rule_action_t Type of action associated to matched rule. If no rule got matched ERROR_ACTION is returned.
+ */
+prec_rule_action_t match_precedence_rule(prec_rule_elem_t e1, prec_rule_elem_t e2, prec_rule_elem_t e3);
+
 #endif
