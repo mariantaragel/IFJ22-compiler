@@ -9,10 +9,10 @@
     <stmt_list_bracket_start> -> { <stmt_list_bracket_end>
 
 		<stmt> -> if <if_stmt>
-		<if_stmt> -> ( <exp> ) { <stmt_list_bracket_end> else { <stmt_list_bracket_end>
+			<if_stmt> -> ( <exp> ) <stmt_list_bracket_start> else <stmt_list_bracket_start>
 		
-		<stmt> ->  while
-		<while_stmt> -> ( <exp> ) { <stmt_list_bracket_end>
+		<stmt> ->  while <while_stmt>
+			<while_stmt> -> ( <exp> ) <stmt_list_bracket_start>
 		
 		<stmt> -> return <exp> ;
 
@@ -23,24 +23,6 @@
 					<arg> -> $var_id | string_literal | integer_literal | float_literal | null
 
 ==============================
-		Problematická část:
-		<stmt> -> <exp> ;
-		<stmt> -> $var_id = <assignment> ;
-		<assignment> -> func_id ( <arg_list> ) | <exp>
-
-		Řešení 1:
-			<stmt> -> <exp_not_starting_with_id> ;
-				<exp_not_starting_with_id> -> <exp_terminal_without_id> <exp_rest> // pokud je zde namatchován <exp_terminal_without_id>, tak top-down analýza předá řízení bottom-up analýze
-
-			<stmt> -> $var_id <exp/assignement> ;
-				<exp/assignement> -> <exp> | <assignement>
-					<assignement> -> = <assignement_rhs>
-						<assignement_rhs> -> <exp> | <func_call>
-
-					<exp> -> <exp_terminal> <exp_rest> // pokud je zde namatchován <exp_terminal>, tak top-down analýza předá řízení bottom-up analýze
-						<exp_terminal_without_id> -> STR_LIT | INT_LIT | FLT_LT | null | ( | ) | - | + | * | / | . | < | > | <= | >= | === | !== | e
-						<exp_terminal> -> $var_id | <exp_terminal_without_id>
-
 		Řešení 2:
 			// pokud ani jedno pravidlo vycházející z <stmt> nebylo namatchováno, bude se postupovat podle této sémantické akce
 			if (token == "$var_id" && next_token == "=")
@@ -54,7 +36,7 @@
 				<stmt> -> <exp> ; // zde top-down analýza předá řízení bottom-up analýze
 ==============================
 			
-	<func_def> -> function func_id ( <param_list> : <return_type> { <stmt_list_bracket_end>
+	<func_def> -> function func_id ( <param_list> : <return_type> <stmt_list_bracket_start>
 
 		<param_list> -> ) | <type> $var_id <param_next>
 		<param_next> -> ) | , <type> $var_id <param_next>
