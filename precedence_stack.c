@@ -68,7 +68,7 @@ pstack_symbol_t* pstack_top_terminal(pstack_t* pstack){
 	pstack_elem_t* cur_elem_ptr = pstack->top_ptr;
 
 	// iterate trough elements of pstack until either end is reached or terminal is found
-	while(cur_elem_ptr != NULL && cur_elem_ptr->symbol->prec_rule_element.category != TERM){
+	while(cur_elem_ptr != NULL && is_prec_rule_elem_term(cur_elem_ptr->symbol->prec_rule_element) != true){
 		cur_elem_ptr = cur_elem_ptr->next_ptr;
 	}
 
