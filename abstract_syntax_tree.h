@@ -1,0 +1,111 @@
+#ifndef ABSTRACT_SYNTAX_TREE_H
+#define ABSTRACT_SYNTAX_TREE_H
+
+#include <stdlib.h>
+
+/**
+ * @brief Type of node in AST.
+ * 
+ * Ch_count = children count of specific node type. If count is X, it means that node can have 0-X children.
+ * Ch = node types of children of specific node type. If list of children is in { }, it means that the order of children doesnt matter.
+ * Data = type of data of specific node type.
+ * 
+ */
+typedef enum {
+	/**	Ch_count: X | Ch: { FUNC_DEF_N, BODY_N }
+	* 	Data: */
+	PROG_N,		
+
+	/**	Ch_count: X
+	 * 	Ch: { FUNC_CALL_N, EXPR_N, ASS_EXPR_N, ASS_FUNC_N, IF_N, WHILE_N, RETURN_N }
+	* 	Data: */
+	BODY_N, 
+
+	/**	Ch_count: 2 | Ch: EXPR_N, BODY_N
+	* 	Data: */
+	WHILE_N,
+
+	/**	Ch_count: 3 | Ch: EXPR_N, BODY_N, BODY_N
+	* 	Data: */
+	IF_N,
+
+	/** Ch_count: X | Ch: { ID_N, LIT_N }
+	* 	Data: */
+	FUNC_CALL_N,
+
+	/** Ch_count: 3 | Ch: PARAMS_N, TYPE_N, BODY_N
+	* 	Data: */
+	FUNC_DEF_N,
+
+	/** Ch_count: X | Ch: PARAM_N
+	* 	Data: */
+	PARAMS_N,
+	/** Ch_count: 2 | Ch: TYPE_N, ID_N
+	* 	Data: */
+	PARAM_N,
+
+	/** Ch_count: 1 | Ch: TYPE_N
+	* 	Data: */
+	RETURN_N,
+
+	/** Ch_count: 2 | Ch: ID_N, EXPR_N
+	* 	Data: */
+	ASS_EXPR_N,
+	/** Ch_count: 2 | Ch: ID_N, FUNC_CALL_N
+	* 	Data: */
+	ASS_FUNC_N,
+
+	/** Ch_count: 0 | Ch: None
+	* 	Data: */
+	EXPR_N,
+	/** Ch_count: 0 | Ch: None
+	* 	Data: */
+	TYPE_N,
+	/** Ch_count: 0 | Ch: None
+	 * 	Data: */
+	ID_N,
+	/** Ch_count: 0 | Ch: None
+	* 	Data: */
+	LIT_N
+}AST_node_type_t;
+/**
+ * @brief Abstract syntax tree (AST) node structure type.
+ * 
+ */
+typedef struct AST_node{
+	AST_node_type_t type; 			// type of AST node
+
+	size_t children_count;			// number of children
+	size_t children_arr_size;		// size of chidren array
+	struct AST_node ** children_arr;// array of chidren
+
+	union{							// data of AST node
+		
+	};
+}AST_node_t;
+
+/**
+ * @brief Frees all AST nodes including all data stored in them.
+ * 
+ * @param root Root node of AST == PROG_N type node.
+ */
+void AST_free(AST_node_t* root);
+
+/**
+ * @brief Creates AST node with specified type and initializes it.
+ * 
+ * @param type Type of AST node to be created.
+ * @return AST_node_t* Returns created AST node on success, otherwise NULL is returned.
+ */
+AST_node_t* AST_create_node(AST_node_type_t type);
+
+/**
+ * @brief Adds new child node to parent node of AST.
+ * 
+ * @param parent Parent node.
+ * @param new_child New child to be added.
+ * @return int Returns 0 on sucess, otherwise non zero value is returned.
+ */
+int AST_add_child(AST_node_t* parent, AST_node_t* new_child);
+
+#endif
