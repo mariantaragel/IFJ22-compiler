@@ -22,30 +22,30 @@
 #include "scanner.h"
 #include "dynamic_string.h"
 #include "token.h"
+#include "error.h"
 
-/*
 int main() {
 	token_t * token;
 	while( (token = get_token()) != NULL) {
 		t_print(token);
+		if(error != OK) {
+			printf("\n\nERROR\n");
+		}
 	}
 	if(token)
 		return 1;
 	return 0;
 }
-*/
 
-
-// TODO: Lexer error handling.
 token_t * get_token() {
 	dynamic_string_t * ds = ds_init();
 	if(ds == NULL) {
-		//TODO: COMPILER MEMORY ERROR.
+		error = INTERNAL_ERROR;
 		return NULL;
 	}
-	token_t * t = t_init(); // Initialize token...
+	token_t * t = t_init();
 	if(t == NULL) {
-		//TODO: COMPILER MEMORY ERROR.
+		error = INTERNAL_ERROR;
 		return NULL;
 	}
 	
@@ -113,21 +113,19 @@ token_t * get_token() {
 		case ')': t->type = RB; break; // RB
 		case '{': t->type = LCB; break; // LCB
 		case '}': t->type = RCB; break; // RCB
-		default: fprintf(stderr, "err"); break; // Throw LEXICAL error.
+		default: error = LEXICAL_ERROR; break; // Throw LEXICAL error.
 	}
 	ds_dstr(ds);
 	return t;
 	
 }
 
-/* return keyword token in case of match on identifier. */
-
 void vik_handler(dynamic_string_t * ds, token_t * t, int * c) {
 	static const char * reserved_words[] = {"else", "function", "if", "return", "while", "float", "string", "int", "null", "void"};
 	static const int reserved_words_count = 10;
 	do {
 		if(ds_write(ds, *c)) { // Write character.
-			//TODO: Internal compiler error.
+			error = INTERNAL_ERROR;
 			return;
 		}
 	} while( (*c = fgetc(stdin)) != EOF && (isalnum(*c) != 0 || *c == '_') && isspace(*c) == 0); // watchout for file.
@@ -162,7 +160,7 @@ void vik_handler(dynamic_string_t * ds, token_t * t, int * c) {
 			/* Attach attribute */
 			t->sval = malloc(strlen(ds->str) + 1);
 			if(t->sval == NULL) {
-				/* TODO */
+				error = INTERNAL_ERROR;
 			}
 			strcpy(t->sval, ds->str);
 			
@@ -173,7 +171,7 @@ void vik_handler(dynamic_string_t * ds, token_t * t, int * c) {
 void fi_handler(dynamic_string_t * ds, token_t * t, int * c) {
 	do {
 		if(ds_write(ds, *c)) {
-			// internal compiler error
+			error = INTERNAL_ERROR;
 			return;
 		}
 	} while( (*c = fgetc(stdin)) != EOF && isdigit(*c));
@@ -184,7 +182,7 @@ void fi_handler(dynamic_string_t * ds, token_t * t, int * c) {
 	} else {
 		do {
 			if(ds_write(ds, *c)) {
-				// internal compiler error
+				error = INTERNAL_ERROR;
 				return;
 			}
 		} while( (*c = fgetc(stdin)) != EOF && isdigit(*c));
@@ -200,7 +198,7 @@ void null_t_handler(dynamic_string_t * ds, token_t * t, int * c) {
 	static const int reserved_words_count = 4;
 	do {
 		if(ds_write(ds, *c)) { // Write character.
-			//TODO: Internal compiler error.
+			error = INTERNAL_ERROR;
 			return;
 		}
 	} while( (*c = fgetc(stdin)) != EOF && isalpha(*c) != 0 && isspace(*c) == 0); // watchout for file.
@@ -218,8 +216,7 @@ void null_t_handler(dynamic_string_t * ds, token_t * t, int * c) {
 			return; // ???
 		}
 		if(i == reserved_words_count - 1) {
-			/* lexical error */
-			fprintf(stderr, "Lexical errr...\n");
+			error = LEXICAL_ERROR;
 		}
 	}
 }
@@ -227,14 +224,14 @@ void null_t_handler(dynamic_string_t * ds, token_t * t, int * c) {
 void s_handler(dynamic_string_t * ds, token_t * t, int * c) {
 	while( (*c = fgetc(stdin)) != EOF && *c != '"') {
 		if(ds_write(ds, *c)) {
-			//TODO: Internal compiler error.
+			error = INTERNAL_ERROR;
 			return;
 		}
 	}
 	t->type = STR_LIT;
 	t->sval = malloc(strlen(ds->str) + 1);
 	if(t->sval == NULL) {
-		/* INTERNAL COMPILER ERROR */
+		error = INTERNAL_ERROR;
 	}
 	strcpy(t->sval, ds->str);
 }
@@ -268,11 +265,11 @@ void aeq_handler(token_t * t, int * c) {
 void neq_handler(token_t * t, int * c) {
 	*c = fgetc(stdin);
 	if(*c != '=') {
-		// Lexeme error.
+		error = LEXICAL_ERROR;
 	} else {
 		*c = fgetc(stdin);
 		if(*c != '=') {
-			// Lexeme error.
+			error = LEXICAL_ERROR;
 		} else {
 			t->type = NEQ;
 			return;

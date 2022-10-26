@@ -25,11 +25,11 @@ token_t * t_init() {
 	return t;
 }
 
+// TODO: Deallocate associated values.
 void t_dstr(token_t * t) {
 	free(t);
 	return;
 }
-
 
 void t_print(token_t * t) {
 	printf("TOKEN: {\n");
@@ -125,3 +125,4 @@ void t_print(token_t * t) {
 	}
 	printf("}\n");
 }
+
