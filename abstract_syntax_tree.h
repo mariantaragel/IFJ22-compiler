@@ -2,6 +2,7 @@
 #define ABSTRACT_SYNTAX_TREE_H
 
 #include <stdlib.h>
+#include "token_array.h"
 
 /**
  * @brief Type of node in AST.
@@ -13,61 +14,76 @@
  */
 typedef enum {
 	/**	Ch_count: X | Ch: { FUNC_DEF_N, BODY_N }
-	* 	Data: */
+	* 	Data: None */
 	PROG_N,		
 
 	/**	Ch_count: X
 	 * 	Ch: { FUNC_CALL_N, EXPR_N, ASS_EXPR_N, ASS_FUNC_N, IF_N, WHILE_N, RETURN_N }
-	* 	Data: */
+	* 	Data: None */
 	BODY_N, 
 
 	/**	Ch_count: 2 | Ch: EXPR_N, BODY_N
-	* 	Data: */
+	* 	Data: None */
 	WHILE_N,
 
 	/**	Ch_count: 3 | Ch: EXPR_N, BODY_N, BODY_N
-	* 	Data: */
+	* 	Data: None */
 	IF_N,
 
 	/** Ch_count: X | Ch: { ID_N, LIT_N }
-	* 	Data: */
+	* 	Data: char* str (function name) */
 	FUNC_CALL_N,
 
 	/** Ch_count: 3 | Ch: PARAMS_N, TYPE_N, BODY_N
-	* 	Data: */
+	* 	Data: char* str (function name) */
 	FUNC_DEF_N,
 
 	/** Ch_count: X | Ch: PARAM_N
-	* 	Data: */
+	* 	Data: None */
 	PARAMS_N,
 	/** Ch_count: 2 | Ch: TYPE_N, ID_N
-	* 	Data: */
+	* 	Data: None */
 	PARAM_N,
 
 	/** Ch_count: 1 | Ch: TYPE_N
-	* 	Data: */
+	* 	Data: None */
 	RETURN_N,
 
 	/** Ch_count: 2 | Ch: ID_N, EXPR_N
-	* 	Data: */
+	* 	Data: None */
 	ASS_EXPR_N,
+
 	/** Ch_count: 2 | Ch: ID_N, FUNC_CALL_N
-	* 	Data: */
+	* 	Data: None */
 	ASS_FUNC_N,
 
 	/** Ch_count: 0 | Ch: None
-	* 	Data: */
+	* 	Data: token_array_t* */
 	EXPR_N,
+
 	/** Ch_count: 0 | Ch: None
-	* 	Data: */
+	* 	Data: token_type_t */
 	TYPE_N,
+
 	/** Ch_count: 0 | Ch: None
-	 * 	Data: */
+	 * 	Data: char* str (variable name) */
 	ID_N,
+
 	/** Ch_count: 0 | Ch: None
-	* 	Data: */
-	LIT_N
+	* 	Data: char* str (string literal) */
+	STR_LIT_N,
+
+	/** Ch_count: 0 | Ch: None
+	* 	Data: char* str (string representation of integer value) */
+	INT_LIT_N,
+
+	/** Ch_count: 0 | Ch: None
+	* 	Data: char* str (string representation of float value) */
+	FLT_LIT_N
 }AST_node_type_t;
+
+
+
 /**
  * @brief Abstract syntax tree (AST) node structure type.
  * 
@@ -79,9 +95,11 @@ typedef struct AST_node{
 	size_t children_arr_size;		// size of chidren array
 	struct AST_node ** children_arr;// array of chidren
 
-	union{							// data of AST node
-		
-	};
+	// data of AST node
+	struct{
+		token_array_t* expression_token_array;
+		char* str;
+	}data;
 }AST_node_t;
 
 /**
@@ -103,8 +121,9 @@ AST_node_t* AST_create_node(AST_node_type_t type);
  * @brief Adds new child node to parent node of AST.
  * 
  * @param parent Parent node.
- * @param new_child New child to be added.
- * @return int Returns 0 on sucess, otherwise non zero value is returned.
+ * @param new_child New child node to be added.
+ * @return int Returns 0 on sucess, otherwise non zero value is returned, 
+ * if allocation fails or either parent or new_child is NULL.
  */
 int AST_add_child(AST_node_t* parent, AST_node_t* new_child);
 

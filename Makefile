@@ -45,3 +45,13 @@ TEST_precedence_parser: precedence_parser_test
 TEST_precedence_parser_clean:
 	rm -f precedence_parser_test *.o
 
+# TEST abstract_syntax_tree
+abstract_syntax_tree_test: abstract_syntax_tree_test.o abstract_syntax_tree.o token_array.o token.o
+	$(CC) $(CFLAGS) -g $^ -o $@
+
+TEST_abstract_syntax_tree: abstract_syntax_tree_test
+	valgrind --leak-check=full --show-leak-kinds=all ./$^
+
+TEST_abstract_syntax_tree_clean:
+	rm -f abstract_syntax_tree_test *.o
+
