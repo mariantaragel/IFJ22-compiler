@@ -26,14 +26,17 @@
 
 int main() {
 	token_t * token;
+	int tc = 0;
 	while( (token = get_token()) != NULL) {
 		t_print(token);
-		if(error != OK) {
-			printf("\n\nERROR\n");
+		tc++;
+		if(error == INTERNAL_ERROR) {
+			printf("Internal compiler error.\n");
+		} else if (error == LEXICAL_ERROR) {
+			printf("Lexical error.\n");
 		}
 	}
-	if(token)
-		return 1;
+
 	return 0;
 }
 
@@ -81,6 +84,7 @@ token_t * get_token() {
 
 	if(c == EOF) {
 		ds_dstr(ds);
+		t->type = END;
 		return NULL;
 	}
 	
@@ -196,6 +200,15 @@ void fi_handler(dynamic_string_t * ds, token_t * t, int * c) {
 void null_t_handler(dynamic_string_t * ds, token_t * t, int * c) {
 	static const char * reserved_words[] = {"?float", "?string", "?int", "?>"};
 	static const int reserved_words_count = 4;
+
+	*c = fgetc(stdin);
+	if( *c == '>') {
+		t->type = EPILOG;
+		return;
+	} else {
+		ungetc(*c, stdin);
+		*c = '?';
+	}
 	do {
 		if(ds_write(ds, *c)) { // Write character.
 			error = INTERNAL_ERROR;
@@ -211,6 +224,7 @@ void null_t_handler(dynamic_string_t * ds, token_t * t, int * c) {
 				case 0: t->type = NFLT_T; break;
 				case 1: t->type = NSTR_T; break;
 				case 2: t->type = NINT_T; break;
+				case 3: t->type = EPILOG; break;
 				default: break;
 			}
 			return; // ???
@@ -277,10 +291,14 @@ void neq_handler(token_t * t, int * c) {
 	}
 }
 
-void lp_handler(token_t * t, int * c) {
+void lp_handler(token_t * t, int * c) {\
+	static char * prolog = "<?php"; // Prolog to try and match.
 	*c = fgetc(stdin);
 	if(*c == '=') {
 		t->type = LTE;
+	} else if (*c == '?') { // Try create prolog. Else lexical error.
+		
+		
 	} else {
 		t->type = LT;
 		ungetc(*c, stdin);
