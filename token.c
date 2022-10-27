@@ -27,6 +27,8 @@ token_t * t_init() {
 
 // TODO: Deallocate associated values.
 void t_dstr(token_t * t) {
+	if(t->type == FUNC_ID)
+		free(t->sval);
 	free(t);
 	return;
 }

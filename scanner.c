@@ -25,17 +25,20 @@
 #include "error.h"
 
 int main() {
-	token_t * token;
+		token_t * token;
 	int tc = 0;
 	while( (token = get_token()) != NULL) {
 		t_print(token);
+		t_dstr(token);
 		tc++;
 		if(error == INTERNAL_ERROR) {
 			printf("Internal compiler error.\n");
 		} else if (error == LEXICAL_ERROR) {
 			printf("Lexical error.\n");
 		}
+		
 	}
+	printf("Token count -> %d\n", tc);
 
 	return 0;
 }
