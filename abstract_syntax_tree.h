@@ -2,6 +2,7 @@
 #define ABSTRACT_SYNTAX_TREE_H
 
 #include <stdlib.h>
+#include <stdio.h>
 #include "token_array.h"
 
 /**
@@ -40,7 +41,7 @@ typedef enum {
 
 	/** Ch_count: X | Ch: PARAM_N
 	* 	Data: None */
-	PARAMS_N,
+	PARAM_LIST_N,
 	/** Ch_count: 2 | Ch: TYPE_N, ID_N
 	* 	Data: None */
 	PARAM_N,
@@ -126,5 +127,23 @@ AST_node_t* AST_create_node(AST_node_type_t type);
  * if allocation fails or either parent or new_child is NULL.
  */
 int AST_add_child(AST_node_t* parent, AST_node_t* new_child);
+
+/**
+ * @brief Creates new node and adds it to parent node as its child.
+ * 
+ * @param parent Parent node.
+ * @param type Type of new child node to be created and added to parent node.
+ * @return AST_node_t* Pointer to created child node on success, otherwise NULL is returned.
+ */
+AST_node_t* AST_create_add_child(AST_node_t* parent, AST_node_type_t type);
+
+/**
+ * @brief Prints AST graphically in text form.
+ * 
+ * @param root Root node of AST.
+ * @param fp Pointer to file to be printed in.
+ */
+void AST_print(AST_node_t* root, FILE *fp);
+
 
 #endif
