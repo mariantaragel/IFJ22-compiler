@@ -1,6 +1,8 @@
 CFLAGS=-std=c11 -Wall -Wextra -pedantic
 CC=gcc
 
+all: parser scanner
+
 parser: parser.o scanner.o dynamic_string.o token.o error.o
 	$(CC) $(CFLAGS) -o $@ $^
 
@@ -13,7 +15,6 @@ clean:
 run:
 	make scanner
 	cat ./tests/test1.php | ./scanner > ./tests/res1.txt
-
 
 # TEST symtable
 symtable_test: symtable_test.o symtable.o

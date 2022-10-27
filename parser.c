@@ -2,7 +2,7 @@
  * @name parser.c
  * @brief Implementation of top-down parser
  * @authors Marián Tarageľ
- * @date 21.10.2022
+ * @date 27.10.2022
  */
 
 #include "parser.h"
@@ -14,29 +14,18 @@
 #define RETURN_IF_ERROR if (error != OK) return
 #define RETURN_ERROR(error_code) error = error_code; return
 
-int main() {
-    program();
-    if (error == OK) {
-        printf("OK!\n");
-    } else if (error == SEM_ERROR_3) {
-        printf("OK!\n");
-    } else {
-        printf("ERROR!\n");
-    }
-}
-
 void program()
 {
     token_t *token = get_token();
     RETURN_IF_ERROR;
     php_start(token);
-    //free(token);
+    //t_dstr(token);
     RETURN_IF_ERROR;
 
     token = get_token();
     RETURN_IF_ERROR;
     program_body(token);
-    free(token);
+    t_dstr(token);
     RETURN_IF_ERROR;
 }
 
@@ -61,43 +50,43 @@ void php_start(token_t *token)
         {
         case 0:
             if (token->type != FUNC_ID || strcmp(token->sval, "declare")) {
-                free(token);
+                t_dstr(token);
                 RETURN_ERROR(SYNTAX_ERROR);
             } break;
         
         case 1:
             if (token->type != LB) {
-                free(token);
+                t_dstr(token);
                 RETURN_ERROR(SYNTAX_ERROR);
             } break;
         
         case 2:
             if (token->type != FUNC_ID || strcmp(token->sval, "strict_types")) {
-                free(token);
+                t_dstr(token);
                 RETURN_ERROR(SYNTAX_ERROR);
             } break;
 
         case 3:
             if (token->type != ASSIGN) {
-                free(token);
+                t_dstr(token);
                 RETURN_ERROR(SYNTAX_ERROR);
             } break;
 
         case 4:
             if (token->type != INT_LIT || token->ival != 1) {
-                free(token);
+                t_dstr(token);
                 RETURN_ERROR(SYNTAX_ERROR);
             } break;
 
         case 5:
             if (token->type != RB) {
-                free(token);
+                t_dstr(token);
                 RETURN_ERROR(SYNTAX_ERROR);
             } break;
         
         case 6:
             if (token->type != SCOLON) {
-                free(token);
+                t_dstr(token);
                 RETURN_ERROR(SYNTAX_ERROR);
             } break;
 
@@ -114,7 +103,7 @@ void program_body(token_t *token)
         token = get_token();
         RETURN_IF_ERROR;
         program_body(token);
-        free(token);
+        t_dstr(token);
         RETURN_IF_ERROR;
     }
     
@@ -124,7 +113,7 @@ void program_body(token_t *token)
         token = get_token();
         RETURN_IF_ERROR;
         program_body(token);
-        free(token);
+        t_dstr(token);
         RETURN_IF_ERROR;
     }
 
@@ -134,7 +123,7 @@ void program_body(token_t *token)
         token = get_token();
         RETURN_IF_ERROR;
         program_body(token);
-        free(token);
+        t_dstr(token);
         RETURN_IF_ERROR;
     }
 
@@ -164,50 +153,51 @@ void func_def(token_t *token)
     token = get_token();
     RETURN_IF_ERROR;
     if (token->type != FUNC_ID) {
-        free(token);
+        t_dstr(token);
         RETURN_ERROR(SYNTAX_ERROR);
     }
-    free(token);
+    t_dstr(token);
     
     token = get_token();
     RETURN_IF_ERROR;
     if (token->type != LB) {
-        free(token);
+        t_dstr(token);
         RETURN_ERROR(SYNTAX_ERROR);
     }
-    free(token);
+    t_dstr(token);
 
     token = get_token();
     RETURN_IF_ERROR;
     param_list(token);
-    free(token);
+    t_dstr(token);
     RETURN_IF_ERROR;
 
     token = get_token();
     RETURN_IF_ERROR;
     if (token->type != COLON) {
-        free(token);
+        t_dstr(token);
         RETURN_ERROR(SYNTAX_ERROR);
     }
+    t_dstr(token);
 
     token = get_token();
     RETURN_IF_ERROR;
     return_type(token);
-    free(token);
+    t_dstr(token);
     RETURN_IF_ERROR;
 
     token = get_token();
     RETURN_IF_ERROR;
     if (token->type != LCB) {
-        free(token);
+        t_dstr(token);
         RETURN_ERROR(SYNTAX_ERROR);
     }
-    free(token);
+    t_dstr(token);
 
     token = get_token();
     RETURN_IF_ERROR;
     stmt_list_bracket_end(token);
-    free(token);
+    t_dstr(token);
     RETURN_IF_ERROR;
 }
 
@@ -240,15 +230,15 @@ void param_list(token_t *token)
     token = get_token();
     RETURN_IF_ERROR;
     if (token->type != VAR_ID) {
-        free(token);
+        t_dstr(token);
         RETURN_ERROR(SYNTAX_ERROR);
     }
-    free(token);
+    t_dstr(token);
 
     token = get_token();
     RETURN_IF_ERROR;
     param_next(token);
-    free(token);
+    t_dstr(token);
     RETURN_IF_ERROR;
 }
 
@@ -265,21 +255,21 @@ void param_next(token_t *token)
     token = get_token();
     RETURN_IF_ERROR;
     type(token);
-    free(token);
+    t_dstr(token);
     RETURN_IF_ERROR;
 
     token = get_token();
     RETURN_IF_ERROR;
     if (token->type != VAR_ID) {
-        free(token);
+        t_dstr(token);
         RETURN_ERROR(SYNTAX_ERROR);
     }
-    free(token);
+    t_dstr(token);
     
     token = get_token();
     RETURN_IF_ERROR;
     param_next(token);
-    free(token);
+    t_dstr(token);
     RETURN_IF_ERROR;
 }
 
@@ -294,7 +284,7 @@ void stmt_list_bracket_end(token_t *token)
         token = get_token();
         RETURN_IF_ERROR;
         stmt_list_bracket_end(token);
-        free(token);
+        t_dstr(token);
         RETURN_IF_ERROR;
     }
     else {
@@ -305,7 +295,7 @@ void stmt_list_bracket_end(token_t *token)
         token = get_token();
         RETURN_IF_ERROR;
         stmt_list_bracket_end(token);
-        free(token);
+        t_dstr(token);
         RETURN_IF_ERROR;
     }
 }
@@ -319,7 +309,7 @@ void stmt_list_bracket_start(token_t *token)
     token = get_token();
     RETURN_IF_ERROR;
     stmt_list_bracket_end(token);
-    free(token);
+    t_dstr(token);
     RETURN_IF_ERROR;
 }
 
@@ -331,7 +321,7 @@ void stmt(token_t *token)
         token = get_token();
         RETURN_IF_ERROR;
         if_stmt(token);
-        free(token);
+        t_dstr(token);
         RETURN_IF_ERROR;
         break;
     
@@ -339,7 +329,7 @@ void stmt(token_t *token)
         token = get_token();
         RETURN_IF_ERROR;
         while_stmt(token);
-        free(token);
+        t_dstr(token);
         RETURN_IF_ERROR;
         break;
     
@@ -348,10 +338,10 @@ void stmt(token_t *token)
         RETURN_IF_ERROR;
         // TODO: verify <exp>
         if (token->type != SCOLON) {
-            free(token);
+            t_dstr(token);
             RETURN_ERROR(SYNTAX_ERROR);
         }
-        free(token);
+        t_dstr(token);
         break;
     
     default:
@@ -360,10 +350,10 @@ void stmt(token_t *token)
         token = get_token();
         RETURN_IF_ERROR;
         if (token->type != SCOLON) {
-            free(token);
+            t_dstr(token);
             RETURN_ERROR(SYNTAX_ERROR);
         }
-        free(token);
+        t_dstr(token);
         break;
     }
 }
@@ -378,23 +368,23 @@ void while_stmt(token_t *token)
     token = get_token();
     RETURN_IF_ERROR;
     if (token->type != RB) {
-        free(token);
+        t_dstr(token);
         RETURN_ERROR(SYNTAX_ERROR);
     }
-    free(token);
+    t_dstr(token);
     
     token = get_token();
     RETURN_IF_ERROR;
     if (token->type != LCB) {
-        free(token);
+        t_dstr(token);
         RETURN_ERROR(SYNTAX_ERROR);
     }
-    free(token);
+    t_dstr(token);
     
     token = get_token();
     RETURN_IF_ERROR;
     stmt_list_bracket_end(token);
-    free(token);
+    t_dstr(token);
     RETURN_IF_ERROR;
 }
 
@@ -408,45 +398,45 @@ void if_stmt(token_t *token)
     token = get_token();
     RETURN_IF_ERROR;
     if (token->type != RB) {
-        free(token);
+        t_dstr(token);
         RETURN_ERROR(SYNTAX_ERROR);
     }
-    free(token);
+    t_dstr(token);
     
     token = get_token();
     RETURN_IF_ERROR;
     if (token->type != LCB) {
-        free(token);
+        t_dstr(token);
         RETURN_ERROR(SYNTAX_ERROR);
     }
-    free(token);
+    t_dstr(token);
     
     token = get_token();
     RETURN_IF_ERROR;
     stmt_list_bracket_end(token);
-    free(token);
+    t_dstr(token);
     RETURN_IF_ERROR;
 
     token = get_token();
     RETURN_IF_ERROR;
     if (token->type != ELSE) {
-        free(token);
+        t_dstr(token);
         RETURN_ERROR(SYNTAX_ERROR);
     }
-    free(token);
+    t_dstr(token);
 
     token = get_token();
     RETURN_IF_ERROR;
     if (token->type != LCB) {
-        free(token);
+        t_dstr(token);
         RETURN_ERROR(SYNTAX_ERROR);
     }
-    free(token);
+    t_dstr(token);
 
     token = get_token();
     RETURN_IF_ERROR;
     stmt_list_bracket_end(token);
-    free(token);
+    t_dstr(token);
     RETURN_IF_ERROR;
 }
 
@@ -459,15 +449,15 @@ void func_call(token_t *token)
     token = get_token();
     RETURN_IF_ERROR;
     if (token->type != LB) {
-        free(token);
+        t_dstr(token);
         RETURN_ERROR(SYNTAX_ERROR);
     }
-    free(token);
+    t_dstr(token);
 
     token = get_token();
     RETURN_IF_ERROR;
     arg_list(token);
-    free(token);
+    t_dstr(token);
     RETURN_IF_ERROR;
 }
 
@@ -483,7 +473,7 @@ void arg_list(token_t *token)
     token = get_token();
     RETURN_IF_ERROR;
     arg_next(token);
-    free(token);
+    t_dstr(token);
     RETURN_IF_ERROR;
 }
 
@@ -499,13 +489,13 @@ void arg_next(token_t *token)
     token = get_token();
     RETURN_IF_ERROR;
     arg(token);
-    free(token);
+    t_dstr(token);
     RETURN_IF_ERROR;
 
     token = get_token();
     RETURN_IF_ERROR;
     arg_next(token);
-    free(token);
+    t_dstr(token);
     RETURN_IF_ERROR;
 }
 
