@@ -28,21 +28,21 @@ int main(){
         error_exit("err2", symtable);
     }
 
-    symbol_t* symbol;
+    symbol_info_t* symbol_info;
 
 
     bool name_found;
 
     for(size_t i = 0; i < name_count; ++i){
-        symbol = symtable_lookup_insert(symtable, test_names[i], &name_found);
+        symbol_info = symtable_lookup_insert(symtable, test_names[i], &name_found);
 
-        if(symbol == NULL){
+        if(symbol_info == NULL){
             error_exit("err3", symtable);
         }
 
-        if(strcmp(symbol->name, test_names[i]) != 0){
+        /*if(strcmp(symbol_info-, test_names[i]) != 0){
             error_exit("err4", symtable);
-        }
+        }*/
 
         if(name_found != false){
             error_exit("err5", symtable);
@@ -52,17 +52,18 @@ int main(){
             error_exit("err6", symtable);
         }
 
-
+		/*
         for(size_t k = 0; k <= i; ++k){
-            symbol = symtable_lookup(symtable, test_names[k]);
+            symbol_info = symtable_lookup(symtable, test_names[k]);
             if(symbol == NULL || strcmp(symbol->name, test_names[k]) != 0){
                 error_exit("err7", symtable);
             }
         }
+		*/
 
         for(size_t k = i+1; k < name_count; ++k){
-            symbol = symtable_lookup(symtable, test_names[k]);
-            if(symbol != NULL){
+            symbol_info = symtable_lookup(symtable, test_names[k]);
+            if(symbol_info != NULL){
                 error_exit("err8", symtable);
             }
         }
