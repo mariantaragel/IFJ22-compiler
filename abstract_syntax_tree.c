@@ -14,8 +14,8 @@ void AST_free(AST_node_t* root){
 	free(root->children_arr);
 
 	// free data
-	if(root->data.expression_token_array != NULL){
-		token_array_free(root->data.expression_token_array);
+	if(root->data.expression != NULL){
+		token_array_free(root->data.expression);
 	}
 	else if(root->data.str != NULL){
 		free(root->data.str);
@@ -40,8 +40,9 @@ AST_node_t* AST_create_node(AST_node_type_t type){
 	new_node->type = type;
 
 	// init data
-	new_node->data.expression_token_array = NULL;
+	new_node->data.expression = NULL;
 	new_node->data.str = NULL;
+	new_node->data.type = -1;
 
 	// return created node
 	return new_node;
@@ -98,31 +99,6 @@ AST_node_t* AST_create_add_child(AST_node_t* parent, AST_node_type_t type){
 	return new_child;
 }
 
-/*
-typedef struct{
-	AST_node_t node_type;
-	char *str;
-}AST_type_name_pair_t;
-
-static const AST_type_name_pair_t type_name_pair_array[] = {
-	{PROG_N, "PROG_N"}, {BODY_N, "BODY_N"}, {WHILE_N, "WHILE_N"}, {IF_N, "IF_N"},
-	{FUNC_CALL_N, "FUNC_CALL_N"}, {FUNC_DEF_N, "FUNC_DEF_N"}, {PARAM_LIST_N, "PARAM_LIST_N"}, {PARAM_N, "PARAM_N"}, 
-	{RETURN_N, "RETURN_N"}, {ASS_EXPR_N, "ASS_EXPR_N"}, {ASS_FUNC_N, "ASS_FUNC_N"}, 
-	{EXPR_N, "EXPR_N"}, {TYPE_N, "TYPE_N"}, {ID_N, "ID_N"},
-	{STR_LIT_N, "STR_LIT_N"}, {INT_LIT_N, "INT_LIT_N"}, {FLT_LIT_N, "FLT_LIT_N"}
-};
-
-char* _AST_get_type_str(AST_node_type_t node_type){
-	size_t type_name_pair_array_size = sizeof(type_name_pair_array) / sizeof(type_name_pair_array[0]);
-	for(size_t i = 0; i < type_name_pair_array_size; ++i){
-		if(type_name_pair_array[i].node_type == node_type){
-			return type
-		}
-
-	}
-}
-*/
-
 void _AST_print(AST_node_t* root, size_t depth, FILE* fp){
 	if(depth > 0){
 		fprintf(fp, "\n");
@@ -131,10 +107,11 @@ void _AST_print(AST_node_t* root, size_t depth, FILE* fp){
 		}
 		for(size_t i = 0; i < depth; ++i){
 			fprintf(fp, "   ");
-		}
+		} 
 		fprintf(fp, "+----");
 	}
 
+	// get string representation of AST node type
 	char* node_name;
 	switch(root->type){
 		case PROG_N: 		node_name = "PROG_N"; break;
@@ -154,12 +131,11 @@ void _AST_print(AST_node_t* root, size_t depth, FILE* fp){
 		case STR_LIT_N:		node_name = "STR_LIT_N"; break;
 		case INT_LIT_N:		node_name = "INT_LIT_N"; break;
 		case FLT_LIT_N:		node_name = "FLT_LIT_N"; break;
-		default: node_name = "UNKNOWN";
+		default: 			node_name = "UNKNOWN";
 	}
 	
 	fprintf(fp,"%s",node_name);
 
-		
 	for(size_t i = 0; i < root->children_count; ++i){
 		_AST_print(root->children_arr[i], (depth+1), fp);
 	}

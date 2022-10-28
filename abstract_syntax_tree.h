@@ -98,8 +98,9 @@ typedef struct AST_node{
 
 	// data of AST node
 	struct{
-		token_array_t* expression_token_array;
+		token_array_t* expression;
 		char* str;
+		int type;
 	}data;
 }AST_node_t;
 
@@ -138,12 +139,11 @@ int AST_add_child(AST_node_t* parent, AST_node_t* new_child);
 AST_node_t* AST_create_add_child(AST_node_t* parent, AST_node_type_t type);
 
 /**
- * @brief Prints AST graphically in text form.
+ * @brief Prints AST graphically in text form to selected file.
  * 
  * @param root Root node of AST.
  * @param fp Pointer to file to be printed in.
  */
 void AST_print(AST_node_t* root, FILE *fp);
-
 
 #endif
