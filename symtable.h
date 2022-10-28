@@ -3,55 +3,78 @@
 
 #include <stdlib.h>  // size_t
 #include <stdbool.h> // bool
+#include "symbol.h"
 
 /////////////////
-// Symbol type:
 
+/**
+ * @brief Data type of symbol name.
+ */
 typedef const char * symbol_name_t;
 
-typedef enum {VAR, FUNC} symbol_type_t;
-
-typedef struct{
-    symbol_type_t symbol_type;
-    bool defined;
-}symbol_info_t;
-
-typedef struct {
-    symbol_name_t name;
-    symbol_info_t info;
-} symbol_t;
-
-
-/////////////////
-// Symbol table type:
-
+/**
+ * @brief Data type of symbol table structure.
+ * 
+ */
 typedef struct symtable symtable_t;
 
 
 /////////////////
 // Operations:
 
-// Constructor: allocates and initialises new symtable_t structure
-// On success pointer to allocated symbol table is returned, otherwise NULL is returned.
+
+/**
+ * @brief Construcor: allocates and initialises new symtable_t structure.
+ * 
+ * @return symtable_t* On success pointer to allocated symbol table is returned, otherwise NULL is returned.
+ */
 symtable_t *symtable_create();
 
-// Destructor: frees all symbols in symbol table "t" and symbol table structure itself.
+
+/**
+ * @brief Destructor: frees all symbols in symbol table and symbol table structure itself.
+ * 
+ * @param t Symbol table to be freed.
+ */
 void symtable_free(symtable_t *t);
 
-// Frees all symbols in symbol table.
+
+/**
+ * @brief Frees all symbols in symbol table.
+ * 
+ * @param t Symbol table to have elements freed.
+ */
 void symtable_clear(symtable_t *t);
 
-// Returns number of symbols in symtable.
+
+/**
+ * @brief Returns number of symbols in symtable.
+ * 
+ * @param t Symbol table to get symbol count of.
+ * @return size_t Returns number of symbols in symtable.
+ */
 size_t symtable_get_symbol_count(symtable_t* t);
 
-// Searches symbol table "t" for symbol with specified "name".
-// If found, function returns pointer to corresponding symbol, otherwise NULL is returned.
-symbol_t * symtable_lookup(symtable_t * t, symbol_name_t name);
+/**
+ * @brief Searches symbol table for symbol with specified name and if found, returns pointer to corresponding symbol.
+ * 
+ * @param t Symbol table to be searched in.
+ * @param name Name of symbol to be searched.
+ * @return symbol_info_t* If symbol name is found, function returns pointer to corresponding symbol info, otherwise NULL is returned.
+ */
+symbol_info_t * symtable_lookup(symtable_t * t, symbol_name_t name);
 
-// Searches symbol table "t" for symbol with specified "name".
-// If found, function returns pointer to corresponding symbol and sets "name_found" to true.
-// If symbol was not found, new symbol with specified "name" is created, initialized and added to symbol table "t". 
-// Afterwards pointer to newly added symbol is returned and "name_found" is set to false.
-symbol_t * symtable_lookup_insert(symtable_t * t, symbol_name_t name, bool *name_found);
+
+/**
+ * @brief Searches symbol table for symbol with specified name.
+ * If found, function returns pointer to corresponding symbol info and sets name_found flag to true.
+ * If symbol was not found, new symbol with specified name is created, initialized and added to symbol table.
+ * 
+ * @param t Symbol table to be searched in or to which new symbol will be added.
+ * @param name Name of symbol to be searched for or name of symbol to be added to symtable.
+ * @param name_found Indicator flag is set to true if symbol already existsts, otherwise flag is set to false.
+ * @return symbol_info_t* Returns either found or newly inserted symbol info on success, otherwise, if error occured, NULL is returned.
+ */
+symbol_info_t * symtable_lookup_insert(symtable_t * t, symbol_name_t name, bool *name_found);
 
 #endif

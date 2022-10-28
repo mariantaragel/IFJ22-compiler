@@ -30,7 +30,8 @@ size_t hash_function(const char* str) {
 
 // Symbol table item type and structure
 typedef struct symtable_item{
-    symbol_t symbol;            // record of symbol table = symbol
+    symbol_info_t symbol_info; 	// symbol info
+	symbol_name_t name;			// symbol name
     struct symtable_item *next; // pointer to next item
 }symtable_item_t;
 
@@ -59,8 +60,8 @@ symtable_item_t *symtable_item_create(symbol_name_t name){
 	}
 	memcpy(name_copy, name, name_len);
 
-	// initialize new item
-	new_item->symbol.name = name_copy;
+	// initialize new item // TODO: initialize symbol info
+	new_item->name = name_copy;
 	//new_item->symbol.info = ...
 
     return new_item;
@@ -68,7 +69,7 @@ symtable_item_t *symtable_item_create(symbol_name_t name){
 
 // Item descructor: frees symbol table item
 void symtable_item_free(symtable_item_t* item){
-    free((char*)(item->symbol.name));
+    free((char*)(item->name));
 
     free(item);
 }
@@ -114,7 +115,7 @@ size_t symtable_get_symbol_count(symtable_t* t){
 // Warning: This function is only to be used by symtable_resize. Item to be added has to be unique in hash table.
 void _symtable_resize_add(symtable_t *t, symtable_item_t* new_item) {
     // name of new_item to be added
-    symbol_name_t name = new_item->symbol.name;
+    symbol_name_t name = new_item->name;
 
     // calculate symtable index
     const size_t symtable_index = hash_function(name) % t->arr_size;
@@ -124,7 +125,7 @@ void _symtable_resize_add(symtable_t *t, symtable_item_t* new_item) {
     symtable_item_t* prev_item = NULL;
 
     // iterate trough list until correct position for "new_item" was found
-    while (cur_item != NULL && strcmp(cur_item->symbol.name, name) < 0) {
+    while (cur_item != NULL && strcmp(cur_item->name, name) < 0) {
         prev_item = cur_item;
         cur_item = cur_item->next;
     }
@@ -231,7 +232,7 @@ void symtable_clear(symtable_t * t){
 
 // Searches symbol table "t" for symbol with specified "name".
 // If found, function returns pointer to corresponding symbol, otherwise NULL is returned.   
-symbol_t * symtable_lookup(symtable_t * t, symbol_name_t name){
+symbol_info_t * symtable_lookup(symtable_t * t, symbol_name_t name){
 	// check for NULL pointers
 	if(t == NULL || name == NULL)
 		return NULL;
@@ -244,13 +245,13 @@ symbol_t * symtable_lookup(symtable_t * t, symbol_name_t name){
 
 	// iterate trough item list until searched name is found
     int cmp_ret = 1;
-	while(cur_item != NULL && (cmp_ret = strcmp(cur_item->symbol.name, name)) < 0){
+	while(cur_item != NULL && (cmp_ret = strcmp(cur_item->name, name)) < 0){
 		cur_item = cur_item->next;
 	}
 
 	// if found item return address of item symbol, otherwise return NULL
 	if(cmp_ret == 0)
-		return &(cur_item->symbol);
+		return &(cur_item->symbol_info);
 	else
 		return NULL;
 }
@@ -262,7 +263,7 @@ symbol_t * symtable_lookup(symtable_t * t, symbol_name_t name){
 // If symbol was not found, new symbol with specified "name" is created, initialized and added to symbol table "t". 
 // Afterwards pointer to newly added symbol is returned and "name_found" is set to false.
 // If average length of symtable "t" exceeds AVG_LEN_MAX, function tries to resize symbol table array to double its size.
-symbol_t * symtable_lookup_insert(symtable_t * t, symbol_name_t name, bool *name_found){
+symbol_info_t * symtable_lookup_insert(symtable_t * t, symbol_name_t name, bool *name_found){
 	// check for NULL pointers
 	if(t == NULL || name == NULL) return NULL;
 
@@ -275,7 +276,7 @@ symbol_t * symtable_lookup_insert(symtable_t * t, symbol_name_t name, bool *name
 
 	// iterate trough list until name is found or until list end is found
     int cmp_ret = 1;
-	while(cur_item != NULL && (cmp_ret = strcmp(cur_item->symbol.name, name)) < 0){
+	while(cur_item != NULL && (cmp_ret = strcmp(cur_item->name, name)) < 0){
 		prev_item = cur_item;
 		cur_item = cur_item->next;
 	}
@@ -284,7 +285,7 @@ symbol_t * symtable_lookup_insert(symtable_t * t, symbol_name_t name, bool *name
         *name_found = true;
         
         // return already existing symbol
-        return &(cur_item->symbol);
+        return &(cur_item->symbol_info);
     }
     else{
         *name_found = false;
@@ -309,7 +310,7 @@ symbol_t * symtable_lookup_insert(symtable_t * t, symbol_name_t name, bool *name
             symtable_resize(t, (t->arr_size*2));
 
         // return newly added symbol
-        return &(new_item->symbol);
+        return &(new_item->symbol_info);
     }
 }
 
@@ -345,7 +346,7 @@ bool symtable_erase(symtable_t * t, symbol_name_t name){
 	int cmp_ret = 1;
 
 	// iterate trough item list until searched name is found
-	while(cur_item != NULL && (cmp_ret = strcmp(cur_item->symbol.name, name)) < 0){
+	while(cur_item != NULL && (cmp_ret = strcmp(cur_item->name, name)) < 0){
 		prev_item = cur_item;
 		cur_item = cur_item->next;
 	}
