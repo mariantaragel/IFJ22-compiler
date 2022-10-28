@@ -4,6 +4,8 @@
 #include "token_array.h"
 #include "token.h"
 
+#define MAX_SIZE_TO_COUNT_RATIO 3
+
 token_array_t* token_array_create(){
     // allocate token_array structure
     token_array_t* token_array = malloc(sizeof(*token_array));
@@ -40,7 +42,17 @@ void token_array_free(token_array_t* token_array){
     }
 }
 
-int token_array_reallocate(token_array_t* token_array, size_t new_size){
+
+/**
+ * @brief Reallocates token array to new size.
+ * 
+ * @param token_array Token array to be reallocated.
+ * @param new_size New size of token array.
+ * @return int Returns 0 on success, otherwise non zero value is returned if reallocation fails.
+ */
+int _token_array_reallocate(token_array_t* token_array, size_t new_size){
+	if(token_array->token_count > new_size) return -1;
+
     // store old token array, for when allocation fails
     token_t **tmp_array = token_array->array;
 
@@ -63,38 +75,51 @@ int token_array_reallocate(token_array_t* token_array, size_t new_size){
     return 1;
 }
 
-int token_array_add_token(token_array_t* token_array, token_t *token){
-    if(token_array != NULL){
+int token_array_push_token(token_array_t* token_array, token_t *token){
+    if(token_array == NULL) return -1;
 
-        // if token array is full, double its size
-        if(token_array->token_count == token_array->size){
+	// if token array is full, double its size
+	if(token_array->token_count == token_array->size){
 
-            // check for overflow, when doubling array size
-            if(token_array->size > SIZE_MAX/2){
-                return -1;
-            }
+		// check for overflow, when doubling array size
+		if(token_array->size > SIZE_MAX/2){
+			return -1;
+		}
 
-            // new token array size
-            size_t new_size = token_array->size * 2;
+		// new token array size
+		size_t new_size = token_array->size * 2;
 
-            // reallocate token array
-            if(token_array_reallocate(token_array, new_size) == -1){
-                // return failure
-                return -1;
-            }
-        }
+		// reallocate token array
+		if(_token_array_reallocate(token_array, new_size) == -1){
+			// return failure
+			return -1;
+		}
+	}
 
-        // add new token and update token count
-        token_array->array[token_array->token_count] = token;
-        (token_array->token_count)++;
+	// add new token and update token count
+	token_array->array[token_array->token_count] = token;
+	(token_array->token_count)++;
 
-        // return successs
-        return 0;
-    }
-    else{
-        // return failure
-        return -1;
-    }
+	// return successs
+	return 0;
+}
+
+void token_array_pop_token(token_array_t* token_array){
+	if(token_array == NULL) return;
+	if(token_array->token_count == 0) return;
+
+	// free topmost token
+	t_dstr(token_array->array[token_array->token_count-1]);
+
+	// update size
+	--(token_array->token_count);
+
+	// try to reallocate token array if token array size to token count exceeded MAX_SIZE_TO_COUNT_RATIO
+	if(token_array->token_count != 0){
+		if(token_array->size/token_array->token_count >= MAX_SIZE_TO_COUNT_RATIO){
+			_token_array_reallocate(token_array, token_array->size / 2);
+		}
+	} 
 }
 
 
@@ -117,7 +142,7 @@ int token_array_append_tokens(token_array_t* token_array1, token_array_t* token_
     }
 
     // reallocate token array to new size
-    if(token_array_reallocate(token_array1, new_size) == -1){
+    if(_token_array_reallocate(token_array1, new_size) == -1){
         return -1;
     }
 

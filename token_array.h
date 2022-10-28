@@ -29,20 +29,27 @@ token_array_t* token_array_create();
 void token_array_free(token_array_t* token_array);
 
 /**
- * @brief Adds new token to token array.
+ * @brief Pushes new token to token array.
  * 
  * @param token_array Token array.
  * @param token New token to be added.
  * @return int Returns 0 on success, otherwise non zero value is returned.
  */
-int token_array_add_token(token_array_t* token_array, token_t *token);
+int token_array_push_token(token_array_t* token_array, token_t *token);
+
+/**
+ * @brief Pops new token to token array.
+ * 
+ * @param token_array Token array.
+ */
+void token_array_pop_token(token_array_t* token_array);
 
 /**
  * @brief Appends all tokens from token_array2 to token_array1. 
  * On success, token_array2 is freed, otherwise both token arrays remain unchanged.
  * 
- * @param token_array1 
- * @param token_array2 
+ * @param token_array1
+ * @param token_array2
  * @return int Returns 0 on success, otherwise non zero value is returned.
  */
 int token_array_append_tokens(token_array_t* token_array1, token_array_t* token_array2);
