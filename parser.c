@@ -2,7 +2,7 @@
  * @name parser.c
  * @brief Implementation of top-down parser
  * @authors Marián Tarageľ
- * @date 27.10.2022
+ * @date 29.10.2022
  */
 
 #include "parser.h"
@@ -127,22 +127,18 @@ void program_body(token_t *token)
         RETURN_IF_ERROR;
     }
 
-    /*
     error = OK;
     php_end(token);
     RETURN_IF_ERROR;
-    */
 }
 
-/*
 void php_end(token_t *token)
 {
     // TODO: verify '?>' EOF | EOF
-    if (token->type != EPILOG) {
-        RETURN_ERROR(SYNTAX_ERROR);
+    if (token->type == END) {
+        return;
     }
 }
-*/
 
 void func_def(token_t *token)
 {

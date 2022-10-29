@@ -1,8 +1,8 @@
 /**
  * @name main.c
  * @brief Implementation of compiler main
- * @authors 
- * @date 27.10.2022
+ * @authors Marián Tarageľ
+ * @date 29.10.2022
  */
 
 #include "parser.h"
@@ -12,9 +12,10 @@
 int main()
 {
     program();
-    if (!error) {
+    if (error == OK) {
         printf("OK\n");
-    } else {
+    }
+    else {
         fprintf(stderr, "ERROR\n");
-    }   
+    }
 }

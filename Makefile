@@ -1,4 +1,4 @@
-CFLAGS=-std=c11 -Wall -Wextra -pedantic -g
+CFLAGS=-std=c11 -Wall -Wextra -pedantic
 CC=gcc
 
 all: main
@@ -13,11 +13,14 @@ scanner: scanner.o dynamic_string.o token.o error.o
 	$(CC) $(CFLAGS) -o $@ $^
 
 clean:
-	rm -f scanner parser *.o
+	rm -f scanner parser parser_test main *.o
 
 run:
 	make scanner
 	cat ./tests/test1.php | ./scanner > ./tests/res1.txt
+
+parser_test: parser_test.o parser.o scanner.o dynamic_string.o token.o error.o
+	$(CC) $(CFLAGS) -g $^ -o $@
 
 # TEST symtable
 symtable_test: symtable_test.o symtable.o
