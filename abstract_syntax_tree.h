@@ -46,6 +46,13 @@ typedef enum {
 	* 	Data: None */
 	PARAM_N,
 
+	/** Ch_count: X | Ch: ARG_N
+	* 	Data: None */
+	ARG_LIST_N,
+	/** Ch_count: 0 | Ch: None
+	* 	Data: token_type_t */
+	ARG_N,
+
 	/** Ch_count: 1 | Ch: TYPE_N
 	* 	Data: None */
 	RETURN_N,
@@ -100,7 +107,7 @@ typedef struct AST_node{
 	struct{
 		token_array_t* expression;
 		char* str;
-		int type;
+		token_type_t type;
 	}data;
 }AST_node_t;
 

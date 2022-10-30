@@ -2,16 +2,18 @@
  * @name main.c
  * @brief Implementation of compiler main
  * @authors Marián Tarageľ
- * @date 29.10.2022
+ * @date 30.10.2022
  */
 
 #include "parser.h"
 #include "error.h"
+#include "abstract_syntax_tree.h"
 #include <stdio.h>
 
 int main()
 {
-    program();
+    AST_node_t *root = program();
+    AST_print(root, stdout);
     if (error == OK) {
         printf("OK\n");
     }

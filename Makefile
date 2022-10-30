@@ -3,7 +3,7 @@ CC=gcc
 
 all: main
 
-main: main.o parser.o scanner.o dynamic_string.o token.o error.o
+main: main.o parser.o scanner.o dynamic_string.o token.o error.o abstract_syntax_tree.o token_array.o
 	$(CC) $(CFLAGS) -o $@ $^
 
 parser: parser.o scanner.o dynamic_string.o token.o error.o

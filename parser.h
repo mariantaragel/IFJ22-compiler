@@ -2,29 +2,26 @@
  * @name parser.h
  * @brief Interface of top-down parser
  * @authors Marián Tarageľ
- * @date 20.10.2022
+ * @date 30.10.2022
  */
 
 #ifndef PARSER_H
 #define PARSER_H
 
 #include "token.h"
-
-#define TRUE 1
-#define FALSE 0
+#include "abstract_syntax_tree.h"
 
 /**
  * @brief Checks syntax of a program
  * 
- * @return 0 if syntax is correct, otherwise error code
+ * @return On success abstract syntax tree root, otherwise null
  */
-void program();
+AST_node_t *program();
 
 /**
  * @brief Checks syntax of a prolog
  * 
  * @param token one input symbol at each step, to make parsing action decision - LL(1) grammar
- * @return 0 if syntax is correct, otherwise error code
  */
 void php_start(token_t *token);
 
@@ -32,15 +29,14 @@ void php_start(token_t *token);
  * @brief Chesks syntax of a program body
  * 
  * @param token one input symbol at each step, to make parsing action decision - LL(1) grammar
- * @return 0 if syntax is correct, otherwise error code
+ * @param parent parent node in abstract syntax tree
  */
-void program_body(token_t *token);
+void program_body(token_t *token, AST_node_t *parent);
 
 /**
  * @brief Checks syntax of a program ending
  * 
  * @param token one input symbol at each step, to make parsing action decision - LL(1) grammar
- * @return 0 if syntax is correct, otherwise error code
  */
 void php_end(token_t *token);
 
@@ -48,112 +44,112 @@ void php_end(token_t *token);
  * @brief Checks syntax of a function definition
  * 
  * @param token one input symbol at each step, to make parsing action decision - LL(1) grammar
- * @return 0 if syntax is correct, otherwise error code
+ * @param parent parent node in abstract syntax tree
  */
-void func_def(token_t *token);
+void func_def(token_t *token, AST_node_t *parent);
 
 /**
  * @brief Checks syntax of a statement list
  * 
  * @param token one input symbol at each step, to make parsing action decision - LL(1) grammar
- * @return 0 if syntax is correct, otherwise error code
+ * @param parent parent node in abstract syntax tree
  */
-void stmt_list_bracket_start(token_t *token);
+void stmt_list_bracket_start(token_t *token, AST_node_t *parent);
 
 /**
  * @brief Checks syntax of a parameter list
  * 
  * @param token one input symbol at each step, to make parsing action decision - LL(1) grammar
- * @return 0 if syntax is correct, otherwise error code
+ * @param parent parent node in abstract syntax tree
  */
-void param_list(token_t *token);
+void param_list(token_t *token, AST_node_t *parent);
 
 /**
  * @brief Checks syntax of a return type
  * 
  * @param token one input symbol at each step, to make parsing action decision - LL(1) grammar
- * @return 0 if syntax is correct, otherwise error code
+ * @param parent parent node in abstract syntax tree
  */
-void return_type(token_t *token);
+void return_type(token_t *token, AST_node_t *parent);
 
 /**
  * @brief Checks syntax of a types
  * 
  * @param token one input symbol at each step, to make parsing action decision - LL(1) grammar
- * @return 0 if syntax is correct, otherwise error code
+ * @param parent parent node in abstract syntax tree
  */
-void type(token_t *token);
+void type(token_t *token, AST_node_t *parent);
 
 /**
  * @brief Checks syntax of a next parameters
  * 
  * @param token one input symbol at each step, to make parsing action decision - LL(1) grammar
- * @return 0 if syntax is correct, otherwise error code
+ * @param parent parent node in abstract syntax tree
  */
-void param_next(token_t *token);
+void param_next(token_t *token, AST_node_t *parent);
 
 /**
  * @brief Checks syntax of a statement list ending
  * 
  * @param token one input symbol at each step, to make parsing action decision - LL(1) grammar
- * @return 0 if syntax is correct, otherwise error code
+ * @param parent parent node in abstract syntax tree
  */
-void stmt_list_bracket_end(token_t *token);
+void stmt_list_bracket_end(token_t *token, AST_node_t *parent);
 
 /**
  * @brief Checks syntax of a statement
  * 
  * @param token one input symbol at each step, to make parsing action decision - LL(1) grammar
- * @return 0 if syntax is correct, otherwise error code
+ * @param parent parent node in abstract syntax tree
  */
-void stmt(token_t *token);
+void stmt(token_t *token, AST_node_t *parent);
 
 /**
  * @brief Checks syntax of a function call
  * 
  * @param token one input symbol at each step, to make parsing action decision - LL(1) grammar
- * @return 0 if syntax is correct, otherwise error code 
+ * @param parent parent node in abstract syntax tree
  */
-void func_call(token_t *token);
+void func_call(token_t *token, AST_node_t *parent);
 
 /**
  * @brief Checks syntax of a if statement
  * 
  * @param token one input symbol at each step, to make parsing action decision - LL(1) grammar
- * @return 0 if syntax is correct, otherwise error code
+ * @param parent parent node in abstract syntax tree
  */
-void if_stmt(token_t *token);
+void if_stmt(token_t *token, AST_node_t *parent);
 
 /**
  * @brief Checks syntax of a while statement
  * 
  * @param token one input symbol at each step, to make parsing action decision - LL(1) grammar
- * @return 0 if syntax is correct, otherwise error code
+ * @param parent parent node in abstract syntax tree
  */
-void while_stmt(token_t *token);
+void while_stmt(token_t *token, AST_node_t *parent);
 
 /**
  * @brief Checks syntax of an argument list
  * 
  * @param token one input symbol at each step, to make parsing action decision - LL(1) grammar
- * @return 0 if syntax is correct, otherwise error code
+ * @param parent parent node in abstract syntax tree
  */
-void arg_list(token_t *token);
+void arg_list(token_t *token, AST_node_t *parent);
 
 /**
  * @brief Checks syntax of a next agrument
  * 
  * @param token one input symbol at each step, to make parsing action decision - LL(1) grammar
- * @return 0 if syntax is correct, otherwise error code
+ * @param parent parent node in abstract syntax tree
  */
-void arg_next(token_t *token);
+void arg_next(token_t *token, AST_node_t *parent);
 
 /**
  * @brief Checks syntax of an argument
  * 
  * @param token one input symbol at each step, to make parsing action decision - LL(1) grammar
- * @return 0 if syntax is correct, otherwise error code
+ * @param parent parent node in abstract syntax tree
  */
-void arg(token_t *token);
+void arg(token_t *token, AST_node_t *parent);
 
 #endif
