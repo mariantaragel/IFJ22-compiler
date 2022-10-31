@@ -51,6 +51,7 @@ pstack_symbol_t* create_terminal_pstack_symbol(token_t* token){
 	return pstack_symbol;
 }
 
+//???
 void free_pstack_symbol(pstack_symbol_t* symbol) {
 	// free token array - token_array_free()
 	// free symbol
@@ -61,7 +62,7 @@ pstack_symbol_t* create_nonterminal_pstack_symbol(pstack_symbol_t* symbol1, psta
 
 }*/
 
-//errors, doxygen
+//errors, rules
 
 prec_table_index_t get_index_from_token(token_t* ptoken){
 
@@ -141,7 +142,7 @@ int reduce(pstack_t* stack) {
 
 	symbols[0] = pstack_pop(stack);
 	if (symbols[0] == NULL) {
-		internal_err = true;
+		syntax_err = true;
 		return -1;
 	}
 	else if (symbols[0]->handle_start == true){
@@ -152,7 +153,7 @@ int reduce(pstack_t* stack) {
 	
 	symbols[1] = pstack_pop(stack);
 	if (symbols[1] == NULL) {
-		internal_err = true;
+		syntax_err = true;
 		return -1;
 	}
 	else if(symbols[1]->handle_start== true){
@@ -164,18 +165,18 @@ int reduce(pstack_t* stack) {
 
 	symbols[2] = pstack_pop(stack);
 	if (symbols[2] == NULL) {
-		internal_err = true;
+		syntax_err = true;
 		return -1;
 	}
 	else if (symbols[2]->handle_start == true){
 		symbols[2]->handle_start = false;
-		internal_err = true;
+		syntax_err = true;
 		return -1;
 	}
 
 	symbols[3] = pstack_pop(stack);
 	if (symbols[2] == NULL) {
-		internal_err = true;
+		syntax_err = true;
 		return -1;
 	}
 	else if (symbols[2]->handle_start == true){
@@ -189,7 +190,6 @@ int reduce(pstack_t* stack) {
 		return -1;
 	}
 	//if top != handle true -> err
-	
 	//ok
 }
 
@@ -216,10 +216,13 @@ token_array_t* parse_expression(/*token_array_t ...*/){
 	bool internal_err = false;
 	bool syntax_err = false;	
 	bool done = false;
-	do {
-		token_t *ptoken = get_token();								//"get_token" - pozdeji z token_array_t (top-down)
+	
+	token_t *ptoken = get_token();								//"get_token" - pozdeji z token_array_t (top-down)
 		prec_table_index_t index = get_index_from_token(ptoken);	//znak na vstupu -> b
-		pstack_symbol_t* top_terminal = pstack_top_terminal(stack); //funkce top -> a
+	
+	do {
+		pstack_symbol_t* top_terminal = pstack_top_terminal(stack); //funkce top_terminal -> a
+		
 		if (top_terminal == NULL) {
 			internal_err = true;
 			break;
@@ -240,7 +243,10 @@ token_array_t* parse_expression(/*token_array_t ...*/){
 						done = true;
 					}
 				}
-				//zde nacist
+				
+				token_t *ptoken = get_token();								//"get_token" - pozdeji z token_array_t (top-down)
+				prec_table_index_t index = get_index_from_token(ptoken);	//znak na vstupu -> b
+				
 				break;
 			//shift	
 			case S:													//a -> a< & push b & precti dalsi
@@ -259,26 +265,24 @@ token_array_t* parse_expression(/*token_array_t ...*/){
 						top_terminal->handle_start = true;
 					}
 				}
-				//zde nacist
+				
+				token_t *ptoken = get_token();								//"get_token" - pozdeji z token_array_t (top-down)
+				prec_table_index_t index = get_index_from_token(ptoken);	//znak na vstupu -> b
+				
 				break;
 			
 			//reduce
 			case R:													// if top == "<y" && r:A->y (rule) -> "<y" -> E & r na výstup
-				if (index == DOLLAR_INDEX) {
-					do {
-						int x = reduce(stack);
-						if (x = -1){
-							internal_err = true;
-						}
-					} while (pstack_get_size(stack) != 2 && pstack_top(stack)->prec_rule_element != EXPR)
+				if (reduce(stack) == -1 ) {
+					syntax_err = true;
+					done = true;
 				}
-				else {
-					reduce(stack);
+				else{
 					break;
 				}
 				
 			//err/end
-			default:													//ERR || (if b = $ && a=$E -> expression_valid END) 
+			default:													//ERR || (if b = $ && a=$E -> expression_valid END) 				
 				if (index == DOLLAR_INDEX && pstack_get_size(stack) == 2 && pstack_top(stack)->prec_rule_element == EXPR) {
 					syntax_err = false;
 					done = true;
@@ -291,9 +295,15 @@ token_array_t* parse_expression(/*token_array_t ...*/){
 		
 	} while (!done);		
 	
-	pstack_free(&stack);
-	// token_array_free(token_array)
-	return ;
+	if (internal_err = true) {
+
+	}
+	else if (syntax_err = true) {
+
+	}
+	else {
+		pstack_free(&stack);
+		// token_array_free(token_array)
+		return ;
+	}
 }
-
-
