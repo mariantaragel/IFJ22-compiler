@@ -5,6 +5,15 @@
 #include <stdio.h>
 #include "token_array.h"
 
+#ifndef DATATYPE_T
+#define DATATYPE_T
+/**
+ * @brief Datatype type.
+ * 	Its values are synonymous to FLT_T,STR_T,INT_T,VOID_T,NFLT_T,NINT_T,NSTR_T values of token_type_t.
+ */
+typedef int datatype_t;
+#endif
+
 /**
  * @brief Type of node in AST.
  * 
@@ -70,7 +79,7 @@ typedef enum {
 	EXPR_N,
 
 	/** Ch_count: 0 | Ch: None
-	* 	Data: token_type_t */
+	* 	Data: datatype_t */
 	TYPE_N,
 
 	/** Ch_count: 0 | Ch: None
@@ -87,7 +96,15 @@ typedef enum {
 
 	/** Ch_count: 0 | Ch: None
 	* 	Data: char* str (string representation of float value) */
-	FLT_LIT_N
+	FLT_LIT_N,
+
+	/** Ch_count: 0 | Ch: None
+	* 	Data: None */
+	NULL_LIT_N,
+
+	/** Ch_count: 0 | Ch: None
+	* 	Data: char *str */
+	DEFINE_VAR_N
 }AST_node_type_t;
 
 
@@ -107,7 +124,7 @@ typedef struct AST_node{
 	struct{
 		token_array_t* expression;
 		char* str;
-		token_type_t type;
+		datatype_t type;
 	}data;
 }AST_node_t;
 
@@ -134,16 +151,26 @@ AST_node_t* AST_create_node(AST_node_type_t type);
  * @return int Returns 0 on sucess, otherwise non zero value is returned, 
  * if allocation fails or either parent or new_child is NULL.
  */
-int AST_add_child(AST_node_t* parent, AST_node_t* new_child);
+//int AST_add_child(AST_node_t* parent, AST_node_t* new_child);
 
 /**
- * @brief Creates new node and adds it to parent node as its child.
+ * @brief Creates new node of specified type and adds it to parent node as its child.
  * 
  * @param parent Parent node.
  * @param type Type of new child node to be created and added to parent node.
  * @return AST_node_t* Pointer to created child node on success, otherwise NULL is returned.
  */
 AST_node_t* AST_create_add_child(AST_node_t* parent, AST_node_type_t type);
+
+/**
+ * @brief Creates new node of specified type and inserts it before specified index to children array of parent node.
+ * 
+ * @param parent Parent node, to which new child node will be inserted.
+ * @param index Index, before which new child node will be inserted. Has to be in range [0; parent->children_count].
+ * @param type Type of new child node to be created and inserted to parent node children.
+ * @return AST_node_t* Pointer to created and inserted child node on success, otherwise NULL is returned if insertion failed or index is out of range.
+ */
+AST_node_t* AST_create_insert_child(AST_node_t* parent, size_t index, AST_node_type_t type);
 
 /**
  * @brief Prints AST graphically in text form to selected file.
