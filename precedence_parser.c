@@ -159,7 +159,11 @@ int reduce(pstack_t* stack) {
 	else if(symbols[1]->handle_start== true){
 		symbols[1]->handle_start = false;
 		prec_rule_action_t rule = match_precedence_rule(symbols[0]->prec_rule_element, symbols[2]->prec_rule_element, symbols[3]->prec_rule_element);
+		if(rule == ERROR_ACTION){
+			return -1;
+		}
 		//apply rule
+		
 		return 0;		
 	}
 
@@ -182,7 +186,12 @@ int reduce(pstack_t* stack) {
 	else if (symbols[2]->handle_start == true){
 		symbols[2]->handle_start = false;
 		prec_rule_action_t rule = match_precedence_rule(symbols[2]->prec_rule_element, symbols[1]->prec_rule_element, symbols[0]->prec_rule_element);
+		if(rule == ERROR_ACTION){
+			return -1;
+		}
+
 		//apply rule
+		
 		return 0;
 	}
 	else{
@@ -190,6 +199,7 @@ int reduce(pstack_t* stack) {
 		return -1;
 	}
 	//if top != handle true -> err
+	
 	//ok
 }
 
@@ -296,10 +306,12 @@ token_array_t* parse_expression(/*token_array_t ...*/){
 	} while (!done);		
 	
 	if (internal_err = true) {
-
+		pstack_free(&stack);
+		//internal_err
 	}
 	else if (syntax_err = true) {
-
+		pstack_free(&stack);
+		//syntax_err
 	}
 	else {
 		pstack_free(&stack);
@@ -307,3 +319,5 @@ token_array_t* parse_expression(/*token_array_t ...*/){
 		return ;
 	}
 }
+
+
