@@ -135,6 +135,114 @@ TOKEN: {
 	type: RCB
 }
 TOKEN: {
+	type: FUNCTION
+}
+TOKEN: {
+	type: FUNC_ID
+	Associated value: "test"
+}
+TOKEN: {
+	type: LB
+}
+TOKEN: {
+	type: NFLT_T
+}
+TOKEN: {
+	type: VAR_ID
+	Associated value: "$a"
+}
+TOKEN: {
+	type: COMMA
+}
+TOKEN: {
+	type: NINT_T
+}
+TOKEN: {
+	type: VAR_ID
+	Associated value: "$b"
+}
+TOKEN: {
+	type: RB
+}
+TOKEN: {
+	type: COLON
+}
+TOKEN: {
+	type: NSTR_T
+}
+TOKEN: {
+	type: LCB
+}
+TOKEN: {
+	type: IF
+}
+TOKEN: {
+	type: LB
+}
+TOKEN: {
+	type: VAR_ID
+	Associated value: "$a"
+}
+TOKEN: {
+	type: RB
+}
+TOKEN: {
+	type: LCB
+}
+TOKEN: {
+	type: RETURN
+}
+TOKEN: {
+	type: STR_LIT
+	Associated value: "Wow"
+}
+TOKEN: {
+	type: SCOLON
+}
+TOKEN: {
+	type: RCB
+}
+TOKEN: {
+	type: ELSE
+}
+TOKEN: {
+	type: VAR_ID
+	Associated value: "$b"
+}
+TOKEN: {
+	type: ASSIGN
+}
+TOKEN: {
+	type: VAR_ID
+	Associated value: "$b"
+}
+TOKEN: {
+	type: ADD
+}
+TOKEN: {
+	type: INT_LIT
+	Associated value: 1
+}
+TOKEN: {
+	type: SCOLON
+}
+TOKEN: {
+	type: RETURN
+}
+TOKEN: {
+	type: STR_LIT
+	Associated value: "Not wow."
+}
+TOKEN: {
+	type: SCOLON
+}
+TOKEN: {
+	type: RCB
+}
+TOKEN: {
+	type: RCB
+}
+TOKEN: {
 	type: IF
 }
 TOKEN: {
@@ -167,7 +275,9 @@ TOKEN: {
 }
 TOKEN: {
 	type: STR_LIT
-	Associated value: "Faktorial nelze spocitat\n"
+	Associated value: "Faktorial nelze spocitat
+
+\$""
 }
 TOKEN: {
 	type: RB
@@ -224,7 +334,9 @@ TOKEN: {
 }
 TOKEN: {
 	type: STR_LIT
-	Associated value: "\n"
+	Associated value: "
+
+\$""
 }
 TOKEN: {
 	type: RB
@@ -253,7 +365,9 @@ TOKEN: {
 }
 TOKEN: {
 	type: STR_LIT
-	Associated value: "Chyba pri nacitani celeho cisla!\n"
+	Associated value: "Chyba pri nacitani celeho cisla!
+
+\$""
 }
 TOKEN: {
 	type: RB

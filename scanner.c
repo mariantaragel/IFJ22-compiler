@@ -23,7 +23,6 @@
 #include "token.h"
 #include "error.h"
 
-
 /* TODO: 
 
 	Token functionality.
@@ -38,8 +37,10 @@ int main() {
 		t_print(token);
 		if(error == INTERNAL_ERROR) {
 			printf("Internal compiler error.\n");
+			return error;
 		} else if (error == LEXICAL_ERROR) {
 			printf("Lexical error.\n");
+			return error;
 		}
 	} while(token->type != END && token->type != EPILOG);
 	return 0;
@@ -57,7 +58,7 @@ token_t * get_token() {
 		return NULL;
 	}
 
-	int c; // Read character.
+	int c = 0; // Read character.
 	do {
 	/* Skip leading whitespace. */
 		c = fgetc(stdin);
@@ -153,22 +154,6 @@ void vik_handler(dynamic_string_t * ds, token_t * t, int * c) {
 			}
 			return; // Match found, return.
 		}
-		/* No keywords matched, token is function identifier. */
-		/*
-		if(i == reserved_words_count - 1) {
-			if(ds->str[0] == '$') {
-				t->type = VAR_ID;
-			} else {
-				t->type = FUNC_ID;
-			}
-
-			t->sval = malloc(strlen(ds->str) + 1);
-			if(t->sval == NULL) {
-				error = INTERNAL_ERROR;
-			}
-			strcpy(t->sval, ds->str);
-		}
-		*/
 	}
 	/* No match found, token is func/variable identifier. */
 	if(ds->str[0] == '$') {
@@ -192,6 +177,7 @@ void fi_handler(dynamic_string_t * ds, token_t * t, int * c) {
 			return;
 		}
 	} while( (*c = fgetc(stdin)) != EOF && isdigit(*c));
+
 	if(*c != '.') {
 		/* Check if value is correct */
 		ungetc(*c, stdin);
@@ -211,18 +197,18 @@ void fi_handler(dynamic_string_t * ds, token_t * t, int * c) {
 }
 
 void null_t_handler(dynamic_string_t * ds, token_t * t, int * c) {
-	static const char * reserved_words[] = {"?float", "?string", "?int", "?>"};
-	static const int reserved_words_count = 4;
+	static const char * reserved_words[] = {"?float", "?string", "?int"};
+	static const int reserved_words_count = 3;
 
 	*c = fgetc(stdin);
-	if( *c == '>') {
+	if( *c == '>') { // Try to match for epilog.
 		t->type = EPILOG;
 		return;
-	} else {
+	} else { // Return character to stream if unsuccesful.
 		ungetc(*c, stdin);
 		*c = '?';
 	}
-	do {
+	do { // Try to match for reserved words.
 		if(ds_write(ds, *c)) { // Write character.
 			error = INTERNAL_ERROR;
 			return;
@@ -237,22 +223,33 @@ void null_t_handler(dynamic_string_t * ds, token_t * t, int * c) {
 				case 0: t->type = NFLT_T; break;
 				case 1: t->type = NSTR_T; break;
 				case 2: t->type = NINT_T; break;
-				case 3: t->type = EPILOG; break;
 				default: break;
 			}
-			return; // ???
-		}
-		if(i == reserved_words_count - 1) {
-			error = LEXICAL_ERROR;
+			return; // Match found. 
 		}
 	}
+	error = LEXICAL_ERROR; // Couldn't match any reserved word.
 }
 
 void s_handler(dynamic_string_t * ds, token_t * t, int * c) {
+	// Do through string concatenation of two dynamic strings...
+	/* TODO: Octal + hex conversions... */
 	while( (*c = fgetc(stdin)) != EOF && *c != '"') {
-		if(ds_write(ds, *c)) {
-			error = INTERNAL_ERROR;
-			return;
+		if(*c == '\\') { // Escape sequence.
+			*c = fgetc(stdin);
+			switch(*c) {
+				case 'n': ds_write(ds,'\n'); break;
+				case 't': ds_write(ds,'\t'); break;
+				case '"': ds_write(ds,'"'); break;
+				case '\\': ds_write(ds,'\\'); break;
+				case '$': ds_write(ds,'$'); break; // What if dollar out?
+				default: ds_write(ds, '\\'); ds_write(ds,*c); break;
+			}
+		} else {
+			if(ds_write(ds, *c)) {
+				error = INTERNAL_ERROR;
+				return;
+			}
 		}
 	}
 	t->type = STR_LIT;

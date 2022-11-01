@@ -1,3 +1,4 @@
+<?php
 declare(strict_types=1);
 
 /* Program 3: Prace s retezci a vestavenymi funkcemi */
@@ -12,3 +13,11 @@ if () {
         reads();
     }
 } else { }
+
+?float
+?int
+
+?test 
+
+?>
+

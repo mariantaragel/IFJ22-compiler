@@ -1,0 +1,17 @@
+TOKEN: {
+	type: STR_LIT
+	Associated value: My new car veeee	eeeery nice....
+}
+TOKEN: {
+	type: STR_LIT
+	Associated value: A wise man once said: "Early to bed, early to rise, makes a man healthy, wealthy and wise"
+	Benjamin Franklin.
+}
+TOKEN: {
+	type: STR_LIT
+	Associated value: Testing esc\ape se\quences 
+		\haha
+}
+TOKEN: {
+	type: END
+}

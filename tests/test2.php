@@ -17,6 +17,15 @@ function factorial(int $n) : int {
     return;
 }
 
+function test(?float $a, ?int $b) : ?string {
+	if($a) {
+		return "Wow";
+	} else
+		$b = $b + 1;
+		return "Not wow.";
+	}
+}
+
 if () {
     if () { // Pokracovani hlavniho tela programu
         write("Faktorial nelze spocitat\n");

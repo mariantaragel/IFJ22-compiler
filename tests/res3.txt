@@ -1,0 +1,206 @@
+TOKEN: {
+	type: PROLOG
+}
+TOKEN: {
+	type: FUNC_ID
+	Associated value: "declare"
+}
+TOKEN: {
+	type: LB
+}
+TOKEN: {
+	type: FUNC_ID
+	Associated value: "strict_types"
+}
+TOKEN: {
+	type: ASSIGN
+}
+TOKEN: {
+	type: INT_LIT
+	Associated value: 1
+}
+TOKEN: {
+	type: RB
+}
+TOKEN: {
+	type: SCOLON
+}
+TOKEN: {
+	type: FUNC_ID
+	Associated value: "write"
+}
+TOKEN: {
+	type: LB
+}
+TOKEN: {
+	type: VAR_ID
+	Associated value: "$str1"
+}
+TOKEN: {
+	type: COMMA
+}
+TOKEN: {
+	type: STR_LIT
+	Associated value: "\n"
+}
+TOKEN: {
+	type: COMMA
+}
+TOKEN: {
+	type: VAR_ID
+	Associated value: "$str2"
+}
+TOKEN: {
+	type: COMMA
+}
+TOKEN: {
+	type: STR_LIT
+	Associated value: "\n"
+}
+TOKEN: {
+	type: RB
+}
+TOKEN: {
+	type: SCOLON
+}
+TOKEN: {
+	type: FUNC_ID
+	Associated value: "write"
+}
+TOKEN: {
+	type: LB
+}
+TOKEN: {
+	type: STR_LIT
+	Associated value: "Pozice retezce text v \$str2: "
+}
+TOKEN: {
+	type: COMMA
+}
+TOKEN: {
+	type: INT_LIT
+	Associated value: 15
+}
+TOKEN: {
+	type: COMMA
+}
+TOKEN: {
+	type: STR_LIT
+	Associated value: "\n"
+}
+TOKEN: {
+	type: RB
+}
+TOKEN: {
+	type: SCOLON
+}
+TOKEN: {
+	type: FUNC_ID
+	Associated value: "write"
+}
+TOKEN: {
+	type: LB
+}
+TOKEN: {
+	type: STR_LIT
+	Associated value: "Zadejte serazenou posloupnost vsech malych pismen a-h, "
+}
+TOKEN: {
+	type: RB
+}
+TOKEN: {
+	type: SCOLON
+}
+TOKEN: {
+	type: FUNC_ID
+	Associated value: "reads"
+}
+TOKEN: {
+	type: LB
+}
+TOKEN: {
+	type: RB
+}
+TOKEN: {
+	type: SCOLON
+}
+TOKEN: {
+	type: IF
+}
+TOKEN: {
+	type: LB
+}
+TOKEN: {
+	type: RB
+}
+TOKEN: {
+	type: LCB
+}
+TOKEN: {
+	type: WHILE
+}
+TOKEN: {
+	type: LB
+}
+TOKEN: {
+	type: RB
+}
+TOKEN: {
+	type: LCB
+}
+TOKEN: {
+	type: FUNC_ID
+	Associated value: "write"
+}
+TOKEN: {
+	type: LB
+}
+TOKEN: {
+	type: STR_LIT
+	Associated value: "Spatne zadana posloupnost, zkuste znovu:\n"
+}
+TOKEN: {
+	type: RB
+}
+TOKEN: {
+	type: SCOLON
+}
+TOKEN: {
+	type: FUNC_ID
+	Associated value: "reads"
+}
+TOKEN: {
+	type: LB
+}
+TOKEN: {
+	type: RB
+}
+TOKEN: {
+	type: SCOLON
+}
+TOKEN: {
+	type: RCB
+}
+TOKEN: {
+	type: RCB
+}
+TOKEN: {
+	type: ELSE
+}
+TOKEN: {
+	type: LCB
+}
+TOKEN: {
+	type: RCB
+}
+TOKEN: {
+	type: NFLT_T
+}
+TOKEN: {
+	type: NINT_T
+}
+TOKEN: {
+	type: FUNC_ID
+	Associated value: "(null)"
+}
+Lexical error.
