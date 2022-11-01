@@ -23,7 +23,7 @@ typedef struct{
 /**
  * @brief Number of precedence rules.
  */
-#define PRECEDENCE_RULE_COUNT 16
+#define PRECEDENCE_RULE_COUNT 17
 
 /**
  * @brief Table of precedence rules.
@@ -33,18 +33,19 @@ const prec_rule_t precedence_rules[PRECEDENCE_RULE_COUNT] = {
 	{{TERM, STR_LIT	}, {NAN,  -1	}, {NAN,  -1	}, CONVERT_TO_EXPR	}, //2.  E -> i
 	{{TERM, FLT_LIT	}, {NAN,  -1	}, {NAN,  -1	}, CONVERT_TO_EXPR	}, //3.  E -> i
 	{{TERM, INT_LIT	}, {NAN,  -1	}, {NAN,  -1	}, CONVERT_TO_EXPR	}, //4.  E -> i
-	{{TERM, LB		}, {EXPR, -1	}, {TERM, RB	}, REMOVE_BRACKETS	}, //5.  E -> ( E )
-	{{EXPR,	-1		}, {TERM, ADD	}, {EXPR, -1	}, POSTFIX_MERGE	}, //6.  E -> E + E
-	{{EXPR,	-1      }, {TERM, SUB	}, {EXPR, -1	}, POSTFIX_MERGE	}, //7.  E -> E - E
-	{{EXPR,	-1      }, {TERM, MUL	}, {EXPR, -1	}, POSTFIX_MERGE	}, //8.  E -> E * E
-	{{EXPR,	-1		}, {TERM, DIV	}, {EXPR, -1	}, POSTFIX_MERGE	}, //9.  E -> E / E
-	{{EXPR,	-1		}, {TERM, CONCAT}, {EXPR, -1	}, POSTFIX_MERGE	}, //10. E -> E . E
-	{{EXPR,	-1		}, {TERM, LT	}, {EXPR, -1	}, POSTFIX_MERGE	}, //11. E -> E < E
-	{{EXPR,	-1		}, {TERM, GT	}, {EXPR, -1	}, POSTFIX_MERGE	}, //12. E -> E > E
-	{{EXPR,	-1		}, {TERM, LTE	}, {EXPR, -1	}, POSTFIX_MERGE	}, //13. E -> E <= E
-	{{EXPR,	-1		}, {TERM, GTE	}, {EXPR, -1	}, POSTFIX_MERGE	}, //14. E -> E >= E
-	{{EXPR,	-1		}, {TERM, EQ	}, {EXPR, -1	}, POSTFIX_MERGE	}, //15. E -> E === E
-	{{EXPR,	-1		}, {TERM, NEQ	}, {EXPR, -1	}, POSTFIX_MERGE	}  //16. E -> E !== E
+	{{TERM, NULL_T	}, {NAN,  -1	}, {NAN,  -1	}, CONVERT_TO_EXPR	}, //5.  E -> i // TODO: NULL_T -> NULL_LIT
+	{{TERM, LB		}, {EXPR, -1	}, {TERM, RB	}, REMOVE_BRACKETS	}, //6.  E -> ( E )
+	{{EXPR,	-1		}, {TERM, ADD	}, {EXPR, -1	}, POSTFIX_MERGE	}, //7.  E -> E + E
+	{{EXPR,	-1      }, {TERM, SUB	}, {EXPR, -1	}, POSTFIX_MERGE	}, //8.  E -> E - E
+	{{EXPR,	-1      }, {TERM, MUL	}, {EXPR, -1	}, POSTFIX_MERGE	}, //9.  E -> E * E
+	{{EXPR,	-1		}, {TERM, DIV	}, {EXPR, -1	}, POSTFIX_MERGE	}, //10.  E -> E / E
+	{{EXPR,	-1		}, {TERM, CONCAT}, {EXPR, -1	}, POSTFIX_MERGE	}, //11. E -> E . E
+	{{EXPR,	-1		}, {TERM, LT	}, {EXPR, -1	}, POSTFIX_MERGE	}, //12. E -> E < E
+	{{EXPR,	-1		}, {TERM, GT	}, {EXPR, -1	}, POSTFIX_MERGE	}, //13. E -> E > E
+	{{EXPR,	-1		}, {TERM, LTE	}, {EXPR, -1	}, POSTFIX_MERGE	}, //14. E -> E <= E
+	{{EXPR,	-1		}, {TERM, GTE	}, {EXPR, -1	}, POSTFIX_MERGE	}, //15. E -> E >= E
+	{{EXPR,	-1		}, {TERM, EQ	}, {EXPR, -1	}, POSTFIX_MERGE	}, //16. E -> E === E
+	{{EXPR,	-1		}, {TERM, NEQ	}, {EXPR, -1	}, POSTFIX_MERGE	}  //17. E -> E !== E
 };
 
 

@@ -13,25 +13,78 @@ int main(){
 		return -1;
 	}
 
-	if(AST_add_child(root, AST_create_node(FUNC_DEF_N)) != 0){
+	if((new_node = AST_create_add_child(root, FUNC_DEF_N)) == NULL){
 		AST_free(root);
 		return -1;
 	}
 
-	if(AST_add_child(root->children_arr[0], AST_create_node(IF_N)) != 0){
+	if((new_node = AST_create_add_child(root->children_arr[0], IF_N)) == NULL){
 		AST_free(root);
 		return -1;
 	}
 
-	if(AST_add_child(root->children_arr[0], AST_create_node(BODY_N)) != 0){
+	if((new_node = AST_create_add_child(root->children_arr[0], BODY_N)) == NULL){
 		AST_free(root);
 		return -1;
 	}
 
-	if(AST_add_child(root->children_arr[0], AST_create_node(WHILE_N)) != 0){
+	if((new_node = AST_create_add_child(root->children_arr[0], WHILE_N)) == NULL){
 		AST_free(root);
 		return -1;
 	}
+
+
+
+	if((new_node = AST_create_insert_child(root->children_arr[1], 1, IF_N)) != NULL){
+		AST_free(root);
+		return -1;
+	}
+
+	if((new_node = AST_create_insert_child(root->children_arr[1], 0, IF_N)) == NULL){
+		AST_free(root);
+		return -1;
+	}
+
+	if((new_node = AST_create_insert_child(root->children_arr[1], 0, BODY_N)) == NULL){
+		AST_free(root);
+		return -1;
+	}
+
+	if((new_node = AST_create_insert_child(root->children_arr[1], 2, ASS_FUNC_N)) == NULL){
+		AST_free(root);
+		return -1;
+	}
+
+	if((new_node = AST_create_insert_child(root->children_arr[1], 1, ASS_EXPR_N)) == NULL){
+		AST_free(root);
+		return -1;
+	}
+
+	if((new_node = AST_create_add_child(root->children_arr[1], BODY_N)) == NULL){
+		AST_free(root);
+		return -1;
+	}
+
+	if((new_node = AST_create_add_child(root->children_arr[1], WHILE_N)) == NULL){
+		AST_free(root);
+		return -1;
+	}
+
+	if((new_node = AST_create_insert_child(root->children_arr[1], 0, RETURN_N)) == NULL){
+		AST_free(root);
+		return -1;
+	}
+
+	if((new_node = AST_create_insert_child(root->children_arr[1], 7, RETURN_N)) == NULL){
+		AST_free(root);
+		return -1;
+	}
+
+	if((new_node = AST_create_insert_child(root->children_arr[1], 9, RETURN_N)) != NULL){
+		AST_free(root);
+		return -1;
+	}
+
 	AST_print(root, stdout);
 	AST_free(root);
 }

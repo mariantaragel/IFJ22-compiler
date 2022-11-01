@@ -29,8 +29,6 @@ typedef struct{
  */
 typedef struct pstack pstack_t;
 
-
-
 /**
  * @brief Creates precedence stack and returns pointer to it.
  * 
@@ -67,7 +65,7 @@ pstack_symbol_t* pstack_top(pstack_t* pstack);
  * 
  * @param pstack Precedence stack.
  * @param pstack_symbol Symbol to be pushed to precedence stack.
- * @return int 
+ * @return int Returns 0 on success, otherwise, if allocation error occures or pstack or pstack_symbol is NULL, non zero value is returned
  */
 int pstack_push(pstack_t* pstack, pstack_symbol_t* pstack_symbol);
 
@@ -75,7 +73,7 @@ int pstack_push(pstack_t* pstack, pstack_symbol_t* pstack_symbol);
  * @brief Removes and returns top symbol from precedence stack.
  * 
  * @param pstack Precedence stack.
- * @return pstack_symbol_t* Returns former top symbol of precedence stack on sucess, otherwise NULL is returned.
+ * @return pstack_symbol_t* Returns former top symbol of precedence stack on sucess, if pstack is empty or points to NULL, NULL is returned.
  */
 pstack_symbol_t* pstack_pop(pstack_t* pstack);
 

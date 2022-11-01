@@ -48,12 +48,7 @@ AST_node_t* AST_create_node(AST_node_type_t type){
 	return new_node;
 }
 
-
-int AST_add_child(AST_node_t* parent, AST_node_t* new_child){
-	if(parent == NULL || new_child == NULL){
-		return -1;
-	}
-
+int _AST_double_children_array_size(AST_node_t* parent){
 	// calculate new size of children array
 	size_t new_size;
 	if(parent->children_arr_size == 0){
@@ -74,29 +69,40 @@ int AST_add_child(AST_node_t* parent, AST_node_t* new_child){
 	// update size
 	parent->children_arr_size = new_size;
 
-	// add new child
-	parent->children_arr[parent->children_count] = new_child;
-	++(parent->children_count);
-
-	// return success
 	return 0;
 }
 
-AST_node_t* AST_create_add_child(AST_node_t* parent, AST_node_type_t type){
+
+AST_node_t* AST_create_insert_child(AST_node_t* parent, size_t index, AST_node_type_t type){
 	if(parent == NULL) return NULL;
+	if(index > parent->children_count) return NULL;
+
+	// if children array is full try to double children array size
+	if(parent->children_count == parent->children_arr_size){
+		if(_AST_double_children_array_size(parent) != 0) return NULL;
+	}
 
 	// create new node
 	AST_node_t* new_child = AST_create_node(type);
 	if(new_child == NULL) return NULL;
 
-	// add new node as child node to parent
-	if(AST_add_child(parent, new_child) != 0){
-		free(new_child);
-		return NULL;
+	// create space at index position for new child
+	for(size_t i = parent->children_count; i != index; --i){
+		parent->children_arr[i] = parent->children_arr[i-1];
 	}
-	
-	// return created new node
+
+	// add new child to specified index
+	parent->children_arr[index] = new_child;
+	++(parent->children_count);
+
 	return new_child;
+}
+
+AST_node_t* AST_create_add_child(AST_node_t* parent, AST_node_type_t type){
+	if(parent == NULL) return NULL;
+
+	// insert new child at the end of children array
+	return AST_create_insert_child(parent, parent->children_count, type);
 }
 
 void _AST_print(AST_node_t* root, size_t depth, FILE* fp){
@@ -133,6 +139,8 @@ void _AST_print(AST_node_t* root, size_t depth, FILE* fp){
 		case STR_LIT_N:		node_name = "STR_LIT_N"; break;
 		case INT_LIT_N:		node_name = "INT_LIT_N"; break;
 		case FLT_LIT_N:		node_name = "FLT_LIT_N"; break;
+		case NULL_LIT_N:	node_name = "NULL_LIT_N"; break;
+		case DEFINE_VAR_N:	node_name = "DEFINE_VAR_N"; break;
 		default: 			node_name = "UNKNOWN";
 	}
 	
