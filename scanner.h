@@ -15,13 +15,12 @@
 #include "dynamic_string.h"
 #include "token.h"
 
-#ifndef __SCANNER_H__
-#define __SCANNER_H__
+#ifndef SCANNER_H
+#define SCANNER_H
 
-/* 
-TODO:
-	Function names,
-	Documentation
+/* TODO
+	Function names.
+	Documentation.
 */
 
 // A-Z, a-z
@@ -48,7 +47,6 @@ void vik_handler(dynamic_string_t * ds, token_t * t, int * c);
  */
 void s_handler(dynamic_string_t * ds, token_t * t, int * c);
 
-
 /**
  * @brief Handles...
  */
@@ -56,7 +54,7 @@ void fi_handler(dynamic_string_t * ds, token_t * t, int * c);
 
 void null_t_handler(dynamic_string_t * ds, token_t * t, int * c);
 
-void lp_handler(token_t * t, int * c); // LT, LTE, PROLOG
+void lp_handler(dynamic_string_t * ds, token_t * t, int * c); // LT, LTE, PROLOG
 
 void g_handler(token_t * t, int * c); // GT, GTE
 
@@ -64,4 +62,4 @@ void neq_handler(token_t * t, int * c); // NEQ
 
 void aeq_handler(token_t * t, int * c); // ASSIGN, EQ
 
-#endif // __SCANNER_H__
+#endif // SCANNER_H

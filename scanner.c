@@ -12,7 +12,6 @@
  * @date 2022-10-01
  */
 
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
@@ -24,45 +23,45 @@
 #include "token.h"
 #include "error.h"
 
-/*
+
+/* TODO: 
+
+	Token functionality.
+	Dynamic string functionality.
+*/
+
+/* Comment out main for testing. */
 int main() {
-		token_t * token;
-	int tc = 0;
-	while( (token = get_token()) != NULL) {
+	token_t * token;
+	do {
+		token = get_token();
 		t_print(token);
-		t_dstr(token);
-		tc++;
 		if(error == INTERNAL_ERROR) {
 			printf("Internal compiler error.\n");
 		} else if (error == LEXICAL_ERROR) {
 			printf("Lexical error.\n");
 		}
-		
-	}
-	printf("Token count -> %d\n", tc);
-
+	} while(token->type != END && token->type != EPILOG);
 	return 0;
 }
-*/
 
 token_t * get_token() {
-	dynamic_string_t * ds = ds_init();
+	dynamic_string_t * ds = ds_init(); // Initialize write buffer.
 	if(ds == NULL) {
 		error = INTERNAL_ERROR;
 		return NULL;
 	}
-	token_t * t = t_init();
+	token_t * t = t_init(); // Initialize returned token.
 	if(t == NULL) {
 		error = INTERNAL_ERROR;
 		return NULL;
 	}
-	
-	int c = 0;
-	
+
+	int c; // Read character.
 	do {
-	/* Eat up leading whitespace. TODO: EOF checks if EOF found?? */
+	/* Skip leading whitespace. */
 		c = fgetc(stdin);
-		/* Eat up if comment... */
+		/* Skip comment. */
 		if(c == '/') {
 			c = fgetc(stdin);
 			if(c == '/') {
@@ -81,10 +80,10 @@ token_t * get_token() {
 					}
 				}
 			} else {
-				ungetc(c, stdin); // Return false read.
+				ungetc(c, stdin); // Return to stream due to false read..
 				c = '/'; // Set char to original.
 			}
-		}
+		} // End comment skip.
 	} while ( c != EOF && isspace(c) != 0);
 
 	if(c == EOF) {
@@ -93,16 +92,13 @@ token_t * get_token() {
 		return t;
 	}
 	
-	/* Skip comments. */
-
 	switch(c) {
 		/* ATTRIBUTED TOKENS, KEYWORDS AND TYPES*/
-		case letter case '_': vik_handler(ds, t, &c); break; // FUNC_ID, FLT_T, STR_T, INT_T, VOID_T, NULL_T, ELSE, FUNCTION, IF, RETURN, WHILE
+		case letter case '_': vik_handler(ds, t, &c); break; // FUNC_ID, FLT_T, STR_T, INT_T, VOID_T, NULL_LIT, ELSE, FUNCTION, IF, RETURN, WHILE
 		case digit fi_handler(ds, t, &c); break; // INT_LIT, FLT_LIT
-		case '$': vik_handler(ds, t, &c); break; // VAR_ID
+		case '$': vik_handler(ds, t, &c); break; // VAR_ID TODO: Edge case variable names.
 		case '"': s_handler(ds, t, &c); break; // STR_LIT
 		case '?': null_t_handler(ds, t, &c); break; // NFLT_T, NINT_T, NSTR_T, EPILOG
-		
 		/* UNATTRIBUTED TOKENS */
 		/* Operators */
 		case '*': t->type = MUL; break; // MUL
@@ -110,10 +106,10 @@ token_t * get_token() {
 		case '+': t->type = ADD; break; // ADD
 		case '-': t->type = SUB; break; // SUB
 		case '.': t->type = CONCAT; break; // CONCAT
-		case '<': lp_handler(t, &c); break; // TODO --> LT, LTE, PROLOG
-		case '>': g_handler(t, &c); break; // TODO --> GT, GTE
-		case '!': neq_handler(t, &c); break; // TODO --> NEQ
-		case '=': aeq_handler(t, &c); break; // TODO --> ASSIGN, EQ
+		case '<': lp_handler(ds, t, &c); break; // LT, LTE, PROLOG
+		case '>': g_handler(t, &c); break; // GT, GTE
+		case '!': neq_handler(t, &c); break; // NEQ
+		case '=': aeq_handler(t, &c); break; // ASSIGN, EQ
 		/* Punctuation */
 		case ',': t->type = COMMA; break; // COMMA
 		case ':': t->type = COLON; break; // COLON
@@ -126,7 +122,6 @@ token_t * get_token() {
 	}
 	ds_dstr(ds);
 	return t;
-	
 }
 
 void vik_handler(dynamic_string_t * ds, token_t * t, int * c) {
@@ -152,13 +147,14 @@ void vik_handler(dynamic_string_t * ds, token_t * t, int * c) {
 				case 5: t->type = FLT_T; break;
 				case 6: t->type = STR_T; break;
 				case 7: t->type = INT_T; break;
-				case 8: t->type = NULL_T; break;
+				case 8: t->type = NULL_LIT; break;
 				case 9: t->type = VOID_T; break;
 				default: break;
 			}
-			return; // ???
+			return; // Match found, return.
 		}
-		/* No keywords matched, set string as function identifier. */
+		/* No keywords matched, token is function identifier. */
+		/*
 		if(i == reserved_words_count - 1) {
 			if(ds->str[0] == '$') {
 				t->type = VAR_ID;
@@ -166,15 +162,27 @@ void vik_handler(dynamic_string_t * ds, token_t * t, int * c) {
 				t->type = FUNC_ID;
 			}
 
-			/* Attach attribute */
 			t->sval = malloc(strlen(ds->str) + 1);
 			if(t->sval == NULL) {
 				error = INTERNAL_ERROR;
 			}
 			strcpy(t->sval, ds->str);
-			
 		}
+		*/
 	}
+	/* No match found, token is func/variable identifier. */
+	if(ds->str[0] == '$') {
+		// TODO: str[1] cannot be NUMBER!!!
+		t->type = VAR_ID;
+	} else {
+		t->type = FUNC_ID;
+	}
+	/* Attach attribute */
+	t->sval = malloc(strlen(ds->str) + 1);
+	if(t->sval == NULL) {
+		error = INTERNAL_ERROR;
+	}
+	strcpy(t->sval, ds->str);
 }
 
 void fi_handler(dynamic_string_t * ds, token_t * t, int * c) {
@@ -185,8 +193,9 @@ void fi_handler(dynamic_string_t * ds, token_t * t, int * c) {
 		}
 	} while( (*c = fgetc(stdin)) != EOF && isdigit(*c));
 	if(*c != '.') {
+		/* Check if value is correct */
 		ungetc(*c, stdin);
-		t->ival = strtoimax(ds->str, NULL, 10); 
+		t->ival = strtoimax(ds->str, NULL, 10); // If valid conversion, store ds as string...
 		t->type = INT_LIT;
 	} else {
 		do {
@@ -198,7 +207,6 @@ void fi_handler(dynamic_string_t * ds, token_t * t, int * c) {
 		ungetc(*c, stdin);
 		t->fval = strtod(ds->str, NULL);
 		t->type = FLT_LIT;
-		//strtof
 	}
 }
 
@@ -296,18 +304,27 @@ void neq_handler(token_t * t, int * c) {
 	}
 }
 
-void lp_handler(token_t * t, int * c) {\
-	static char * prolog = "<?php"; // Prolog to try and match.
+void lp_handler(dynamic_string_t * ds, token_t * t, int * c) {
+	static char * prolog = "php"; // Prolog to try and match.
 	*c = fgetc(stdin);
 	if(*c == '=') {
 		t->type = LTE;
 	} else if (*c == '?') { // Try create prolog. Else lexical error.
-		
-		
+		while((*c = fgetc(stdin)) != EOF && isalpha(*c)) {
+			if(ds_write(ds, *c)) {
+				error = INTERNAL_ERROR;
+				return;
+			}
+		}
+		if(strcmp(ds->str, prolog) == 0) {
+			t->type = PROLOG;
+			return;
+		} else {
+			error = LEXICAL_ERROR;
+		}
 	} else {
 		t->type = LT;
 		ungetc(*c, stdin);
 	}
-	
 }
 

@@ -1,3 +1,4 @@
+<?php
 declare(strict_types=1);
 
 // Program 2: Vypocet faktorialu (rekurzivne)
@@ -26,3 +27,4 @@ if () {
 } else {
     write("Chyba pri nacitani celeho cisla!\n");
 }
+?>

@@ -91,8 +91,8 @@ void t_print(token_t * t) {
 		printf("\ttype: INT_T\n");
 	} else if(t->type == VOID_T) {
 		printf("\ttype: VOID_T\n");
-	} else if(t->type == NULL_T) {
-		printf("\ttype: NULL_T\n");
+	} else if(t->type == NULL_LIT) {
+		printf("\ttype: NULL_LIT\n");
 	} else if(t->type == NFLT_T) {
 		printf("\ttype: NFLT_T\n");
 	} else if(t->type == NINT_T) {
