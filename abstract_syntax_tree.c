@@ -138,7 +138,7 @@ void _AST_print(AST_node_t* root, size_t depth, FILE* fp){
 		case INT_LIT_N:		node_name = "INT_LIT_N"; break;
 		case FLT_LIT_N:		node_name = "FLT_LIT_N"; break;
 		case NULL_LIT_N:	node_name = "NULL_LIT_N"; break;
-		case DEF_VAR_LIST_N:	node_name = "DEFINE_VAR_N"; break;
+		case DEF_VAR_LIST_N:node_name = "DEFINE_VAR_N"; break;
 		default: 			node_name = "UNKNOWN";
 	}
 	

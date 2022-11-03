@@ -59,6 +59,11 @@ typedef enum {
 	* 	Data: datatype_t */
 	RETURN_N,
 
+	/** Ch_count: 0 | Ch: None
+	 *	Data: None
+	 */
+	MISSING_RETURN_N,
+
 	/** Ch_count: 2 | Ch: ID_N, EXPR_N
 	* 	Data: None */
 	ASS_EXPR_N,
