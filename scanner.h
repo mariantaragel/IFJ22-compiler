@@ -62,4 +62,8 @@ void neq_handler(token_t * t, int * c); // NEQ
 
 void aeq_handler(token_t * t, int * c); // ASSIGN, EQ
 
+void hex_to_int(dynamic_string_t * ds, dynamic_string_t * aux_ds, int * c);
+
+void oct_to_hex(dynamic_string_t * ds, dynamic_string_t * aux_ds, int * c);
+
 #endif // SCANNER_H

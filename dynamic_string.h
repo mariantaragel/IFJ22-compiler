@@ -50,4 +50,13 @@ void ds_dstr(dynamic_string_t * ds);
  */
 unsigned ds_write(dynamic_string_t * ds, int c);
 
+
+
+/**
+ * @brief Concatenates the dynamic string from a onto b. Operation: a.b
+ * @param a Dynamic string which will be concatenated.
+ * @param b Dyanmic string which is concatenated onto a.
+ */
+void ds_concat(dynamic_string_t * a, dynamic_string_t * b);
+
 #endif // __DYNAMIC_STRING_H__
