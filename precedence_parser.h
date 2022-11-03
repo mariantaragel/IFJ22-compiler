@@ -8,14 +8,14 @@
 #include "token.h"
 
 /**
- * @brief 
+ * @brief Creates dollar symbol on a stack.
  * 
  * @return pstack_symbol_t* 
  */
 pstack_symbol_t* create_dollar_pstack_symbol();
 
 /**
- * @brief
+ * @brief Creates terminal symbol on a stack.
  * 
  * @param token 
  * @return pstack_symbol_t*
@@ -23,7 +23,7 @@ pstack_symbol_t* create_dollar_pstack_symbol();
 pstack_symbol_t* create_terminal_pstack_symbol(token_t* token);
 
 /**
- * @brief
+ * @brief Frees symbol on stack.
  * 
  * @param symbol
  * @return pstack_symbol_t*
@@ -50,7 +50,7 @@ int position_of(x);
  * @brief Works out reduce operation on the precedence stack.
  * 
  * @param stack Precedence stack.
- * @return int
+ * @return int Operation succes value.
  */
 int reduce(pstack_t* stack);
 

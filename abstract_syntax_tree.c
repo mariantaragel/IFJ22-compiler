@@ -128,8 +128,6 @@ void _AST_print(AST_node_t* root, size_t depth, FILE* fp){
 		case FUNC_DEF_N:	node_name = "FUNC_DEF_N"; break;
 		case PARAM_LIST_N:	node_name = "PARAM_LIST_N"; break;
 		case PARAM_N:		node_name = "PARAM_N"; break;
-		case ARG_LIST_N:	node_name = "ARG_LIST_N"; break;
-		case ARG_N:			node_name = "ARG_N"; break;
 		case RETURN_N:		node_name = "RETURN_N"; break;
 		case ASS_EXPR_N:	node_name = "ASS_EXPR_N"; break;
 		case ASS_FUNC_N:	node_name = "ASS_FUNC_N"; break;
@@ -140,7 +138,7 @@ void _AST_print(AST_node_t* root, size_t depth, FILE* fp){
 		case INT_LIT_N:		node_name = "INT_LIT_N"; break;
 		case FLT_LIT_N:		node_name = "FLT_LIT_N"; break;
 		case NULL_LIT_N:	node_name = "NULL_LIT_N"; break;
-		case DEFINE_VAR_N:	node_name = "DEFINE_VAR_N"; break;
+		case DEF_VAR_LIST_N:	node_name = "DEFINE_VAR_N"; break;
 		default: 			node_name = "UNKNOWN";
 	}
 	

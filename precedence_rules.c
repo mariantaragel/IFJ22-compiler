@@ -33,7 +33,7 @@ const prec_rule_t precedence_rules[PRECEDENCE_RULE_COUNT] = {
 	{{TERM, STR_LIT	}, {NAN,  -1	}, {NAN,  -1	}, CONVERT_TO_EXPR	}, //2.  E -> i
 	{{TERM, FLT_LIT	}, {NAN,  -1	}, {NAN,  -1	}, CONVERT_TO_EXPR	}, //3.  E -> i
 	{{TERM, INT_LIT	}, {NAN,  -1	}, {NAN,  -1	}, CONVERT_TO_EXPR	}, //4.  E -> i
-	{{TERM, NULL_T	}, {NAN,  -1	}, {NAN,  -1	}, CONVERT_TO_EXPR	}, //5.  E -> i // TODO: NULL_T -> NULL_LIT
+	{{TERM, NULL_LIT}, {NAN,  -1	}, {NAN,  -1	}, CONVERT_TO_EXPR	}, //5.  E -> i
 	{{TERM, LB		}, {EXPR, -1	}, {TERM, RB	}, REMOVE_BRACKETS	}, //6.  E -> ( E )
 	{{EXPR,	-1		}, {TERM, ADD	}, {EXPR, -1	}, POSTFIX_MERGE	}, //7.  E -> E + E
 	{{EXPR,	-1      }, {TERM, SUB	}, {EXPR, -1	}, POSTFIX_MERGE	}, //8.  E -> E - E

@@ -40,7 +40,7 @@ typedef enum {
 	* 	Data: None */
 	IF_N,
 
-	/** Ch_count: X | Ch: { ID_N, LIT_N }
+	/** Ch_count: X | Ch: { ID_N, STR_LIT_N, FLT_LIT_N, INT_LIT_N, NULL_LIT_N }
 	* 	Data: char* str (function name) */
 	FUNC_CALL_N,
 
@@ -55,15 +55,8 @@ typedef enum {
 	* 	Data: None */
 	PARAM_N,
 
-	/** Ch_count: X | Ch: ARG_N
-	* 	Data: None */
-	ARG_LIST_N,
-	/** Ch_count: 0 | Ch: None
-	* 	Data: token_type_t */
-	ARG_N,
-
-	/** Ch_count: 1 | Ch: TYPE_N
-	* 	Data: None */
+	/** Ch_count: 1 | Ch: EXPR_N
+	* 	Data: datatype_t */
 	RETURN_N,
 
 	/** Ch_count: 2 | Ch: ID_N, EXPR_N
@@ -102,9 +95,9 @@ typedef enum {
 	* 	Data: None */
 	NULL_LIT_N,
 
-	/** Ch_count: 0 | Ch: None
-	* 	Data: char *str */
-	DEFINE_VAR_N
+	/** Ch_count: X | Ch: ID_N
+	* 	Data: char* str (variable id name) */
+	DEF_VAR_LIST_N
 }AST_node_type_t;
 
 
