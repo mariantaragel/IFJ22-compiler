@@ -30,6 +30,8 @@
 */
 
 /* Comment out main for testing. */
+
+/*
 int main() {
 	token_t * token;
 	do {
@@ -45,6 +47,7 @@ int main() {
 	} while(token->type != END && token->type != EPILOG);
 	return 0;
 }
+*/
 
 token_t * get_token() {
 	dynamic_string_t * ds = ds_init(); // Initialize write buffer.
@@ -231,11 +234,17 @@ void null_t_handler(dynamic_string_t * ds, token_t * t, int * c) {
 	error = LEXICAL_ERROR; // Couldn't match any reserved word.
 }
 
+
+/* TODO: Finish interpolation. */
 void s_handler(dynamic_string_t * ds, token_t * t, int * c) {
 	// Do through string concatenation of two dynamic strings...
-	/* TODO: Octal + hex conversions... */
 	while( (*c = fgetc(stdin)) != EOF && *c != '"') {
 		if(*c == '\\') { // Escape sequence.
+			dynamic_string_t * aux_ds = ds_init();
+			if(aux_ds == NULL) {
+				error = INTERNAL_ERROR;
+				return;
+			}
 			*c = fgetc(stdin);
 			switch(*c) {
 				case 'n': ds_write(ds,'\n'); break;
@@ -243,6 +252,8 @@ void s_handler(dynamic_string_t * ds, token_t * t, int * c) {
 				case '"': ds_write(ds,'"'); break;
 				case '\\': ds_write(ds,'\\'); break;
 				case '$': ds_write(ds,'$'); break; // What if dollar out?
+				case '0': // Handle octal...
+				case 'x':
 				default: ds_write(ds, '\\'); ds_write(ds,*c); break;
 			}
 		} else {
@@ -325,3 +336,23 @@ void lp_handler(dynamic_string_t * ds, token_t * t, int * c) {
 	}
 }
 
+
+// TODO;
+/*
+void hex_to_int(dynamic_string_t * ds, dynamic_string_t * aux_ds, int * c) {
+	for(int i = 0; i < 1; i++) { // Write 2 digit octal number.
+		if(ds_write(aux_ds, *c)) {
+			error = INTERNAL_ERROR;
+			return;
+		}
+		*c = fgetc(stdin);
+	}
+	char * endptr;
+	int ret;
+	ret = strtoimax(aux_ds->str, &endptr, 16);
+	
+}
+
+
+void oct_to_int(dynamic_string_t * ds, dynamic_string_t * aux_ds, int * c);
+*/
