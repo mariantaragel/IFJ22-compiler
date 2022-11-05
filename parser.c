@@ -2,12 +2,13 @@
  * @name parser.c
  * @brief Implementation of top-down parser
  * @authors Marián Tarageľ
- * @date 30.10.2022
+ * @date 5.11.2022
  */
 
 #include "parser.h"
 #include "scanner.h"
 #include "error.h"
+#include "precedence_parser.h"
 #include <stdio.h>
 #include <string.h>
 
@@ -27,7 +28,7 @@ AST_node_t *program()
     token_t *token = get_token();
     RETURN_ROOT;
     php_start(token);
-    //t_dstr(token);
+    t_dstr(token);
     RETURN_ROOT;
 
     token = get_token();
@@ -46,20 +47,13 @@ AST_node_t *program()
 
 void php_start(token_t *token)
 {
-    // TODO: verify tokens '<?php' func_id '(' 'strict_types' '=' integer_literal ')' ';'
 
-    //if (token->type != PROLOG) {
-    //    RETURN_ERROR(SYNTAX_ERROR);
-    //}
+    if (token->type != PROLOG) {
+        RETURN_ERROR(SYNTAX_ERROR);
+    }
 
     for (int i = 0; i < 7; i++) {
-        if(i != 0) { //TODO: Delete condition
-            token = get_token();
-            if (error != OK && i < 7) {
-                RETURN_ERROR(SYNTAX_ERROR);
-            }
-            RETURN_IF_ERROR;
-        }
+        token = get_token();
 
         switch (i)
         {
@@ -108,6 +102,7 @@ void php_start(token_t *token)
         default:
             break;
         }
+        t_dstr(token);
     }
 }
 
@@ -149,9 +144,16 @@ void program_body(token_t *token, AST_node_t *parent)
 
 void php_end(token_t *token)
 {
-    // TODO: verify '?>' EOF | EOF
     if (token->type == END) {
         return;
+    }
+    if (token->type == EPILOG) {
+        token = get_token();
+        RETURN_IF_ERROR;
+        if (token->type == END) {
+            t_dstr(token);
+            return;
+        }
     }
 }
 
@@ -453,6 +455,7 @@ void if_stmt(token_t *token, AST_node_t *parent)
     
     AST_node_t *n_expr = AST_create_add_child(n_if_stmt, EXPR_N);
     RETURN_INTERNAL_ERROR(n_expr)
+
     // TODO: verify <exp>
     // TODO: add expression to node
     
@@ -512,9 +515,7 @@ void func_call(token_t *token, AST_node_t *parent)
     }
     AST_node_t *n_func_call = AST_create_add_child(parent, FUNC_CALL_N);
     RETURN_INTERNAL_ERROR(n_func_call)
-    AST_node_t *n_id = AST_create_add_child(n_func_call, ID_N);
-    RETURN_INTERNAL_ERROR(n_id)
-    n_id->data.str = token->sval;
+    n_func_call->data.str = token->sval;
 
     token = get_token();
     RETURN_IF_ERROR;
@@ -533,19 +534,16 @@ void func_call(token_t *token, AST_node_t *parent)
 
 void arg_list(token_t *token, AST_node_t *parent)
 {
-    AST_node_t *n_arg_list = AST_create_add_child(parent, ARG_LIST_N);
-    RETURN_INTERNAL_ERROR(n_arg_list)
-
     if (token->type == RB) {
         return;
     }
 
-    arg(token, n_arg_list);
+    arg(token, parent);
     RETURN_IF_ERROR;
 
     token = get_token();
     RETURN_IF_ERROR;
-    arg_next(token, n_arg_list);
+    arg_next(token, parent);
     t_dstr(token);
     RETURN_IF_ERROR;
 }
@@ -574,10 +572,45 @@ void arg_next(token_t *token, AST_node_t *parent)
 
 void arg(token_t *token, AST_node_t *parent)
 {
-    if (token->type != VAR_ID && token->type != STR_LIT && token->type != INT_LIT && token->type != FLT_LIT && token->type != NULL_T) {
+    if (token->type != VAR_ID &&
+        token->type != STR_LIT &&
+        token->type != INT_LIT &&
+        token->type != FLT_LIT &&
+        token->type != NULL_LIT) {
         RETURN_ERROR(SYNTAX_ERROR);
     }
-    AST_node_t *n_arg = AST_create_add_child(parent, ARG_N);
-    RETURN_INTERNAL_ERROR(n_arg)
-    n_arg->data.type = token->type;
+    if (token->type == VAR_ID) {
+        AST_node_t *n_arg = AST_create_add_child(parent, ID_N);
+        RETURN_INTERNAL_ERROR(n_arg)
+        char *new_value = malloc((strlen(token->sval) + 1) * sizeof(char));
+        if (new_value == NULL) {
+            RETURN_ERROR(INTERNAL_ERROR);
+        }
+        strcpy(new_value, token->sval);
+        n_arg->data.str = new_value;
+    }
+    if (token->type == STR_LIT) {
+        AST_node_t *n_arg = AST_create_add_child(parent, STR_LIT_N);
+        RETURN_INTERNAL_ERROR(n_arg)
+        char *new_value = malloc((strlen(token->sval) + 1) * sizeof(char));
+        if (new_value == NULL) {
+            RETURN_ERROR(INTERNAL_ERROR);
+        }
+        strcpy(new_value, token->sval);
+        n_arg->data.str = new_value;
+    }
+    if (token->type == INT_LIT) {
+        AST_node_t *n_arg = AST_create_add_child(parent, INT_LIT_N);
+        RETURN_INTERNAL_ERROR(n_arg)
+        // TODO: add value
+    }
+    if (token->type == FLT_LIT) {
+        AST_node_t *n_arg = AST_create_add_child(parent, FLT_LIT_N);
+        RETURN_INTERNAL_ERROR(n_arg)
+        // TODO: add value
+    }
+    if (token->type == NULL_LIT) {
+        AST_node_t *n_arg = AST_create_add_child(parent, NULL_LIT_N);
+        RETURN_INTERNAL_ERROR(n_arg)
+    }
 }

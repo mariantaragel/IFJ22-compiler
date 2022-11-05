@@ -60,7 +60,7 @@ int reduce(pstack_t* stack);
  * @param token_array_t* Token array created by top-down parser.
  * @return token_array_t* Returns parsed array to top-down.
  */
-token_array_t* parse_expression(/*token_array_t*/);
+token_array_t* parse_expression(token_array_t tokens);
 
 
 #endif

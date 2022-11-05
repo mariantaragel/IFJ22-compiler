@@ -1,10 +1,11 @@
+<?php
 declare(strict_types=1);
 
 // Program 1: Vypocet faktorialu (iterativne)
 // Hlavni telo programu
 
 write("Zadejte cislo pro vypocet faktorialu\n");
-readi();
+readi(5.88);
 
 if () {
 write("Chyba pri nacitani celeho cisla!\n");
@@ -17,3 +18,4 @@ if () {
     }
     write("Vysledek je: ", $vysl, "\n");
 }
+?>
