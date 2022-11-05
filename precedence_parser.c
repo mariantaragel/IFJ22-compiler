@@ -168,13 +168,12 @@ int reduce(pstack_t* stack) {
 			if (pstack_push(&stack, symbols[1]) != 0) {
 						internal_err = true;
 						return -1;
-					}
+			}
 			if (pstack_push(&stack, symbols[0]) != 0) {
 						internal_err = true;
 						return -1;
-					}
-		}
-		
+			}
+		}	
 		return 0;		
 	}
 
@@ -221,9 +220,13 @@ int reduce(pstack_t* stack) {
 
 		}
 		else if(rule == REMOVE_BRACKETS){
-			
-		}
+
+			if (pstack_push(&stack, symbols[1]) != 0) {
+						internal_err = true;
+						return -1;
+					}
 		
+		}	
 		return 0;
 	}
 	else{
