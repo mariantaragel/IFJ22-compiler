@@ -51,7 +51,6 @@ pstack_symbol_t* create_terminal_pstack_symbol(token_t* token){
 	return pstack_symbol;
 }
 
-//???
 void free_pstack_symbol(pstack_symbol_t* symbol) {
 	// free token array - token_array_free()
 	// free symbol
@@ -89,7 +88,7 @@ prec_table_index_t get_index_from_token(token_t* ptoken){
 		case STR_T:
 		case INT_T:
 		case FLT_T:
-		case NULL_T:
+		case NULL_LIT:
 		case VOID_T:
 		case NFLT_T:
 		case NINT_T:
@@ -129,6 +128,8 @@ int reduce(pstack_t* stack) {
 	bool syntax_err = false;
 	bool all_ok = false;
 
+	token_array_create(&t_array);
+	
 	pstack_symbol_t* symbols[4];
 	symbols[0] = NULL;	//elem 3
 	symbols[1] = NULL;	//elem 2, handle if rule of 1
@@ -156,13 +157,23 @@ int reduce(pstack_t* stack) {
 		syntax_err = true;
 		return -1;
 	}
-	else if(symbols[1]->handle_start== true){
+	else if(symbols[1]->handle_start == true){
 		symbols[1]->handle_start = false;
 		prec_rule_action_t rule = match_precedence_rule(symbols[0]->prec_rule_element, symbols[2]->prec_rule_element, symbols[3]->prec_rule_element);
 		if(rule == ERROR_ACTION){
 			return -1;
 		}
-		//apply rule
+		else{
+			symbols[0]->prec_rule_element->category = EXPR;
+			if (pstack_push(&stack, symbols[1]) != 0) {
+						internal_err = true;
+						return -1;
+					}
+			if (pstack_push(&stack, symbols[0]) != 0) {
+						internal_err = true;
+						return -1;
+					}
+		}
 		
 		return 0;		
 	}
@@ -179,18 +190,39 @@ int reduce(pstack_t* stack) {
 	}
 
 	symbols[3] = pstack_pop(stack);
-	if (symbols[2] == NULL) {
+	if (symbols[3] == NULL) {
 		syntax_err = true;
 		return -1;
 	}
-	else if (symbols[2]->handle_start == true){
-		symbols[2]->handle_start = false;
+	else if (symbols[3]->handle_start == true){
+		symbols[3]->handle_start = false;
 		prec_rule_action_t rule = match_precedence_rule(symbols[2]->prec_rule_element, symbols[1]->prec_rule_element, symbols[0]->prec_rule_element);
 		if(rule == ERROR_ACTION){
 			return -1;
 		}
+		else if(rule == POSTFIX_MERGE){
+			
+			// single EXPR na stack - spec. sym. reprezentace?
 
-		//apply rule
+			if (pstack_push(&stack, symbols[1]) != 0) {
+						internal_err = true;
+						return -1;
+					}
+			
+			if () { //symbol != specialni symbol
+				symbols[2] // to array as postfix
+			} 
+
+			if () {
+				symbols[0] // to array as postfix
+			}
+			
+			symbols[1] //send to postfix
+
+		}
+		else if(rule == REMOVE_BRACKETS){
+			
+		}
 		
 		return 0;
 	}
@@ -198,9 +230,6 @@ int reduce(pstack_t* stack) {
 		syntax_err = true;
 		return -1;
 	}
-	//if top != handle true -> err
-	
-	//ok
 }
 
 int is_rule_applicable(pstack_symbol_t* a){							//if handle found ("<y")
@@ -213,7 +242,7 @@ int is_rule_applicable(pstack_symbol_t* a){							//if handle found ("<y")
 }
 
 
-token_array_t* parse_expression(/*token_array_t ...*/){
+token_array_t* parse_expression(token_array_t* postfix_t_array){
 	
 	pstack_t *stack;
 	pstack_create(&stack);											//inicializace zasobniku
@@ -227,11 +256,11 @@ token_array_t* parse_expression(/*token_array_t ...*/){
 	bool syntax_err = false;	
 	bool done = false;
 	
-	token_t *ptoken = get_token();								//"get_token" - pozdeji z token_array_t (top-down)
-		prec_table_index_t index = get_index_from_token(ptoken);	//znak na vstupu -> b
+	token_t *ptoken = get_token();										// pozdeji z token_array_t (od top-down)
+		prec_table_index_t index = get_index_from_token(ptoken);		// znak na vstupu -> b
 	
 	do {
-		pstack_symbol_t* top_terminal = pstack_top_terminal(stack); //funkce top_terminal -> a
+		pstack_symbol_t* top_terminal = pstack_top_terminal(stack); 	//funkce top_terminal -> a
 		
 		if (top_terminal == NULL) {
 			internal_err = true;
