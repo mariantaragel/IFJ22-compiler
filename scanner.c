@@ -120,6 +120,7 @@ token_t * get_token() {
 	return t;
 }
 
+/* TODO: Edge case names. */
 void vik_handler(dynamic_string_t * ds, token_t * t, int * c) {
 	static const char * reserved_words[] = {"else", "function", "if", "return", "while", "float", "string", "int", "null", "void"};
 	static const int reserved_words_count = 10;
@@ -165,6 +166,7 @@ void vik_handler(dynamic_string_t * ds, token_t * t, int * c) {
 	strcpy(t->sval, ds->str);
 }
 
+/* TODO: Conversions to string option. */
 void fi_handler(dynamic_string_t * ds, token_t * t, int * c) {
 	do {
 		if(ds_write(ds, *c)) {
