@@ -17,8 +17,9 @@ void AST_free(AST_node_t* root){
 	if(root->data.expression != NULL){
 		token_array_free(root->data.expression);
 	}
-	else if(root->data.str != NULL){
-		free(root->data.str);
+	
+	if(root->data.str != NULL){
+		//free(root->data.str);
 	}
 
 	// free root itself
@@ -138,7 +139,9 @@ void _AST_print(AST_node_t* root, size_t depth, FILE* fp){
 		case INT_LIT_N:		node_name = "INT_LIT_N"; break;
 		case FLT_LIT_N:		node_name = "FLT_LIT_N"; break;
 		case NULL_LIT_N:	node_name = "NULL_LIT_N"; break;
-		case DEF_VAR_LIST_N:node_name = "DEFINE_VAR_N"; break;
+		case USED_VARS_LIST_N:	node_name = "USED_VARS_LIST_N"; break;
+		case USED_FUNC_LIST_N:	node_name = "USED_FUNC_LIST_N"; break;
+		case MISSING_RETURN_N:	node_name = "MISSING_RETURN_N"; break;
 		default: 			node_name = "UNKNOWN";
 	}
 	
