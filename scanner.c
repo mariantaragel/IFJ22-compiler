@@ -23,14 +23,6 @@
 #include "token.h"
 #include "error.h"
 
-/* TODO: 
-
-	Token functionality.
-	Dynamic string functionality.
-*/
-
-/* Comment out main for testing. */
-
 /*
 int main() {
 	token_t * token;
@@ -38,10 +30,10 @@ int main() {
 		token = get_token();
 		t_print(token);
 		if(error == INTERNAL_ERROR) {
-			printf("Internal compiler error.\n");
+			fprintf(stderr, "INTERNAL_ERROR\n");
 			return error;
 		} else if (error == LEXICAL_ERROR) {
-			printf("Lexical error.\n");
+			fprintf(stderr, "LEXICAL_ERROR\n");
 			return error;
 		}
 	} while(token->type != END && token->type != EPILOG);
@@ -99,10 +91,10 @@ token_t * get_token() {
 	switch(c) {
 		/* ATTRIBUTED TOKENS, KEYWORDS AND TYPES*/
 		case letter case '_': vik_handler(ds, t, &c); break; // FUNC_ID, FLT_T, STR_T, INT_T, VOID_T, NULL_LIT, ELSE, FUNCTION, IF, RETURN, WHILE
+		case '$': vik_handler(ds, t, &c); break; // VAR_ID
 		case digit fi_handler(ds, t, &c); break; // INT_LIT, FLT_LIT
-		case '$': vik_handler(ds, t, &c); break; // VAR_ID TODO: Edge case variable names.
 		case '"': s_handler(ds, t, &c); break; // STR_LIT
-		case '?': null_t_handler(ds, t, &c); break; // NFLT_T, NINT_T, NSTR_T, EPILOG
+		case '?': nte_handler(ds, t, &c); break; // NFLT_T, NINT_T, NSTR_T, EPILOG
 		/* UNATTRIBUTED TOKENS */
 		/* Operators */
 		case '*': t->type = MUL; break; // MUL
@@ -122,7 +114,7 @@ token_t * get_token() {
 		case ')': t->type = RB; break; // RB
 		case '{': t->type = LCB; break; // LCB
 		case '}': t->type = RCB; break; // RCB
-		default: error = LEXICAL_ERROR; break; // Throw LEXICAL error.
+		default: error = LEXICAL_ERROR; break; // Couldn't match, throw error.
 	}
 	ds_dstr(ds);
 	return t;
@@ -199,46 +191,11 @@ void fi_handler(dynamic_string_t * ds, token_t * t, int * c) {
 	}
 }
 
-void null_t_handler(dynamic_string_t * ds, token_t * t, int * c) {
-	static const char * reserved_words[] = {"?float", "?string", "?int"};
-	static const int reserved_words_count = 3;
-
-	*c = fgetc(stdin);
-	if( *c == '>') { // Try to match for epilog.
-		t->type = EPILOG;
-		return;
-	} else { // Return character to stream if unsuccesful.
-		ungetc(*c, stdin);
-		*c = '?';
-	}
-	do { // Try to match for reserved words.
-		if(ds_write(ds, *c)) { // Write character.
-			error = INTERNAL_ERROR;
-			return;
-		}
-	} while( (*c = fgetc(stdin)) != EOF && isalpha(*c) != 0 && isspace(*c) == 0); // watchout for file.
-	ungetc(*c, stdin);
-	
-	for(int i = 0; i < reserved_words_count; i++) {
-		/* Try matching with reserved keywords */
-		if(strcmp(reserved_words[i], ds->str) == 0) {
-			switch(i) {
-				case 0: t->type = NFLT_T; break;
-				case 1: t->type = NSTR_T; break;
-				case 2: t->type = NINT_T; break;
-				default: break;
-			}
-			return; // Match found. 
-		}
-	}
-	error = LEXICAL_ERROR; // Couldn't match any reserved word.
-}
-
-
 /* TODO: Finish interpolation. */
 void s_handler(dynamic_string_t * ds, token_t * t, int * c) {
-	// Do through string concatenation of two dynamic strings...
-	while( (*c = fgetc(stdin)) != EOF && *c != '"') {
+	
+	while( (*c = fgetc(stdin)) != EOF && *c != '"') { // Write string to buffer.
+
 		if(*c == '\\') { // Escape sequence.
 			dynamic_string_t * aux_ds = ds_init();
 			if(aux_ds == NULL) {
@@ -247,14 +204,17 @@ void s_handler(dynamic_string_t * ds, token_t * t, int * c) {
 			}
 			*c = fgetc(stdin);
 			switch(*c) {
-				case 'n': ds_write(ds,'\n'); break;
-				case 't': ds_write(ds,'\t'); break;
-				case '"': ds_write(ds,'"'); break;
-				case '\\': ds_write(ds,'\\'); break;
-				case '$': ds_write(ds,'$'); break; // What if dollar out?
-				case '0': // Handle octal...
-				case 'x':
-				default: ds_write(ds, '\\'); ds_write(ds,*c); break;
+				case 'n': if(ds_write(ds, '\n')) { error = INTERNAL_ERROR; return; } break;
+				case 't': if(ds_write(ds, '\t')) { error = INTERNAL_ERROR; return; } break;
+				case '"': if(ds_write(ds, '"')) { error = INTERNAL_ERROR; return; } break;
+				case '\\': if(ds_write(ds, '\\')) { error = INTERNAL_ERROR; return; } break;
+				case '$': if(ds_write(ds, '$')) { error = INTERNAL_ERROR; return; } break;
+				case '0': // Octal conversion of three characters.
+				case 'x': // Hexadecimal conversion of two characters.
+				default: 
+					if(ds_write(ds, '\\')) { error = INTERNAL_ERROR; return; }
+					if(ds_write(ds,*c)) { error = INTERNAL_ERROR; return; }
+					break;
 			}
 		} else {
 			if(ds_write(ds, *c)) {
@@ -262,13 +222,77 @@ void s_handler(dynamic_string_t * ds, token_t * t, int * c) {
 				return;
 			}
 		}
-	}
+	} // End write.
+
+	/* Set type and save associated value. */
 	t->type = STR_LIT;
 	t->sval = malloc(strlen(ds->str) + 1);
 	if(t->sval == NULL) {
 		error = INTERNAL_ERROR;
 	}
 	strcpy(t->sval, ds->str);
+}
+
+void nte_handler(dynamic_string_t * ds, token_t * t, int * c) {
+	static const char * reserved_words[] = {"?float", "?string", "?int"};
+	static const int reserved_words_count = 3;
+
+	*c = fgetc(stdin);
+	if( *c == '>') {
+		t->type = EPILOG; // '?>'
+		return;
+	} else { // Return character to stream if unsuccesful.
+		ungetc(*c, stdin);
+		*c = '?'; // Set to original.
+	}
+
+
+	do { // Read all letters.
+		if(ds_write(ds, *c)) {
+			error = INTERNAL_ERROR;
+			return;
+		}
+	} while( (*c = fgetc(stdin)) != EOF && isalpha(*c) != 0);
+	ungetc(*c, stdin);
+	
+
+	/* Try matching with reserved keywords */
+	for(int i = 0; i < reserved_words_count; i++) {
+		if(strcmp(reserved_words[i], ds->str) == 0) {
+			switch(i) {
+				case 0: t->type = NFLT_T; break; // '?float'
+				case 1: t->type = NSTR_T; break; // '?string'
+				case 2: t->type = NINT_T; break; // '?int'
+				default: break;
+			}
+			return; // Match found. 
+		}
+	}
+	error = LEXICAL_ERROR; // Couldn't match any reserved word.
+}
+
+void lp_handler(dynamic_string_t * ds, token_t * t, int * c) {
+	static const char * prolog = "php";
+	*c = fgetc(stdin);
+	if(*c == '=') { // '<='
+		t->type = LTE;
+	} else if (*c == '?') { // '<?' try create '<?php'
+		while((*c = fgetc(stdin)) != EOF && isspace(*c) == 0) {
+			if(ds_write(ds, *c)) {
+				error = INTERNAL_ERROR;
+				return;
+			}
+		}
+		if(strcmp(ds->str, prolog) == 0) { // '<?php'
+			t->type = PROLOG;
+			return;
+		} else {
+			error = LEXICAL_ERROR;
+		}
+	} else { // '<'
+		t->type = LT;
+		ungetc(*c, stdin);
+	}
 }
 
 void g_handler(token_t * t, int * c) {
@@ -281,78 +305,32 @@ void g_handler(token_t * t, int * c) {
 	}
 }
 
+void neq_handler(token_t * t, int * c) {
+	*c = fgetc(stdin);
+	if(*c == '=') { // '!='
+		*c = fgetc(stdin);
+		if(*c == '=') { // '!=='
+			t->type = NEQ;
+		} else {
+			error = LEXICAL_ERROR;
+		}
+	} else {
+		error = LEXICAL_ERROR;
+	}
+}
+
 void aeq_handler(token_t * t, int * c) {
 	*c = fgetc(stdin);
-	if(*c == '=') {
+	if(*c == '=') { // Try to create '==='
 		*c = fgetc(stdin);
 		if(*c == '=') {
 			t->type = EQ;
-		} else {
-			fprintf(stderr, "Lexeme error.");
+		} else { // Only '=='
+			error = LEXICAL_ERROR;
 		}
 	} else {
 		t->type = ASSIGN;
-		ungetc(*c, stdin);
+		ungetc(*c, stdin); // Return extra read.
 	}
 }
 
-/* rewrite */
-void neq_handler(token_t * t, int * c) {
-	*c = fgetc(stdin);
-	if(*c != '=') {
-		error = LEXICAL_ERROR;
-	} else {
-		*c = fgetc(stdin);
-		if(*c != '=') {
-			error = LEXICAL_ERROR;
-		} else {
-			t->type = NEQ;
-			return;
-		}
-	}
-}
-
-void lp_handler(dynamic_string_t * ds, token_t * t, int * c) {
-	static char * prolog = "php"; // Prolog to try and match.
-	*c = fgetc(stdin);
-	if(*c == '=') {
-		t->type = LTE;
-	} else if (*c == '?') { // Try create prolog. Else lexical error.
-		while((*c = fgetc(stdin)) != EOF && isalpha(*c)) {
-			if(ds_write(ds, *c)) {
-				error = INTERNAL_ERROR;
-				return;
-			}
-		}
-		if(strcmp(ds->str, prolog) == 0) {
-			t->type = PROLOG;
-			return;
-		} else {
-			error = LEXICAL_ERROR;
-		}
-	} else {
-		t->type = LT;
-		ungetc(*c, stdin);
-	}
-}
-
-
-// TODO;
-/*
-void hex_to_int(dynamic_string_t * ds, dynamic_string_t * aux_ds, int * c) {
-	for(int i = 0; i < 1; i++) { // Write 2 digit octal number.
-		if(ds_write(aux_ds, *c)) {
-			error = INTERNAL_ERROR;
-			return;
-		}
-		*c = fgetc(stdin);
-	}
-	char * endptr;
-	int ret;
-	ret = strtoimax(aux_ds->str, &endptr, 16);
-	
-}
-
-
-void oct_to_int(dynamic_string_t * ds, dynamic_string_t * aux_ds, int * c);
-*/
