@@ -172,7 +172,6 @@ void vik_handler(dynamic_string_t * ds, token_t * t, int * c) {
 	strcpy(t->sval, ds->str);
 }
 
-/* TODO: Conversions to string option. */
 void fi_handler(dynamic_string_t * ds, token_t * t, int * c) {
 	do {
 		if(ds_write(ds, *c)) {
