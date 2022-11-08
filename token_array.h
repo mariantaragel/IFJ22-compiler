@@ -38,11 +38,12 @@ void token_array_free(token_array_t* token_array);
 int token_array_push_token(token_array_t* token_array, token_t *token);
 
 /**
- * @brief Pops new token to token array.
+ * @brief Pops token from token array.
  * 
  * @param token_array Token array.
+ * @return token_t* Returns popped token from token array on success, otherwise, if token array is empty, NULL is returned.
  */
-void token_array_pop_token(token_array_t* token_array);
+token_t* token_array_pop_token(token_array_t* token_array);
 
 /**
  * @brief Appends all tokens from token_array2 to token_array1. 

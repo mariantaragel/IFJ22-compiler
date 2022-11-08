@@ -104,12 +104,12 @@ int token_array_push_token(token_array_t* token_array, token_t *token){
 	return 0;
 }
 
-void token_array_pop_token(token_array_t* token_array){
-	if(token_array == NULL) return;
-	if(token_array->token_count == 0) return;
+token_t* token_array_pop_token(token_array_t* token_array){
+	if(token_array == NULL) return NULL;
+	if(token_array->token_count == 0) return NULL;
 
-	// free topmost token
-	t_dstr(token_array->array[token_array->token_count-1]);
+	// get topmost token
+	token_t* popped_token = token_array->array[token_array->token_count-1];
 
 	// update size
 	--(token_array->token_count);
@@ -120,6 +120,9 @@ void token_array_pop_token(token_array_t* token_array){
 			_token_array_reallocate(token_array, token_array->size / 2);
 		}
 	} 
+
+	// return popped token
+	return popped_token;
 }
 
 
