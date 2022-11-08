@@ -91,4 +91,12 @@ void neq_handler(token_t * t, int * c); // NEQ
  */
 void aeq_handler(token_t * t, int * c); // ASSIGN, EQ
 
+/**
+ * @brief Checks whether character belongs to float literal definition.
+ * @param c Character to check.
+ * @returns Non-zero value if char belongs to float literal definition, zero otherwise.
+ */
+int isflchr(int c);
+
+
 #endif // SCANNER_H

@@ -18,12 +18,12 @@
 #include <ctype.h>
 #include <string.h>
 #include <inttypes.h>
+#include <errno.h>
 #include "scanner.h"
 #include "dynamic_string.h"
 #include "token.h"
 #include "error.h"
 
-/*
 int main() {
 	token_t * token;
 	do {
@@ -39,7 +39,6 @@ int main() {
 	} while(token->type != END && token->type != EPILOG);
 	return 0;
 }
-*/
 
 token_t * get_token() {
 	dynamic_string_t * ds = ds_init(); // Initialize write buffer.
@@ -120,7 +119,6 @@ token_t * get_token() {
 	return t;
 }
 
-/* TODO: Edge case names. */
 void vik_handler(dynamic_string_t * ds, token_t * t, int * c) {
 	static const char * reserved_words[] = {"else", "function", "if", "return", "while", "float", "string", "int", "null", "void"};
 	static const int reserved_words_count = 10;
@@ -153,7 +151,13 @@ void vik_handler(dynamic_string_t * ds, token_t * t, int * c) {
 	}
 	/* No match found, token is func/variable identifier. */
 	if(ds->str[0] == '$') {
-		// TODO: str[1] cannot be NUMBER!!!
+		if(strlen(ds->str) == 1) { // Invalid variable name length.
+			error = LEXICAL_ERROR;
+			return;
+		} else if (isalpha(ds->str[1]) == 0 && ds->str[1] != '_') { // var identifer doesn't start with letter or '_'
+			error = LEXICAL_ERROR;
+			return;
+		}
 		t->type = VAR_ID;
 	} else {
 		t->type = FUNC_ID;
@@ -175,22 +179,75 @@ void fi_handler(dynamic_string_t * ds, token_t * t, int * c) {
 		}
 	} while( (*c = fgetc(stdin)) != EOF && isdigit(*c));
 
-	if(*c != '.') {
-		/* Check if value is correct */
-		ungetc(*c, stdin);
-		t->ival = strtoimax(ds->str, NULL, 10); // If valid conversion, store ds as string...
+	if(!isflchr(*c)) { // Value should be an integer literal.
+	
+		ungetc(*c, stdin); // Return false read.
+
+		/* Check if value is ok. */
+
+		char * end_ptr;
+		unsigned value = strtoumax(ds->str, &end_ptr, 10); // Try to conver value.
+		
+		if(*end_ptr != '\0') { // Incorrect read.
+			error = LEXICAL_ERROR;
+			return;
+		}
+		if(errno == ERANGE) { // Out of range conversion error.
+			error = LEXICAL_ERROR;
+			return;
+		}
 		t->type = INT_LIT;
+
+
+		/* Attaching token attribute. */
+		/* Non string option */
+		t->ival = value;
+		
+		/* String option */
+		/*
+		t->sval = malloc(strlen(ds->str) + 1);
+		if(t->sval == NULL) {
+			error = INTERNAL_ERROR;
+		}
+		strcpy(t->sval, ds->str);
+		*/
 	} else {
-		do {
+		do { // Read string till end.
 			if(ds_write(ds, *c)) {
 				error = INTERNAL_ERROR;
 				return;
 			}
-		} while( (*c = fgetc(stdin)) != EOF && isdigit(*c));
+		} while( (*c = fgetc(stdin)) != EOF && (isdigit(*c) || isflchr(*c)));
 		ungetc(*c, stdin);
-		t->fval = strtod(ds->str, NULL);
+
+		char * end_ptr;
+		double value = strtod(ds->str, &end_ptr); // Try to convert value.
+
+		if(*end_ptr != '\0') { // Incorrect read.
+			fprintf(stderr, "Stopped reading at %c\n", *end_ptr);
+			error = LEXICAL_ERROR;
+			return;
+		}
+		if(errno == ERANGE) { // Out of range conversion error.
+			error = LEXICAL_ERROR;
+			return;
+		}
 		t->type = FLT_LIT;
+
+		/* Attachong token attribute. */
+		/* Non string option. */
+		t->fval = value;
+
+		/* String option */
+		/*
+		t->sval = malloc(strlen(ds->str) + 1);
+		if(t->sval == NULL) {
+			error = INTERNAL_ERROR;
+		}
+		strcpy(t->sval, ds->str);
+		*/
 	}
+
 }
 
 /* TODO: Finish interpolation. */
@@ -333,6 +390,13 @@ void aeq_handler(token_t * t, int * c) {
 	} else {
 		t->type = ASSIGN;
 		ungetc(*c, stdin); // Return extra read.
+	}
+}
+
+int isflchr(int c) {
+	switch(c) {
+		case '.': case '+': case '-': case 'e': case 'E': return 1; break;
+		default: return 0; break;
 	}
 }
 
