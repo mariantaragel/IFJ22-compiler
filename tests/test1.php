@@ -7,15 +7,18 @@ declare(strict_types=1);
 write("Zadejte cislo pro vypocet faktorialu\n");
 readi(5.88);
 
-if () {
+if ( ((6 - $a ) * (5 / 2)) < $b ) {
 write("Chyba pri nacitani celeho cisla!\n");
 } else {}
 
-if () {
+if ( "aaaa" . "bbbb" ) {
     write("Faktorial nelze spocitat\n");
 } else {
-    while () {
+    while ( $a >  5.99) {
     }
     write("Vysledek je: ", $vysl, "\n");
 }
+
+return;
+
 ?>
