@@ -18,11 +18,8 @@ function factorial(int $n) : int {
 }
 
 function test(?float $a, ?int $b) : ?string {
-	if($a) {
-		return "Wow";
-	} else
-		$b = $b + 1;
-		return "Not wow.";
+	if() {
+	} else {
 	}
 }
 
@@ -36,4 +33,6 @@ if () {
 } else {
     write("Chyba pri nacitani celeho cisla!\n");
 }
+
+
 ?>

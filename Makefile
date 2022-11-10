@@ -19,7 +19,7 @@ run:
 	make scanner
 	cat ./tests/test1.php | ./scanner > ./tests/res1.txt
 
-parser_test: parser_test.o parser.o scanner.o dynamic_string.o token.o error.o
+parser_test: parser_test.o parser.o scanner.o dynamic_string.o token.o error.o abstract_syntax_tree.o token_array.o
 	$(CC) $(CFLAGS) -g $^ -o $@
 
 # TEST symtable

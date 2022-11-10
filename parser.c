@@ -111,7 +111,7 @@ void program_body(token_t *token, AST_node_t *parent)
         RETURN_IF_ERROR;
         program_body(token, parent);
         t_dstr(token);
-        RETURN_IF_ERROR;
+        return;
     }
     
     error = OK;
@@ -121,7 +121,7 @@ void program_body(token_t *token, AST_node_t *parent)
         RETURN_IF_ERROR;
         program_body(token, parent);
         t_dstr(token);
-        RETURN_IF_ERROR;
+        return;
     }
 
     error = OK;
@@ -131,12 +131,11 @@ void program_body(token_t *token, AST_node_t *parent)
         RETURN_IF_ERROR;
         program_body(token, parent);
         t_dstr(token);
-        RETURN_IF_ERROR;
+        return;
     }
-
     error = OK;
     php_end(token);
-    RETURN_IF_ERROR;
+    return;
 }
 
 void php_end(token_t *token)
@@ -144,13 +143,16 @@ void php_end(token_t *token)
     if (token->type == END) {
         return;
     }
-    if (token->type == EPILOG) {
+    else if (token->type == EPILOG) {
         token = get_token();
         RETURN_IF_ERROR;
         if (token->type == END) {
             t_dstr(token);
             return;
         }
+    }
+    else {
+        RETURN_ERROR(SYNTAX_ERROR);
     }
 }
 
@@ -175,6 +177,7 @@ void func_def(token_t *token, AST_node_t *parent)
     }
     strcpy(new_value, token->sval);
     n_func_def->data.str = new_value;
+    free(new_value);
     t_dstr(token);
 
     token = get_token();
@@ -240,7 +243,7 @@ void type(token_t *token, AST_node_t *parent)
 {
     AST_node_t *n_type = AST_create_add_child(parent, TYPE_N);
     RETURN_INTERNAL_ERROR(n_type)
-    if (token->type != INT_T && token->type != NINT_T && token->type != FLT_T && token->type != NFLT_T && token->type != STR_T && token->type != NSTR_T) {
+    if (!is_token_type_correct(6, token, INT_T, NINT_T, FLT_T, NFLT_T, STR_T, NSTR_T)) {
         RETURN_ERROR(SYNTAX_ERROR);
     }
     n_type->data.type = token->type;
@@ -274,6 +277,7 @@ void param_list(token_t *token, AST_node_t *parent)
     }
     strcpy(new_value, token->sval);
     n_id->data.str = new_value;
+    free(new_value);
     t_dstr(token);
 
     token = get_token();
@@ -316,6 +320,7 @@ void param_next(token_t *token, AST_node_t *parent)
     }
     strcpy(new_value, token->sval);
     n_id->data.str = new_value;
+    free(new_value);
     t_dstr(token);
     
     token = get_token();
@@ -388,14 +393,14 @@ void stmt(token_t *token, AST_node_t *parent)
     case RETURN:
         token = get_token();
         RETURN_IF_ERROR;
-
         AST_node_t *n_return = AST_create_add_child(parent, RETURN_N);
         RETURN_INTERNAL_ERROR(n_return)
 
         AST_node_t *n_expr = AST_create_add_child(n_return, EXPR_N);
         RETURN_INTERNAL_ERROR(n_expr)
-        // TODO: verify <exp>
-        // TODO: add expression to node
+        
+        exprssion(&token, FALSE);
+        RETURN_IF_ERROR;
 
         if (token->type != SCOLON) {
             t_dstr(token);
@@ -429,19 +434,12 @@ void while_stmt(token_t *token, AST_node_t *parent)
     
     AST_node_t *n_expr = AST_create_add_child(n_while_stmt, EXPR_N);
     RETURN_INTERNAL_ERROR(n_expr)
-    // TODO: verify <exp>
-    // TODO: add expression to node
     
     token = get_token();
     RETURN_IF_ERROR;
-    if (token->type != RB) {
-        t_dstr(token);
-        RETURN_ERROR(SYNTAX_ERROR);
-    }
-    t_dstr(token);
-    
-    token = get_token();
+    exprssion(&token, TRUE);
     RETURN_IF_ERROR;
+    
     if (token->type != LCB) {
         t_dstr(token);
         RETURN_ERROR(SYNTAX_ERROR);
@@ -469,31 +467,11 @@ void if_stmt(token_t *token, AST_node_t *parent)
     AST_node_t *n_expr = AST_create_add_child(n_if_stmt, EXPR_N);
     RETURN_INTERNAL_ERROR(n_expr)
 
-    /*
-    token_array_t *array = token_array_create();
-    RETURN_INTERNAL_ERROR(array)
-    token = get_token();
-    while (token->type != LCB) {
-        if (token_array_push_token(array, token)) {
-            RETURN_ERROR(INTERNAL_ERROR);
-            t_dstr(token);
-        }
-        t_dstr(token);
-        token = get_token();
-        RETURN_IF_ERROR;
-    }
-    //check_token_type(3, token, LB, RB, LCB);
-    token_t *prev_token = token_array_pop_token(array);
-    if (prev_token->type != RB) {
-        RETURN_ERROR(SYNTAX_ERROR);
-    }
-    
-    //parse_expression(array);
-    token_array_free(array);
-    */
-
     token = get_token();
     RETURN_IF_ERROR;
+    exprssion(&token, TRUE);
+    RETURN_IF_ERROR;
+
     if (token->type != LCB) {
         t_dstr(token);
         RETURN_ERROR(SYNTAX_ERROR);
@@ -546,6 +524,7 @@ void func_call(token_t *token, AST_node_t *parent)
     }
     strcpy(new_value, token->sval);
     n_func_call->data.str = new_value;
+    free(new_value);
 
     token = get_token();
     RETURN_IF_ERROR;
@@ -602,17 +581,9 @@ void arg_next(token_t *token, AST_node_t *parent)
 
 void arg(token_t *token, AST_node_t *parent)
 {
-    if (token->type != VAR_ID &&
-        token->type != STR_LIT &&
-        token->type != INT_LIT &&
-        token->type != FLT_LIT &&
-        token->type != NULL_LIT) {
-        RETURN_ERROR(SYNTAX_ERROR);
-    }
     if (!is_token_type_correct(5, token, VAR_ID, STR_LIT, INT_LIT, FLT_LIT, NULL_LIT)) {
         RETURN_ERROR(SYNTAX_ERROR);
     }
-    
     if (token->type == VAR_ID) {
         AST_node_t *n_arg = AST_create_add_child(parent, ID_N);
         RETURN_INTERNAL_ERROR(n_arg)
@@ -622,6 +593,7 @@ void arg(token_t *token, AST_node_t *parent)
         }
         strcpy(new_value, token->sval);
         n_arg->data.str = new_value;
+        free(new_value);
     }
     else if (token->type == STR_LIT) {
         AST_node_t *n_arg = AST_create_add_child(parent, STR_LIT_N);
@@ -632,6 +604,7 @@ void arg(token_t *token, AST_node_t *parent)
         }
         strcpy(new_value, token->sval);
         n_arg->data.str = new_value;
+        free(new_value);
     }
     else if (token->type == INT_LIT) {
         AST_node_t *n_arg = AST_create_add_child(parent, INT_LIT_N);
@@ -665,4 +638,32 @@ int is_token_type_correct(int num_of_types, token_t *token, ...)
     va_end(valist);
 
     return return_status;
+}
+
+void exprssion(token_t **token, int is_in_if_or_while)
+{
+    token_array_t *array = token_array_create();
+    RETURN_INTERNAL_ERROR(array)
+    while (is_token_type_correct(17, *token, VAR_ID, STR_LIT, INT_LIT, FLT_LIT, MUL,
+                            DIV, ADD, SUB, CONCAT, LT, GT, LTE, GTE, EQ, NEQ, LB, RB)) {
+        if (token_array_push_token(array, *token)) {
+            RETURN_ERROR(INTERNAL_ERROR);
+            t_dstr(*token);
+        }
+        *token = get_token();
+        RETURN_IF_ERROR;
+    }
+    if (is_in_if_or_while) {
+        if (array->token_count == 0UL) {
+            RETURN_ERROR(SYNTAX_ERROR);
+        }
+        token_t *prev_token = token_array_pop_token(array);
+        if (prev_token->type != RB || array->token_count == 0UL) {
+            RETURN_ERROR(SYNTAX_ERROR);
+        }
+    }
+
+    //node->data.expression = parse_expression(array)
+
+    token_array_free(array);
 }

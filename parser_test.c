@@ -31,7 +31,7 @@ int main()
 {
     test("tests/test1.php", OK);
     test("tests/test2.php", OK);
-    test("tests/test3.php", OK);
+    test("tests/test3.php", SYNTAX_ERROR);
     test("tests/test4.php", SYNTAX_ERROR);
     test("tests/test5.php", SYNTAX_ERROR);
     test("tests/test6.php", SYNTAX_ERROR);

@@ -161,5 +161,6 @@ void arg_next(token_t *token, AST_node_t *parent);
 void arg(token_t *token, AST_node_t *parent);
 
 int is_token_type_correct(int num_of_types, token_t *token, ...);
+void exprssion(token_t **token, int is_in_if_or_while);
 
 #endif
