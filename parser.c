@@ -2,20 +2,17 @@
  * @name parser.c
  * @brief Implementation of top-down parser
  * @authors Marián Tarageľ
- * @date 5.11.2022
+ * @date 10.11.2022
  */
 
 #include "parser.h"
 #include "scanner.h"
 #include "error.h"
 #include "precedence_parser.h"
+#include "token_array.h"
 #include <stdio.h>
 #include <string.h>
-
-#define RETURN_IF_ERROR if (error != OK) return
-#define RETURN_ERROR(error_code) error = error_code; return
-#define RETURN_ROOT if (error != OK) return root
-#define RETURN_INTERNAL_ERROR(node) if (node == NULL) {RETURN_ERROR(INTERNAL_ERROR);}
+#include <stdarg.h>
 
 AST_node_t *program()
 {
@@ -172,9 +169,14 @@ void func_def(token_t *token, AST_node_t *parent)
         t_dstr(token);
         RETURN_ERROR(SYNTAX_ERROR);
     }
+    char *new_value = malloc((strlen(token->sval) + 1) * sizeof(char));
+    if (new_value == NULL) {
+        RETURN_ERROR(INTERNAL_ERROR);
+    }
+    strcpy(new_value, token->sval);
+    n_func_def->data.str = new_value;
     t_dstr(token);
-    n_func_def->data.str = token->sval;
-    
+
     token = get_token();
     RETURN_IF_ERROR;
     if (token->type != LB) {
@@ -228,9 +230,10 @@ void return_type(token_t *token, AST_node_t *parent)
         n_return_type->data.type = token->type;
         return;
     }
-
-    type(token, parent);
-    RETURN_IF_ERROR;
+    else {
+        type(token, parent);
+        RETURN_IF_ERROR;
+    }
 }
 
 void type(token_t *token, AST_node_t *parent)
@@ -265,7 +268,12 @@ void param_list(token_t *token, AST_node_t *parent)
         t_dstr(token);
         RETURN_ERROR(SYNTAX_ERROR);
     }
-    n_id->data.str = token->sval;
+    char *new_value = malloc((strlen(token->sval) + 1) * sizeof(char));
+    if (new_value == NULL) {
+        RETURN_ERROR(INTERNAL_ERROR);
+    }
+    strcpy(new_value, token->sval);
+    n_id->data.str = new_value;
     t_dstr(token);
 
     token = get_token();
@@ -302,7 +310,12 @@ void param_next(token_t *token, AST_node_t *parent)
         t_dstr(token);
         RETURN_ERROR(SYNTAX_ERROR);
     }
-    n_id->data.str = token->sval;
+    char *new_value = malloc((strlen(token->sval) + 1) * sizeof(char));
+    if (new_value == NULL) {
+        RETURN_ERROR(INTERNAL_ERROR);
+    }
+    strcpy(new_value, token->sval);
+    n_id->data.str = new_value;
     t_dstr(token);
     
     token = get_token();
@@ -456,17 +469,29 @@ void if_stmt(token_t *token, AST_node_t *parent)
     AST_node_t *n_expr = AST_create_add_child(n_if_stmt, EXPR_N);
     RETURN_INTERNAL_ERROR(n_expr)
 
-    // TODO: verify <exp>
-    // TODO: add expression to node
-    
+    /*
+    token_array_t *array = token_array_create();
+    RETURN_INTERNAL_ERROR(array)
     token = get_token();
-    RETURN_IF_ERROR;
-    if (token->type != RB) {
+    while (token->type != LCB) {
+        if (token_array_push_token(array, token)) {
+            RETURN_ERROR(INTERNAL_ERROR);
+            t_dstr(token);
+        }
         t_dstr(token);
+        token = get_token();
+        RETURN_IF_ERROR;
+    }
+    //check_token_type(3, token, LB, RB, LCB);
+    token_t *prev_token = token_array_pop_token(array);
+    if (prev_token->type != RB) {
         RETURN_ERROR(SYNTAX_ERROR);
     }
-    t_dstr(token);
     
+    //parse_expression(array);
+    token_array_free(array);
+    */
+
     token = get_token();
     RETURN_IF_ERROR;
     if (token->type != LCB) {
@@ -515,7 +540,12 @@ void func_call(token_t *token, AST_node_t *parent)
     }
     AST_node_t *n_func_call = AST_create_add_child(parent, FUNC_CALL_N);
     RETURN_INTERNAL_ERROR(n_func_call)
-    n_func_call->data.str = token->sval;
+    char *new_value = malloc((strlen(token->sval) + 1) * sizeof(char));
+    if (new_value == NULL) {
+        RETURN_ERROR(INTERNAL_ERROR);
+    }
+    strcpy(new_value, token->sval);
+    n_func_call->data.str = new_value;
 
     token = get_token();
     RETURN_IF_ERROR;
@@ -579,6 +609,10 @@ void arg(token_t *token, AST_node_t *parent)
         token->type != NULL_LIT) {
         RETURN_ERROR(SYNTAX_ERROR);
     }
+    if (!is_token_type_correct(5, token, VAR_ID, STR_LIT, INT_LIT, FLT_LIT, NULL_LIT)) {
+        RETURN_ERROR(SYNTAX_ERROR);
+    }
+    
     if (token->type == VAR_ID) {
         AST_node_t *n_arg = AST_create_add_child(parent, ID_N);
         RETURN_INTERNAL_ERROR(n_arg)
@@ -589,7 +623,7 @@ void arg(token_t *token, AST_node_t *parent)
         strcpy(new_value, token->sval);
         n_arg->data.str = new_value;
     }
-    if (token->type == STR_LIT) {
+    else if (token->type == STR_LIT) {
         AST_node_t *n_arg = AST_create_add_child(parent, STR_LIT_N);
         RETURN_INTERNAL_ERROR(n_arg)
         char *new_value = malloc((strlen(token->sval) + 1) * sizeof(char));
@@ -599,18 +633,36 @@ void arg(token_t *token, AST_node_t *parent)
         strcpy(new_value, token->sval);
         n_arg->data.str = new_value;
     }
-    if (token->type == INT_LIT) {
+    else if (token->type == INT_LIT) {
         AST_node_t *n_arg = AST_create_add_child(parent, INT_LIT_N);
         RETURN_INTERNAL_ERROR(n_arg)
         // TODO: add value
     }
-    if (token->type == FLT_LIT) {
+    else if (token->type == FLT_LIT) {
         AST_node_t *n_arg = AST_create_add_child(parent, FLT_LIT_N);
         RETURN_INTERNAL_ERROR(n_arg)
         // TODO: add value
     }
-    if (token->type == NULL_LIT) {
+    else if (token->type == NULL_LIT) {
         AST_node_t *n_arg = AST_create_add_child(parent, NULL_LIT_N);
         RETURN_INTERNAL_ERROR(n_arg)
     }
+}
+
+int is_token_type_correct(int num_of_types, token_t *token, ...)
+{
+    va_list valist;
+    va_start(valist, token);
+
+    int return_status = FALSE;
+    for (int i = 0; i < num_of_types; i++) {
+        if (va_arg(valist, token_type_t) == token->type) {
+            return_status = TRUE;
+            break;
+        }
+    }
+
+    va_end(valist);
+
+    return return_status;
 }

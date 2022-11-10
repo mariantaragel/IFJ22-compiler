@@ -2,7 +2,7 @@
  * @name parser.h
  * @brief Interface of top-down parser
  * @authors Marián Tarageľ
- * @date 30.10.2022
+ * @date 10.11.2022
  */
 
 #ifndef PARSER_H
@@ -10,6 +10,14 @@
 
 #include "token.h"
 #include "abstract_syntax_tree.h"
+
+#define RETURN_IF_ERROR if (error != OK) return
+#define RETURN_ERROR(error_code) error = error_code; return
+#define RETURN_ROOT if (error != OK) return root
+#define RETURN_INTERNAL_ERROR(ptr) if (ptr == NULL) {RETURN_ERROR(INTERNAL_ERROR);}
+
+#define TRUE 1
+#define FALSE 0
 
 /**
  * @brief Checks syntax of a program
@@ -151,5 +159,7 @@ void arg_next(token_t *token, AST_node_t *parent);
  * @param parent parent node in abstract syntax tree
  */
 void arg(token_t *token, AST_node_t *parent);
+
+int is_token_type_correct(int num_of_types, token_t *token, ...);
 
 #endif
