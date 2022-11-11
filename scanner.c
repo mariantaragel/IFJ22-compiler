@@ -24,7 +24,6 @@
 #include "token.h"
 #include "error.h"
 
-/*
 int main() {
 	token_t * token;
 	do {
@@ -40,7 +39,6 @@ int main() {
 	} while(token->type != END && token->type != EPILOG);
 	return 0;
 }
-*/
 
 token_t * get_token() {
 	dynamic_string_t * ds = ds_init(); // Initialize write buffer.
