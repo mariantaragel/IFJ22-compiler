@@ -1,8 +1,7 @@
 #include "semantic_analyzer.h"
 #include "abstract_syntax_tree.h"
 #include "error.h"
-#include "stdbool.h"
-#include "symtable.h"
+#include <stdbool.h>
 #include <string.h>
 
 typedef struct{
@@ -171,10 +170,6 @@ error_codes_t gen_standalone_expr(AST_node_t* expr_n, generator_context_t* gen_c
 	return OK;
 }
 
-error_codes_t gen_used_vars(AST_node_t* used_vars_list_n, generator_context_t* gen_context){
-	return OK;
-}
-
 error_codes_t gen_body(AST_node_t* body_n, generator_context_t* gen_context){
     error_codes_t res = OK;
 
@@ -182,9 +177,6 @@ error_codes_t gen_body(AST_node_t* body_n, generator_context_t* gen_context){
     for(size_t i = 0; i < body_n->children_count; ++i){
 		cur_node = body_n->children_arr[i];
 		switch(cur_node->type){
-			case USED_VARS_LIST_N:
-				res = gen_used_vars(cur_node, gen_context);
-				break;
 			case WHILE_N: 
 				res = gen_while(cur_node, gen_context);
 				break;
@@ -221,7 +213,7 @@ error_codes_t gen_body(AST_node_t* body_n, generator_context_t* gen_context){
 
 // calls function sem_var_n on every param variable
 // has to be called after changing into function local context
-error_codes_t gen_func_params(AST_node_t* params_n, generator_context_t* gen_context){
+error_codes_t gen_func_params(AST_node_t* params_n){
 	//TODO
 
 	return OK;
@@ -231,9 +223,17 @@ error_codes_t gen_func_params(AST_node_t* params_n, generator_context_t* gen_con
 error_codes_t gen_func_def(AST_node_t* func_def_n, generator_context_t* gen_context){
     AST_node_t* params_n = func_def_n->children_arr[0];
     AST_node_t* type_n = func_def_n->children_arr[1];
-    AST_node_t* body_n = func_def_n->children_arr[2];
+	AST_node_t* used_variables_n = func_def_n->children_arr[2];
+    AST_node_t* body_n = func_def_n->children_arr[3];
 
     //TODO
+
+	error_codes_t res;
+
+	if((res = gen_func_params(used_variables_n)) != OK) return res;
+
+	if((res = gen_var_defs(used_variables_n)) != OK) return res;
+
 
     return OK;
 }
@@ -311,7 +311,7 @@ error_codes_t gen_built_in_functions(AST_node_t* used_func_list_n){
     return OK;
 }
 
-error_codes_t gen_var_def_flags(AST_node_t* used_vars_list_n){
+error_codes_t gen_var_defs(AST_node_t* used_vars_list_n){
     AST_node_t* id_n;
     char* var_name;
     // iterate over every ID node of used_vars_list_n and generate definition flag for every variable name
@@ -327,7 +327,7 @@ error_codes_t gen_var_def_flags(AST_node_t* used_vars_list_n){
 
 
 
-error_codes_t sem_prog_n(AST_node_t* prog_n, generator_context_t* gen_context){
+error_codes_t gen_prog(AST_node_t* prog_n, generator_context_t* gen_context){
     // set context to global, we are in main body
     gen_context->is_in_function = false;
 
@@ -344,7 +344,7 @@ error_codes_t sem_prog_n(AST_node_t* prog_n, generator_context_t* gen_context){
     AST_node_t* used_vars_list_n = prog_n->children_arr[1];
 
     // generate varaible definition flags
-    gen_var_def_flags(used_vars_list_n);
+    gen_var_defs(used_vars_list_n);
 
 	error_codes_t res = OK;
 
@@ -353,10 +353,10 @@ error_codes_t sem_prog_n(AST_node_t* prog_n, generator_context_t* gen_context){
 		cur_node = prog_n->children_arr[i];
 		switch(cur_node->type){
 			case BODY_N:
-				res = sem_body_n(cur_node, gen_context);
+				res = gen_body(cur_node, gen_context);
 				break;
 			case FUNC_DEF_N:
-				res = sem_func_def_n(cur_node, gen_context);
+				res = gen_func_def(cur_node, gen_context);
 				break;
 			default:
 				res = INTERNAL_ERROR;
@@ -367,14 +367,14 @@ error_codes_t sem_prog_n(AST_node_t* prog_n, generator_context_t* gen_context){
     return OK;
 }
 
-// frees semantic context structure
+// frees generator context structure
 void generator_context_free(generator_context_t* gen_context){
     if(gen_context != NULL){
         free(gen_context);
     }
 }
 
-// creates and initializes semantic context structure
+// creates and initializes generator context structure
 generator_context_t* generator_context_create(){
     generator_context_t* gen_context = malloc(sizeof(*gen_context));
     if(gen_context == NULL) return NULL;
@@ -384,21 +384,18 @@ generator_context_t* generator_context_create(){
     return gen_context;    
 }  
 
-void semantic_analyzer(AST_node_t* root){
-    // check if semantic analyzer starting conditions were met
+void generator(AST_node_t* root){
+    // check if generator starting conditions were met
     if(root == NULL) error = INTERNAL_ERROR; return;
     if(root->type != PROG_N) error = INTERNAL_ERROR; return;
     
     // create generator context
     generator_context_t* gen_context = generator_context_create();
-    if(gen_context == NULL){
-        error = INTERNAL_ERROR;
-        return;
-    }
+    if(gen_context == NULL) error = INTERNAL_ERROR; return;
 
     // run semantic analysis
-    error = sem_prog_n(root, gen_context);
+    error = gen_prog(root, gen_context);
 
     // free generator context
-    semantic_context_free(gen_context);
+    generator_context_free(gen_context);
 }

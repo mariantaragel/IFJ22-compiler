@@ -3,9 +3,40 @@
 
 #include <stdlib.h>  // size_t
 #include <stdbool.h> // bool
-#include "symbol.h"
+
+#ifndef DATATYPE_T
+#define DATATYPE_T
+/**
+ * @brief Datatype type.
+ * 	Its values are synonymous to FLT_T,STR_T,INT_T,VOID_T,NFLT_T,NINT_T,NSTR_T values of token_type_t.
+ * 	Additionaly if value is equal to -1, it means that datatype is "any datatype".
+ */
+typedef int datatype_t;
+#endif
+
+/**
+ * @brief Type of symbol.
+ */
+typedef enum{
+	VAR_SYMBOL,
+	FUNC_SYMBOL
+} symbol_type_t;
+
+/**
+ * @brief Symbol structure data type.
+ *
+ */
+typedef struct{
+	symbol_type_t symbol_type;
+
+	bool defined;
+
+	datatype_t return_type;
+} symbol_info_t;
+
 
 /////////////////
+
 
 /**
  * @brief Data type of symbol name.
