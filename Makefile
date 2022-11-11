@@ -12,8 +12,11 @@ parser: parser.o scanner.o dynamic_string.o token.o error.o
 scanner: scanner.o dynamic_string.o token.o error.o
 	$(CC) $(CFLAGS) -o $@ $^
 
+codegen: codegen.o dynamic_string.o
+	$(CC) $(CFLAGS) -o $@ $^
+
 clean:
-	rm -f scanner parser parser_test main *.o
+	rm -f scanner parser parser_test codegen main *.o
 
 run:
 	make scanner
