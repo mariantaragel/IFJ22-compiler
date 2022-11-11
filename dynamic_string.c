@@ -36,7 +36,7 @@ dynamic_string_t * ds_init() {
 	return ds;
 }
 
-unsigned ds_resize(dynamic_string_t * ds) {
+int ds_resize(dynamic_string_t * ds) {
 	char * new_str = (char*) realloc(ds->str, ds->size*2); // Double size of string.
 	if(new_str == NULL) {
 		// TODO: Handle realloc error.
@@ -54,7 +54,7 @@ void ds_dstr(dynamic_string_t * ds) {
 	free(ds); // Free self.
 }
 
-unsigned ds_write(dynamic_string_t * ds, int c) {
+int ds_write(dynamic_string_t * ds, int c) {
 	ds->str[ds->wi] = c;
 	ds->wi++;
 	if(ds->wi == ds->size) { // Resize if string limit reached.

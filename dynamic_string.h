@@ -12,10 +12,18 @@
  * @date 2022-10-05
  */
 
-#ifndef __DYNAMIC_STRING_H__
-#define __DYNAMIC_STRING_H__
+#ifndef DYNAMIC_STRING_H
+#define DYNAMIC_STRING_H
 
 #include <stdlib.h>
+
+/* TODO:
+	Implement:
+		ds_strinit;
+		ds_concat;
+		ds_concat_str;
+		ds_write_int;
+*/
 
 typedef struct {
 	char * str; // String.
@@ -24,17 +32,24 @@ typedef struct {
 } dynamic_string_t;
 
 /**
- * @brief Initialize a dynamic string.
+ * @brief Initialize an empty dynamic string.
  * @returns Initialized dynamic string. NULL if error.
  */
 dynamic_string_t * ds_init();
+
+/**
+ * @brief Initialize dynamic string with a given value.
+ * @param str String with which the ds is initialized.
+ * @returns Initialized dynamic string. NULL if error.
+*/
+dynamic_string_t * ds_strinit(const char * str);
 
 /**
  * @brief Resize dynamic string to twice the current size.
  * @param ds Dynamic string to resize.
  * @returns 0 when successful, non-zero on error.
  */
-unsigned ds_resize(dynamic_string_t * ds);
+int ds_resize(dynamic_string_t * ds);
 
 /**
  * @brief Deallocates dynamic string.
@@ -48,9 +63,7 @@ void ds_dstr(dynamic_string_t * ds);
  * @param c Character to write.
  * @returns 0 when successful, non-zero on error.
  */
-unsigned ds_write(dynamic_string_t * ds, int c);
-
-
+int ds_write(dynamic_string_t * ds, int c);
 
 /**
  * @brief Concatenates the dynamic string from a onto b. Operation: a.b
@@ -59,4 +72,18 @@ unsigned ds_write(dynamic_string_t * ds, int c);
  */
 void ds_concat(dynamic_string_t * a, dynamic_string_t * b);
 
-#endif // __DYNAMIC_STRING_H__
+/**
+ * @brief Concatenates a string literal onto a dynamic string.
+ * @param ds Dynamic string which will be concatenated.
+ * @param str String literal which is concatenated onto ds.
+*/
+void ds_concat_str(dynamic_string_t * ds, const char * str);
+
+/**
+ * @brief Writes an integer as a string value onto the end of a dynamic string.
+ * @param ds Dynamic string for writing.
+ * @param n Integer to write.
+*/
+void ds_write_int(dynamic_string_t * ds, int n);
+
+#endif // DYNAMIC_STRING_H
