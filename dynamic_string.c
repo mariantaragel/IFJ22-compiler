@@ -66,10 +66,18 @@ unsigned ds_write(dynamic_string_t * ds, int c) {
 	return 0;
 }
 
+/*
 void ds_concat(dynamic_string_t * a, dynamic_string_t * b) {
-	fprintf(stderr, "%s\n", a->str);
-	fprintf(stderr, "%s\n", b->str);
+	Concatenate string in b onto string in b.
+
+	
 
 }
+
+void ds_concat_str(dynamic_string_t * ds, const char * str) {
+	
+}
+
+*/
 
 

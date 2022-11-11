@@ -1,0 +1,42 @@
+.IFJcode22
+DEFVAR GF@L
+MOVE GF@L string@Zadejte\032cislo\032pro\032vypocet\032faktorialu\010
+PUSHS GF@L
+CALL write
+DEFVAR GF@A
+MOVE GF@A int@100
+PUSHS GF@A
+DEFVAR GF@B 
+MOVE GF@B int@20
+PUSHS GF@B
+call sum
+POPS GF@A
+INT2CHAR GF@L GF@A
+PUSHS GF@L
+call write
+MOVE GF@L string@\010
+PUSHS GF@L
+call write
+EXIT int@0
+
+LABEL write
+CREATEFRAME
+DEFVAR TF@arg_1
+POPS TF@arg_1
+PUSHFRAME
+WRITE LF@arg_1
+POPFRAME
+RETURN
+
+LABEL sum
+CREATEFRAME
+DEFVAR TF@arg_1
+POPS TF@arg_1
+DEFVAR TF@arg_2
+POPS TF@arg_2
+DEFVAR TF@return_val
+PUSHFRAME
+ADD LF@return_val LF@arg_1 LF@arg_2
+PUSHS LF@return_val
+POPFRAME
+RETURN
