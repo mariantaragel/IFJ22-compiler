@@ -1,19 +1,23 @@
-CFLAGS= -std=c11 -Wall -Wextra -pedantic -g 
+CFLAGS= -std=c11 -Wall -Wextra -pedantic -g
+LFLAGS= -lm
 CC=gcc
 
 all: main
 
 main: main.o parser.o scanner.o dynamic_string.o token.o error.o abstract_syntax_tree.o token_array.o
-	$(CC) $(CFLAGS) -o $@ $^
+	$(CC) $(CFLAGS) -o $@ $^ $(LFLAGS)
 
 parser: parser.o scanner.o dynamic_string.o token.o error.o
-	$(CC) $(CFLAGS) -o $@ $^
+	$(CC) $(CFLAGS) -o $@ $^ $(LFLAGS)
 
 scanner: scanner.o dynamic_string.o token.o error.o
-	$(CC) $(CFLAGS) -o $@ $^
+	$(CC) $(CFLAGS) -o $@ $^ $(LFLAGS)
+
+codegen: codegen.o dynamic_string.o
+	$(CC) $(CFLAGS) -o $@ $^ $(LFLAGS)
 
 clean:
-	rm -f scanner parser parser_test main *.o
+	rm -f scanner parser parser_test codegen main *.o
 
 run:
 	make scanner

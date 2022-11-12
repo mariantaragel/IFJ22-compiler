@@ -69,8 +69,8 @@ TOKEN TABLE:
 		
 */
 
-#ifndef __TOKEN_H__
-#define __TOKEN_H__
+#ifndef TOKEN_H
+#define TOKEN_H
 
 typedef enum {FUNC_ID,VAR_ID,STR_LIT,INT_LIT,FLT_LIT,MUL,DIV,ADD,SUB,CONCAT,LT,GT,LTE,GTE,EQ,NEQ,COMMA,COLON,SCOLON,LB,RB,LCB,RCB,ASSIGN,FLT_T,STR_T,INT_T,VOID_T,NULL_LIT,NFLT_T,NINT_T,NSTR_T,ELSE,FUNCTION,IF,RETURN,WHILE,PROLOG,EPILOG,END} token_type_t;
 
@@ -105,4 +105,4 @@ void t_print(token_t * t);
 
 
 
-#endif // __TOKEN_H__
+#endif // TOKEN_H

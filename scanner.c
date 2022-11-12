@@ -394,6 +394,7 @@ void aeq_handler(token_t * t, int * c) {
 	}
 }
 
+/* 10+10 vyhodi lexical error i ked to neni... chybu... */
 int isflchr(int c) {
 	switch(c) {
 		case '.': case '+': case '-': case 'e': case 'E': return 1; break;

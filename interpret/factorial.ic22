@@ -1,0 +1,168 @@
+.IFJcode22
+DEFVAR GF@_tmp1
+DEFVAR GF@_tmp2
+DEFVAR GF@_tmp3
+DEFVAR GF@?write$declared
+MOVE GF@?write$declared bool@true
+DEFVAR GF@?readi$declared
+MOVE GF@?readi$declared bool@true
+DEFVAR GF@?readf$declared
+MOVE GF@?readf$declared bool@true
+DEFVAR GF@?reads$declared
+MOVE GF@?reads$declared bool@true
+DEFVAR GF@?strlen$declared
+MOVE GF@?strlen$declared bool@true
+DEFVAR GF@?chr$declared
+MOVE GF@?chr$declared bool@true
+DEFVAR GF@?ord$declared
+MOVE GF@?ord$declared bool@true
+DEFVAR GF@?substring$declared
+MOVE GF@?substring$declared bool@true
+DEFVAR GF@$a
+DEFVAR GF@$vysl
+JUMPIFEQ !ERR_CALL bool@false GF@?write$declared
+PUSHS string@Zadejte\032cislo\032pro\032vypocet\032faktorialu\010
+PUSHS int@1
+CALL write
+JUMPIFEQ !ERR_CALL bool@false GF@?readi$declared
+CALL readi
+POPS GF@$a
+PUSHS GF@$a
+PUSHS nil@nil
+EQS
+POPS GF@_tmp1
+JUMPIFEQ !else_0 GF@_tmp1 bool@false
+JUMPIFEQ !ERR_CALL bool@false GF@?write$declared
+PUSHS string@Chyba\032pri\032nacitani\032celeho\032cisla!\010
+PUSHS int@1
+CALL write
+JUMP !elseifend_0
+LABEL !else_0
+LABEL !elseifend_0
+PUSHS GF@$a
+PUSHS int@0
+LTS
+POPS GF@_tmp1
+JUMPIFEQ !else_1 GF@_tmp1 bool@false
+JUMPIFEQ !ERR_CALL bool@false GF@?write$declared
+PUSHS string@Faktorial\032nelze\032spocitat\010
+PUSHS int@1
+CALL write
+JUMP !elseifend_1
+LABEL !else_1
+PUSHS int@1
+POPS GF@$vysl
+LABEL !while_2
+PUSHS GF@$a
+PUSHS int@0
+GTS
+POPS GF@_tmp1
+JUMPIFEQ !whileend_2 GF@_tmp1 bool@false
+PUSHS GF@$vysl
+PUSHS GF@$a
+MULS
+POPS GF@$vysl
+PUSHS GF@$a
+PUSHS int@1
+SUBS
+POPS GF@$a
+JUMP !while_2
+LABEL !whileend_2
+JUMPIFEQ !ERR_CALL bool@false GF@?write$declared
+PUSHS string@\010
+PUSHS GF@$vysl
+PUSHS string@Vysledek\032je:\032
+PUSHS int@3
+CALL write
+LABEL !elseifend_1
+EXIT int@0
+LABEL !ERR_CALL
+EXIT int@3
+LABEL write
+CREATEFRAME
+PUSHFRAME
+DEFVAR LF@i
+DEFVAR LF@current
+POPS LF@i
+LABEL !write_loop
+JUMPIFEQ !write_loop_end int@0 LF@i
+SUB LF@i LF@i int@1
+POPS LF@current
+WRITE LF@current
+JUMP !write_loop
+LABEL !write_loop_end
+POPFRAME
+RETURN
+LABEL readi
+CREATEFRAME
+PUSHFRAME
+DEFVAR LF@tmp
+READ LF@tmp int
+PUSHS LF@tmp
+POPFRAME
+RETURN
+LABEL readf
+CREATEFRAME
+PUSHFRAME
+DEFVAR LF@tmp
+READ LF@tmp float
+PUSHS LF@tmp
+POPFRAME
+RETURN
+LABEL reads
+CREATEFRAME
+PUSHFRAME
+DEFVAR LF@tmp
+READ LF@tmp string
+PUSHS LF@tmp
+POPFRAME
+RETURN
+LABEL strlen
+CREATEFRAME
+PUSHFRAME
+DEFVAR LF@tmp
+POPS LF@tmp
+STRLEN LF@tmp LF@tmp
+PUSHS LF@tmp
+POPFRAME
+RETURN
+LABEL chr
+CREATEFRAME
+PUSHFRAME
+DEFVAR LF@tmp
+POPS LF@tmp
+INT2CHAR LF@tmp LF@tmp
+PUSHS LF@tmp
+POPFRAME
+RETURN
+LABEL ord
+CREATEFRAME
+PUSHFRAME
+DEFVAR LF@tmp
+POPS LF@tmp
+STRI2INT LF@tmp LF@tmp int@0
+PUSHS LF@tmp
+POPFRAME
+RETURN
+LABEL substring
+CREATEFRAME
+PUSHFRAME
+DEFVAR LF@i
+DEFVAR LF@j
+DEFVAR LF@str
+DEFVAR LF@tmp
+DEFVAR LF@res
+POPS LF@str
+POPS LF@i
+POPS LF@j
+MOVE LF@res string@
+LABEL !substring_loop
+JUMPIFEQ !substring_loop_end LF@i LF@j
+GETCHAR LF@tmp LF@str LF@i
+CONCAT LF@res LF@res LF@tmp
+ADD LF@i LF@i int@1
+JUMP !substring_loop
+LABEL !substring_loop_end
+PUSHS LF@res
+POPFRAME
+RETURN

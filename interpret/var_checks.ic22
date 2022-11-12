@@ -1,0 +1,7 @@
+.IFJcode22
+DEFVAR GF@var1_declared
+MOVE GF@var1_declared bool@false
+DEFVAR GF@var2_declared
+MOVE GF@var2_declared bool@false
+
+DEFVAR GF@var3_declare
