@@ -2,7 +2,7 @@
  * @name parser.c
  * @brief Implementation of top-down parser
  * @authors Marián Tarageľ
- * @date 10.11.2022
+ * @date 12.11.2022
  */
 
 #include "parser.h"
@@ -409,7 +409,9 @@ void stmt(token_t *token, AST_node_t *parent)
         t_dstr(token);
         break;
     
-    default:
+    case FUNC_ID:
+        token = get_token();
+        RETURN_IF_ERROR;
         func_call(token, parent);
         RETURN_IF_ERROR;
         token = get_token();
@@ -420,7 +422,90 @@ void stmt(token_t *token, AST_node_t *parent)
         }
         t_dstr(token);
         break;
+
+    default: ;
+        token_t *next_token = get_token();
+        RETURN_IF_ERROR;
+        if (token->type == VAR_ID && next_token->type == ASSIGN) {
+            t_dstr(next_token);
+            token_t *next_next_token = get_token();
+            RETURN_IF_ERROR;
+            if (next_next_token->type == FUNC_ID) {
+                func_call_assignment(token, parent, next_next_token);
+                t_dstr(next_next_token);
+                RETURN_IF_ERROR;
+
+                token = get_token();
+                RETURN_IF_ERROR;
+                if (token->type != SCOLON) {
+                    t_dstr(token);
+                    RETURN_ERROR(SYNTAX_ERROR);
+                }
+                t_dstr(token);
+            }
+            else {
+                exp_assignment(token, parent, next_next_token);
+                RETURN_IF_ERROR;
+            }
+        }
+        else {
+            RETURN_ERROR(SYNTAX_ERROR);
+            //<exp> ;
+        }
+        
+        break;
     }
+}
+
+void exp_assignment(token_t *token, AST_node_t *parent, token_t *exp_token)
+{
+    AST_node_t *n_ass_exp = AST_create_add_child(parent, ASS_EXPR_N);
+    RETURN_INTERNAL_ERROR(n_ass_exp);
+
+    AST_node_t *n_id = AST_create_add_child(n_ass_exp, ID_N);
+    RETURN_INTERNAL_ERROR(n_id)
+    char *new_value = malloc((strlen(token->sval) + 1) * sizeof(char));
+    if (new_value == NULL) {
+        RETURN_ERROR(INTERNAL_ERROR);
+    }
+    strcpy(new_value, token->sval);
+    n_id->data.str = new_value;
+    free(new_value);
+
+    AST_node_t *n_expr = AST_create_add_child(n_ass_exp, EXPR_N);
+    RETURN_INTERNAL_ERROR(n_expr);
+
+    if (!is_token_type_correct(17, exp_token, VAR_ID, STR_LIT, INT_LIT, FLT_LIT, MUL,
+                            DIV, ADD, SUB, CONCAT, LT, GT, LTE, GTE, EQ, NEQ, LB, RB)) {
+        RETURN_ERROR(SYNTAX_ERROR);
+    }
+
+    exprssion(&exp_token, FALSE);
+    RETURN_IF_ERROR;
+
+    if (exp_token->type != SCOLON) {
+        RETURN_ERROR(SYNTAX_ERROR);
+    }
+    t_dstr(exp_token);
+}
+
+void func_call_assignment(token_t *token, AST_node_t *parent, token_t *func_id_token)
+{
+    AST_node_t *n_ass_func = AST_create_add_child(parent,ASS_FUNC_N);
+    RETURN_INTERNAL_ERROR(n_ass_func);
+
+    AST_node_t *n_id = AST_create_add_child(n_ass_func, ID_N);
+    RETURN_INTERNAL_ERROR(n_id)
+    char *new_value = malloc((strlen(token->sval) + 1) * sizeof(char));
+    if (new_value == NULL) {
+        RETURN_ERROR(INTERNAL_ERROR);
+    }
+    strcpy(new_value, token->sval);
+    n_id->data.str = new_value;
+    free(new_value);
+
+    func_call(func_id_token, n_ass_func);
+    RETURN_IF_ERROR;
 }
 
 void while_stmt(token_t *token, AST_node_t *parent)
@@ -664,6 +749,5 @@ void exprssion(token_t **token, int is_in_if_or_while)
     }
 
     //node->data.expression = parse_expression(array)
-
     token_array_free(array);
 }

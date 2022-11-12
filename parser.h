@@ -2,7 +2,7 @@
  * @name parser.h
  * @brief Interface of top-down parser
  * @authors Marián Tarageľ
- * @date 10.11.2022
+ * @date 12.11.2022
  */
 
 #ifndef PARSER_H
@@ -159,6 +159,22 @@ void arg_next(token_t *token, AST_node_t *parent);
  * @param parent parent node in abstract syntax tree
  */
 void arg(token_t *token, AST_node_t *parent);
+
+/**
+ * @brief Checks syntax of a function call assignment
+ * 
+ * @param token one input symbol at each step, to make parsing action decision - LL(1) grammar
+ * @param parent parent node in abstract syntax tree
+ */
+void func_call_assignment(token_t *token, AST_node_t *parent, token_t *func_id_token);
+
+/**
+ * @brief Checks syntax of a exprssion assignment
+ * 
+ * @param token one input symbol at each step, to make parsing action decision - LL(1) grammar
+ * @param parent parent node in abstract syntax tree
+ */
+void exp_assignment(token_t *token, AST_node_t *parent, token_t *exp_token);
 
 int is_token_type_correct(int num_of_types, token_t *token, ...);
 void exprssion(token_t **token, int is_in_if_or_while);

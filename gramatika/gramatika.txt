@@ -16,8 +16,8 @@
 		
 		<stmt> -> return <exp> ;
 
-		<stmt> -> <func_call> ;
-			<func_call> -> func_id ( <arg_list>
+		<stmt> -> func_id <func_call> ;
+			<func_call> -> ( <arg_list>
 				<arg_list> -> ) | <arg> <arg_next>
 				<arg_next> -> ) | , <arg> <arg_next>
 					<arg> -> $var_id | string_literal | integer_literal | float_literal | null
@@ -27,11 +27,11 @@
 			// pokud ani jedno pravidlo vycházející z <stmt> nebylo namatchováno, bude se postupovat podle této sémantické akce
 			if (token == "$var_id" && next_token == "=")
 				if(next_next_token == "func_id")
-					<stmt> -> <func_call_assignement> ;
-						<func_call_assignement> -> $var_id = <func_call> ;
+					<stmt> -> <func_call_assignment> ;
+						<func_call_assignment> -> $var_id = <func_call> ;
 				else
-					<stmt> -> <exp_assignement> ;
-						<exp_assignement> -> $var_id = <exp> ; // zde top-down analýza předá řízení bottom-up analýze
+					<stmt> -> <exp_assignment> ;
+						<exp_assignment> -> $var_id = <exp> ; // zde top-down analýza předá řízení bottom-up analýze
 			else
 				<stmt> -> <exp> ; // zde top-down analýza předá řízení bottom-up analýze
 ==============================
