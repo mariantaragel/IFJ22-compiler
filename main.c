@@ -15,10 +15,6 @@ int main()
     AST_node_t *root = program();
     AST_print(root, stdout);
     AST_free(root);
-    if (error == OK) {
-        printf("OK\n");
-    }
-    else {
-        fprintf(stderr, "ERROR %d\n", error);
-    }
+    error_print(error);
+    return error;
 }
