@@ -19,6 +19,7 @@
 #include "codegen.h"
 #include "token_array.h"
 
+/*
 int main() {
     dynamic_string_t * ds = ds_strinit("I am counting: ");
     dynamic_string_t * ds2 = ds_strinit("New strinero");
@@ -35,8 +36,9 @@ int main() {
     }
     printf("%s\n", ds->str);
 }
+*/
 
-
+// Get label type and generate label by concatenating strings...
 // char * gen_label(char * label, label_type ltype) {
 //     static unsigned if_labels = 0; // If, else, end -> (potentially) 3 labels required.
 //     static unsigned while_labels = 0; // While start + while end -> 2 labels required.

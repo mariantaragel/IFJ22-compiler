@@ -124,7 +124,7 @@ int ds_concat_str(dynamic_string_t * ds, const char * str) {
 
 /* USE ONLY POSITIVE VALUES GREATER THAN 1, other values are undefined.*/
 int ds_write_uint(dynamic_string_t * ds, unsigned n) {
-	if(n == 0) {
+	if(n == 0) { // Look into this...
 		return 1;
 	}
 	size_t dummy_size =  (int)((ceil(log10(n))+2)*sizeof(char));

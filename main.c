@@ -19,6 +19,6 @@ int main()
         printf("OK\n");
     }
     else {
-        fprintf(stderr, "ERROR\n");
+        fprintf(stderr, "ERROR %d\n", error);
     }
 }
