@@ -18,6 +18,168 @@ typedef struct{
     symtable_t* local_symtable;
 }semantic_context_t;
 
+error_codes_t sem_var_name(char* var_name, bool add_to_used_var_list, semantic_context_t* sem_context);
+error_codes_t sem_var_n(AST_node_t* ass_var_n, bool add_to_used_var_list, semantic_context_t* sem_context);
+error_codes_t sem_expr_n(AST_node_t* expr_n, semantic_context_t* sem_context);
+error_codes_t sem_while_n(AST_node_t* while_n, semantic_context_t* sem_context);
+error_codes_t sem_if_n(AST_node_t* if_n, semantic_context_t* sem_context);
+error_codes_t sem_ass_expr_n(AST_node_t* ass_expr_n, semantic_context_t* sem_context);
+error_codes_t sem_ass_func_n(AST_node_t* ass_func_n, semantic_context_t* sem_context);
+error_codes_t sem_return_n(AST_node_t* return_n, semantic_context_t* sem_context);
+
+error_codes_t sem_body_n(AST_node_t* body_n, semantic_context_t* sem_context);
+
+error_codes_t sem_func_args(AST_node_t* func_call_n, semantic_context_t* sem_context);
+error_codes_t sem_func_call_n(AST_node_t* func_call_n, semantic_context_t* sem_context);
+
+error_codes_t sem_func_params(AST_node_t* params_n, semantic_context_t* sem_context);
+error_codes_t sem_enter_func_def_context(AST_node_t* func_def_n, semantic_context_t* sem_context);
+error_codes_t sem_exit_func_def_context(semantic_context_t* sem_context);
+error_codes_t sem_return_n(AST_node_t* return_n, semantic_context_t* sem_context);
+error_codes_t sem_func_def_n(AST_node_t* func_call_n, semantic_context_t* sem_context);
+
+error_codes_t sem_prog_n(AST_node_t* prog_n, semantic_context_t* sem_context);
+
+// frees semantic context structure
+void semantic_context_free(semantic_context_t* sem_context){
+    if(sem_context != NULL){
+		// free symtables
+        symtable_free(sem_context->global_symtable);
+        symtable_free(sem_context->local_symtable);
+
+		// free sematnic context itself
+        free(sem_context);
+    }
+}
+
+// creates and initializes semantic context structure
+semantic_context_t* semantic_context_create(){
+	// allocate semantic context
+    semantic_context_t* sem_context = malloc(sizeof(*sem_context));
+    if(sem_context == NULL) return NULL;
+
+	// initialize semantic context
+	sem_context->used_func_list_n = NULL;
+	sem_context->used_vars_list_n = NULL;
+	sem_context->prev_used_vars_list_n = NULL;
+
+    sem_context->parent_func_symbol_info = NULL;
+
+    sem_context->active_symtable = NULL;
+
+	// create local and global symtables
+    sem_context->global_symtable = symtable_create();
+    sem_context->local_symtable = symtable_create();
+
+    if(sem_context->global_symtable == NULL || sem_context->local_symtable == NULL){
+        semantic_context_free(sem_context);
+        return NULL;
+    }
+
+	// return allocated semantic context
+    return sem_context;
+}
+
+void semantic_analyzer(AST_node_t* root){
+    // check if semantic analyzer starting conditions were met
+    if(root == NULL){
+		error = INTERNAL_ERROR;
+		return;
+	}
+		
+    if(root->type != PROG_N){
+		error = INTERNAL_ERROR;
+		return;
+	}
+    
+    // create semantic context
+    semantic_context_t* sem_context = semantic_context_create();
+	if(sem_context == NULL){
+		error = INTERNAL_ERROR;
+		return;
+	} 
+    // run semantic analysis
+    error = sem_prog_n(root, sem_context);
+
+    // free semnatic context
+    semantic_context_free(sem_context);
+}
+
+
+error_codes_t sem_prog_n(AST_node_t* prog_n, semantic_context_t* sem_context){
+	// context is global, thus make global_symtable active
+    sem_context->active_symtable = sem_context->global_symtable;
+
+	// insert node containing used functions at beginning of program, and add it to semantic context
+    if((sem_context->used_func_list_n = AST_create_insert_child(prog_n, 0, USED_FUNC_LIST_N)) == NULL){
+        return INTERNAL_ERROR;
+    }
+
+	// insert node containing used variables inside main body at beginning of program, and add it to semantic context
+    if((sem_context->used_vars_list_n = AST_create_insert_child(prog_n, 1, USED_VARS_LIST_N)) == NULL){
+        return INTERNAL_ERROR;
+    }
+
+	error_codes_t res = OK;
+
+	AST_node_t* cur_node;
+    for(size_t i = 2; i < prog_n->children_count; ++i){
+		cur_node = prog_n->children_arr[i];
+		switch(cur_node->type){
+			case BODY_N:
+				res = sem_body_n(cur_node, sem_context);
+				break;
+			case FUNC_DEF_N:
+				res = sem_func_def_n(cur_node, sem_context);
+				break;
+			default:
+				res = INTERNAL_ERROR;
+		}
+
+		if(res != OK) return res;
+    }
+    return OK;
+}
+
+error_codes_t sem_body_n(AST_node_t* body_n, semantic_context_t* sem_context){
+    error_codes_t res = OK;
+
+	AST_node_t* cur_node;
+    for(size_t i = 0; i < body_n->children_count; ++i){
+		cur_node = body_n->children_arr[i];
+		switch(cur_node->type){
+			case WHILE_N: 
+				res = sem_while_n(cur_node, sem_context);
+				break;
+			case IF_N:
+				res = sem_if_n(cur_node, sem_context);
+				break;
+			case ASS_EXPR_N:
+				res = sem_ass_expr_n(cur_node, sem_context);
+				break;
+			case ASS_FUNC_N:
+				res = sem_ass_expr_n(cur_node, sem_context);
+				break;
+			case FUNC_CALL_N:
+				res = sem_func_call_n(cur_node, sem_context);
+				break;	
+			case RETURN_N:
+				res = sem_return_n(cur_node, sem_context);
+				break;
+			case EXPR_N:
+				res = sem_expr_n(cur_node, sem_context);
+				break;
+			default:
+				res = INTERNAL_ERROR;
+		}
+
+        if(res != OK) return res;
+    }
+
+    return OK;
+}
+
+
 char* create_string_copy(char* str){
 	if(str == NULL) return NULL;
 
@@ -115,44 +277,6 @@ error_codes_t sem_ass_func_n(AST_node_t* ass_func_n, semantic_context_t* sem_con
 	return OK;
 }
 
-error_codes_t sem_body_n(AST_node_t* body_n, semantic_context_t* sem_context){
-    error_codes_t res = OK;
-
-	AST_node_t* cur_node;
-    for(size_t i = 0; i < body_n->children_count; ++i){
-		cur_node = body_n->children_arr[i];
-		switch(cur_node->type){
-			case WHILE_N: 
-				res = sem_while_n(cur_node, sem_context);
-				break;
-			case IF_N:
-				res = sem_if_n(cur_node, sem_context);
-				break;
-			case ASS_EXPR_N:
-				res = sem_ass_expr_n(cur_node, sem_context);
-				break;
-			case ASS_FUNC_N:
-				res = sem_ass_expr_n(cur_node, sem_context);
-				break;
-			case FUNC_CALL_N:
-				res = sem_func_call_n(cur_node, sem_context);
-				break;	
-			case RETURN_N:
-				res = sem_return_n(cur_node, sem_context);
-				break;
-			case EXPR_N:
-				res = sem_expr_n(cur_node, sem_context);
-				break;
-			default:
-				res = INTERNAL_ERROR;
-		}
-
-        if(res != OK) return res;
-    }
-
-    return OK;
-}
-
 error_codes_t sem_func_args(AST_node_t* func_call_n, semantic_context_t* sem_context){
 	error_codes_t res;
 
@@ -188,9 +312,6 @@ error_codes_t sem_func_call_n(AST_node_t* func_call_n, semantic_context_t* sem_c
 
 	return OK;
 }
-
-// calls function sem_var_n on every param variable
-// has to be called after changing into function local context
 
 
 error_codes_t sem_func_params(AST_node_t* params_n, semantic_context_t* sem_context){
@@ -247,9 +368,11 @@ error_codes_t sem_enter_func_def_context(AST_node_t* func_def_n, semantic_contex
 
 	// clear local symtable
 	symtable_clear(sem_context->local_symtable);
+
+	return OK;
 }
 
-error_codes_t sem_exit_func_def_context(AST_node_t* func_def_n, semantic_context_t* sem_context){
+error_codes_t sem_exit_func_def_context(semantic_context_t* sem_context){
 	// exit function context
 	sem_context->used_vars_list_n = sem_context->prev_used_vars_list_n;;
     sem_context->parent_func_symbol_info = NULL;
@@ -266,13 +389,11 @@ error_codes_t sem_func_def_n(AST_node_t* func_def_n, semantic_context_t* sem_con
 
 	error_codes_t res;
 
-	// semantics for entering function definition
+	// semantics for entering function context
 	if((res = sem_enter_func_def_context(func_def_n, sem_context)) != OK) return res;
 
-	// semantics for params
+	// semantics of params and function body
 	if((res = sem_func_params(params_n, sem_context)) != OK) return res;
-
-	// check semantics of function body
     if((res = sem_body_n(body_n, sem_context)) != OK) return res;
 
 	// add implicit return nodes to end of function body
@@ -284,7 +405,7 @@ error_codes_t sem_func_def_n(AST_node_t* func_def_n, semantic_context_t* sem_con
 	}
 
 	// semantics for exiting function definition
-	if((res = sem_exit_func_def_context(func_def_n, sem_context)) != OK) return res;
+	if((res = sem_exit_func_def_context(sem_context)) != OK) return res;
     
     return OK;
 }
@@ -298,7 +419,7 @@ error_codes_t sem_return_n(AST_node_t* return_n, semantic_context_t* sem_context
 		// return is inside function
 
 		// get expected return type of function
-		datatype_t* expected_return_type = sem_context->parent_func_symbol_info->return_type;
+		datatype_t expected_return_type = sem_context->parent_func_symbol_info->return_type;
 
 		// check if function return type is void
 		if(expected_return_type == VOID_T){
@@ -322,97 +443,4 @@ error_codes_t sem_return_n(AST_node_t* return_n, semantic_context_t* sem_context
 
     // check semantics of expression
     return sem_expr_n(expr_n, sem_context);
-}
-
-error_codes_t sem_prog_n(AST_node_t* prog_n, semantic_context_t* sem_context){
-	// context is global, thus make global_symtable active
-    sem_context->active_symtable = sem_context->global_symtable;
-
-	// insert node containing used functions at beginning of program, and add it to semantic context
-    if((sem_context->used_func_list_n = AST_create_insert_child(prog_n, 0, USED_FUNC_LIST_N)) == NULL){
-        return INTERNAL_ERROR;
-    }
-
-	// insert node containing used variables inside main body at beginning of program, and add it to semantic context
-    if((sem_context->used_vars_list_n = AST_create_insert_child(prog_n, 1, USED_VARS_LIST_N)) == NULL){
-        return INTERNAL_ERROR;
-    }
-
-	error_codes_t res = OK;
-
-	AST_node_t* cur_node;
-    for(size_t i = 2; i < prog_n->children_count; ++i){
-		cur_node = prog_n->children_arr[i];
-		switch(cur_node->type){
-			case BODY_N:
-				res = sem_body_n(cur_node, sem_context);
-				break;
-			case FUNC_DEF_N:
-				res = sem_func_def_n(cur_node, sem_context);
-				break;
-			default:
-				res = INTERNAL_ERROR;
-		}
-
-		if(res != OK) return res;
-    }
-    return OK;
-}
-
-// frees semantic context structure
-void semantic_context_free(semantic_context_t* sem_context){
-    if(sem_context != NULL){
-		// free symtables
-        symtable_free(sem_context->global_symtable);
-        symtable_free(sem_context->local_symtable);
-
-		// free sematnic context itself
-        free(sem_context);
-    }
-}
-
-// creates and initializes semantic context structure
-semantic_context_t* semantic_context_create(){
-	// allocate semantic context
-    semantic_context_t* sem_context = malloc(sizeof(*sem_context));
-    if(sem_context == NULL) return NULL;
-
-	// initialize semantic context
-	sem_context->used_func_list_n = NULL;
-	sem_context->used_vars_list_n = NULL;
-	sem_context->prev_used_vars_list_n = NULL;
-
-    sem_context->parent_func_symbol_info = NULL;
-
-    sem_context->active_symtable = NULL;
-
-	// create local and global symtables
-    sem_context->global_symtable = symtable_create();
-    sem_context->local_symtable = symtable_create();
-
-    if(sem_context->global_symtable == NULL || sem_context->local_symtable == NULL){
-        free_semantic_context(sem_context);
-        return NULL;
-    }
-
-	// return allocated semantic context
-    return sem_context;
-}  
-
-void semantic_analyzer(AST_node_t* root){
-    // check if semantic analyzer starting conditions were met
-    if(root == NULL) error = INTERNAL_ERROR; return;
-    if(root->type != PROG_N) error = INTERNAL_ERROR; return;
-    
-    // create semantic context
-    semantic_context_t* sem_context = semantic_context_create();
-	if(sem_context == NULL) error = INTERNAL_ERROR; return;
-
-    // TODO: insert built in functions to global symtable
-
-    // run semantic analysis
-    error = sem_prog_n(root, sem_context);
-
-    // free semnatic context
-    semantic_context_free(sem_context);
 }
