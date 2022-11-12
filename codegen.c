@@ -20,7 +20,7 @@
 #include "codegen.h"
 #include "token_array.h"
 
-
+/*
 int main() {
     char * str = gen_label("$", "var_name", NULL, true);
     printf("%s\n",str);
@@ -29,6 +29,7 @@ int main() {
     printf("%s\n", inttostr(1205));
 
 }
+*/
 
 char * gen_label(char * prefix, char * infix, char * suffix, bool gen_num) {
     static unsigned num = 1;
@@ -55,3 +56,10 @@ char * inttostr(size_t n) {
 	sprintf(str, "%ld", n);
     return str; 
 }
+
+
+// char ** gen_for_labels();
+
+// char ** gen_while_labels();
+
+// char ** gen_next_labels();
