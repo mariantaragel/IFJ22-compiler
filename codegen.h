@@ -20,29 +20,9 @@
 #ifndef CODEGEN_H
 #define CODEGEN_H
 
-// typedef enum {VAR_DEF, FUNC_DEF, FUNC_LABEL, WHILE, IF} label_type;
 
-/**
- * @brief Prints instruction onto the standard output.
- * @param ins Instruction to print.
-*/
-// void ins_out(const char * ins);
+char * gen_label(char * prefix, char * infix, char * suffix, bool gen_num);
 
-/**
- * @brief Generate a unique label given
-*/
-// char * gen_label(char * label, label_type type);
-
-/**
- * @brief Generates a flag for each variable in the token array.
- * @param tarr Expression to check.
-*/
-// void var_check(token_array_t * tarr);
-
-
-/**
- * 
-*/
-// void ins_build(dynamic_string_t * ds);
+char * inttostr(size_t n);
 
 #endif // CODEGEN_H

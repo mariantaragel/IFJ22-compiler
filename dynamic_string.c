@@ -16,6 +16,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <math.h>
+#include <stdbool.h>
 #include "dynamic_string.h"
 
 #define DS_SIZE 128
@@ -39,6 +40,9 @@ dynamic_string_t * ds_init() {
 }
 
 dynamic_string_t * ds_strinit(const char * str) {
+	if(str == NULL) {
+		return ds_init(); // Return empty dynamic_string if string is NULL.
+	}
 	dynamic_string_t * ds = (dynamic_string_t*) calloc(1, sizeof(dynamic_string_t)); // Allocate ds struct
 	if(ds == NULL) {
 		return NULL;
@@ -104,8 +108,8 @@ int ds_concat(dynamic_string_t * a, dynamic_string_t * b) {
 }
 
 int ds_concat_str(dynamic_string_t * ds, const char * str) {
-	if(ds->str == NULL || str == NULL) {
-		return 1;
+	if(str == NULL) {
+		return 0; // Change nothing when NULL string.
 	}
 	size_t new_size = ds->size;
 	while(new_size <= strlen(ds->str) + strlen(str)) {
@@ -134,4 +138,16 @@ int ds_write_uint(dynamic_string_t * ds, unsigned n) {
 		return 1;
 	}
 	return 0;
+}
+
+char * ds_get_str(dynamic_string_t * ds, bool free_ds) {
+	char * str = malloc(strlen(ds->str) + 1);
+	if(str == NULL) {
+		return NULL;
+	}
+	strcpy(str, ds->str);
+	if(free_ds) {
+		ds_dstr(ds);
+	}
+	return str;
 }

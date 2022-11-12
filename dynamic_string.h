@@ -16,6 +16,7 @@
 #define DYNAMIC_STRING_H
 
 #include <stdlib.h>
+#include <stdbool.h>
 
 /* TODO:
 	Implement:
@@ -85,5 +86,7 @@ int ds_concat_str(dynamic_string_t * ds, const char * str);
  * @param n Integer to write.
 */
 int ds_write_uint(dynamic_string_t * ds, unsigned n);
+
+char * ds_get_str(dynamic_string_t * ds, bool free_ds);
 
 #endif // DYNAMIC_STRING_H
