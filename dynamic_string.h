@@ -84,6 +84,6 @@ int ds_concat_str(dynamic_string_t * ds, const char * str);
  * @param ds Dynamic string for writing.
  * @param n Integer to write.
 */
-// int ds_write_int(dynamic_string_t * ds, int n);
+int ds_write_uint(dynamic_string_t * ds, unsigned n);
 
 #endif // DYNAMIC_STRING_H
