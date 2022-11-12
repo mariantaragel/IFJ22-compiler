@@ -70,20 +70,20 @@ int ds_write(dynamic_string_t * ds, int c);
  * @param a Dynamic string which will be concatenated.
  * @param b Dyanmic string which is concatenated onto a.
  */
-void ds_concat(dynamic_string_t * a, dynamic_string_t * b);
+int ds_concat(dynamic_string_t * a, dynamic_string_t * b);
 
 /**
  * @brief Concatenates a string literal onto a dynamic string.
  * @param ds Dynamic string which will be concatenated.
  * @param str String literal which is concatenated onto ds.
 */
-void ds_concat_str(dynamic_string_t * ds, const char * str);
+int ds_concat_str(dynamic_string_t * ds, const char * str);
 
 /**
  * @brief Writes an integer as a string value onto the end of a dynamic string.
  * @param ds Dynamic string for writing.
  * @param n Integer to write.
 */
-void ds_write_int(dynamic_string_t * ds, int n);
+// int ds_write_int(dynamic_string_t * ds, int n);
 
 #endif // DYNAMIC_STRING_H

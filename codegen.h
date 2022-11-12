@@ -20,7 +20,7 @@
 #ifndef CODEGEN_H
 #define CODEGEN_H
 
-typedef enum {VAR_DEF, FUNC_DEF, FUNC_LABEL, WHILE, IF} label_type;
+// typedef enum {VAR_DEF, FUNC_DEF, FUNC_LABEL, WHILE, IF} label_type;
 
 /**
  * @brief Prints instruction onto the standard output.
@@ -31,7 +31,7 @@ typedef enum {VAR_DEF, FUNC_DEF, FUNC_LABEL, WHILE, IF} label_type;
 /**
  * @brief Generate a unique label given
 */
-char * gen_label(char * label, label_type type);
+// char * gen_label(char * label, label_type type);
 
 /**
  * @brief Generates a flag for each variable in the token array.

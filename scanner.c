@@ -24,6 +24,7 @@
 #include "token.h"
 #include "error.h"
 
+/*
 int main() {
 	token_t * token;
 	do {
@@ -39,6 +40,7 @@ int main() {
 	} while(token->type != END && token->type != EPILOG);
 	return 0;
 }
+*/
 
 token_t * get_token() {
 	dynamic_string_t * ds = ds_init(); // Initialize write buffer.
@@ -392,6 +394,7 @@ void aeq_handler(token_t * t, int * c) {
 	}
 }
 
+/* 10+10 vyhodi lexical error i ked to neni... chybu... */
 int isflchr(int c) {
 	switch(c) {
 		case '.': case '+': case '-': case 'e': case 'E': return 1; break;
