@@ -51,7 +51,7 @@ dynamic_string_t * ds_strinit(const char * str) {
 	while(size <= strlen(str)) {
 		size *= 2;
 	}
-	ds->str = (char*) malloc(size); // Allocate string buffer with write reserve.
+	ds->str = (char*) malloc(size*sizeof(char)); // Allocate string buffer with write reserve.
 
 	if(ds->str == NULL) {
 		free(ds);
@@ -77,6 +77,9 @@ int ds_resize(dynamic_string_t * ds) {
 }
 
 void ds_dstr(dynamic_string_t * ds) {
+	if(ds == NULL) {
+		return;
+	}
 	ds->size = 0;
 	ds->wi = 0;
 	free(ds->str);

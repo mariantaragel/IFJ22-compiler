@@ -23,6 +23,8 @@
 
 char * gen_label(char * prefix, char * infix, char * suffix, bool gen_num);
 
-char * inttostr(size_t n);
+bool gen_while_labels(char ** start, char ** body_start, char ** end);
+
+bool gen_if_labels(char ** branch_true, char ** branch_false, char ** end);
 
 #endif // CODEGEN_H
