@@ -20,7 +20,7 @@ expgen: expgen.o
 	$(CC) $(CFLAGS) -o $@ $^ $(LFLAGS)
 
 clean:
-	rm -f scanner parser parser_test codegen main *.o
+	rm -f scanner parser parser_test codegen expgen main *.o
 
 run:
 	make scanner
