@@ -16,6 +16,9 @@ scanner: scanner.o dynamic_string.o token.o error.o
 codegen: codegen.o dynamic_string.o
 	$(CC) $(CFLAGS) -o $@ $^ $(LFLAGS)
 
+expgen: expgen.o
+	$(CC) $(CFLAGS) -o $@ $^ $(LFLAGS)
+
 clean:
 	rm -f scanner parser parser_test codegen main *.o
 

@@ -1,12 +1,12 @@
 /****
- ** codegen.c
+ ** labelgen.c
  ** Řešení IFJ-PROJEKT, 11.11.2022
  ** Autor: xhorva17
  ** Přeloženo:
  **/
 
 /**
- * @file codegen.c
+ * @file labelgen.c
  * @author xhorva17
  * @brief Code generation implementation.
  * @date 2022-11-11
@@ -20,15 +20,17 @@
 #include "codegen.h"
 #include "token_array.h"
 
-int main() {
-    char * one, * two, * three;
-    for (int i = 0; i < 30; i++) {
-        gen_if_labels(&one, &two, &three);
-        printf("%s\t%s\t%s\n\n", one, two, three);
-        gen_while_labels(&one, &two, &three);
-        printf("%s\t%s\t%s\n\n", one, two, three);
-    }
-}
+// int main() {
+//     char * one, * two, * three;
+//     for (int i = 0; i < 1000; i++) {
+//         if(gen_if_labels(&one, &two, &three)) {
+//             printf("%s\t%s\t%s\n\n", one, two, three);
+//         }
+//         if(gen_while_labels(&one, &two, &three)) {
+//             printf("%s\t%s\t%s\n\n", one, two, three);
+//         }
+//     }
+// }
 
 char * gen_label(char * prefix, char * infix, char * suffix, bool gen_num) {
     static unsigned num = 1;
