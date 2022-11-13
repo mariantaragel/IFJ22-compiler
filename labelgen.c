@@ -17,7 +17,7 @@
 #include <string.h>
 #include <stdbool.h>
 #include <math.h>
-#include "codegen.h"
+#include "labelgen.h"
 #include "token_array.h"
 
 // int main() {
