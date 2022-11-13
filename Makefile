@@ -65,8 +65,8 @@ TEST_semantic_analyzer: semantic_analyzer_test
 	valgrind --leak-check=full --show-leak-kinds=all ./$^
 
 # TEST generator
-generator_test: generator_test.o generator.o semantic_analyzer.o symtable.o abstract_syntax_tree.o token_array.o token.o error.o
-	$(CC) $(CFLAGS) $^ -o $@
+generator_test: generator_test.o generator.o semantic_analyzer.o symtable.o abstract_syntax_tree.o labelgen.o dynamic_string.o token_array.o token.o error.o
+	$(CC) $(CFLAGS) $^ -o $@ $(LFLAGS)
 
 TEST_generator: generator_test
 	valgrind --leak-check=full --show-leak-kinds=all ./$^
