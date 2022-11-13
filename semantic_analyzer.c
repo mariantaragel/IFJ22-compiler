@@ -315,10 +315,12 @@ error_codes_t sem_func_call_n(AST_node_t* func_call_n, semantic_context_t* sem_c
 
 
 error_codes_t sem_func_params(AST_node_t* params_n, semantic_context_t* sem_context){
-	error_codes_t res;
-
 	AST_node_t* cur_param;
 	AST_node_t* id_n;
+
+	char* var_name;
+	bool name_found;
+	symbol_info_t* var_info;
 
 	for(size_t i = 0; i < params_n->children_count; ++i){
 		cur_param = params_n->children_arr[i];
@@ -327,7 +329,16 @@ error_codes_t sem_func_params(AST_node_t* params_n, semantic_context_t* sem_cont
 
 		id_n = cur_param->children_arr[1];
 
-		if((res = sem_var_n(id_n, false, sem_context)) != OK) return res;
+		var_name = id_n->data.str;
+
+		// insert variable to active symtable
+		var_info = symtable_lookup_insert(sem_context->active_symtable, var_name, &name_found);
+		if(var_info == NULL) return INTERNAL_ERROR;
+
+		// check if function parameter was not redefined
+		if(name_found == true){
+			return SEM_ERROR_8; // other semantic error
+		}
 	}
 	return OK;
 }
