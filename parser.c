@@ -370,6 +370,13 @@ void stmt_list_bracket_start(token_t *token, AST_node_t *parent)
     RETURN_IF_ERROR;
 }
 
+void token_array_print(token_array_t *array)
+{
+    for (long unsigned int i = 0; i < array->token_count; i++) {
+        t_print(array->array[i]);
+    }    
+}
+
 void stmt(token_t *token, AST_node_t *parent)
 {
     switch (token->type)
@@ -399,9 +406,11 @@ void stmt(token_t *token, AST_node_t *parent)
         AST_node_t *n_expr = AST_create_add_child(n_return, EXPR_N);
         RETURN_INTERNAL_ERROR(n_expr)
         
-        exprssion(&token, FALSE);
-        RETURN_IF_ERROR;
-
+        token_array_t *array = token_array_create();
+        RETURN_INTERNAL_ERROR(array)
+        expression(&token, FALSE, array);
+        n_expr->data.expression = array;
+        
         if (token->type != SCOLON) {
             t_dstr(token);
             RETURN_ERROR(SYNTAX_ERROR);
@@ -421,6 +430,10 @@ void stmt(token_t *token, AST_node_t *parent)
             RETURN_ERROR(SYNTAX_ERROR);
         }
         t_dstr(token);
+        break;
+    
+    case SCOLON:
+        return;
         break;
 
     default: ;
@@ -449,8 +462,30 @@ void stmt(token_t *token, AST_node_t *parent)
             }
         }
         else {
-            RETURN_ERROR(SYNTAX_ERROR);
-            //<exp> ;
+            token_array_t *array = token_array_create();
+            RETURN_INTERNAL_ERROR(array)
+            if (is_token_type_correct(17, token, VAR_ID, STR_LIT, INT_LIT, FLT_LIT, MUL,
+                            DIV, ADD, SUB, CONCAT, LT, GT, LTE, GTE, EQ, NEQ, LB, RB)) {
+                if (token_array_push_token(array, token)) {
+                    t_dstr(token);
+                    RETURN_ERROR(INTERNAL_ERROR);
+                }
+            }
+            else {
+                RETURN_ERROR(SYNTAX_ERROR);
+            }
+            AST_node_t *n_expr = AST_create_add_child(parent, EXPR_N);
+            RETURN_INTERNAL_ERROR(n_expr);
+
+            token = next_token;
+            next_token = NULL;
+            expression(&token, FALSE, array);
+            n_expr->data.expression = array;
+
+            if (token->type != SCOLON) {
+                t_dstr(token);
+                RETURN_ERROR(SYNTAX_ERROR);
+            }
         }
         
         break;
@@ -480,8 +515,10 @@ void exp_assignment(token_t *token, AST_node_t *parent, token_t *exp_token)
         RETURN_ERROR(SYNTAX_ERROR);
     }
 
-    exprssion(&exp_token, FALSE);
-    RETURN_IF_ERROR;
+    token_array_t *array = token_array_create();
+    RETURN_INTERNAL_ERROR(array)
+    expression(&exp_token, FALSE, array);
+    n_expr->data.expression = array;
 
     if (exp_token->type != SCOLON) {
         RETURN_ERROR(SYNTAX_ERROR);
@@ -522,8 +559,10 @@ void while_stmt(token_t *token, AST_node_t *parent)
     
     token = get_token();
     RETURN_IF_ERROR;
-    exprssion(&token, TRUE);
-    RETURN_IF_ERROR;
+    token_array_t *array = token_array_create();
+    RETURN_INTERNAL_ERROR(array)
+    expression(&token, TRUE, array);
+    n_expr->data.expression = array;
     
     if (token->type != LCB) {
         t_dstr(token);
@@ -554,9 +593,11 @@ void if_stmt(token_t *token, AST_node_t *parent)
 
     token = get_token();
     RETURN_IF_ERROR;
-    exprssion(&token, TRUE);
-    RETURN_IF_ERROR;
-
+    token_array_t *array = token_array_create();
+    RETURN_INTERNAL_ERROR(array)
+    expression(&token, TRUE, array);
+    n_expr->data.expression = array;
+    
     if (token->type != LCB) {
         t_dstr(token);
         RETURN_ERROR(SYNTAX_ERROR);
@@ -725,15 +766,13 @@ int is_token_type_correct(int num_of_types, token_t *token, ...)
     return return_status;
 }
 
-void exprssion(token_t **token, int is_in_if_or_while)
+void expression(token_t **token, int is_in_if_or_while, token_array_t *array)
 {
-    token_array_t *array = token_array_create();
-    RETURN_INTERNAL_ERROR(array)
     while (is_token_type_correct(17, *token, VAR_ID, STR_LIT, INT_LIT, FLT_LIT, MUL,
                             DIV, ADD, SUB, CONCAT, LT, GT, LTE, GTE, EQ, NEQ, LB, RB)) {
         if (token_array_push_token(array, *token)) {
-            RETURN_ERROR(INTERNAL_ERROR);
             t_dstr(*token);
+            RETURN_ERROR(INTERNAL_ERROR);
         }
         *token = get_token();
         RETURN_IF_ERROR;
@@ -747,7 +786,4 @@ void exprssion(token_t **token, int is_in_if_or_while)
             RETURN_ERROR(SYNTAX_ERROR);
         }
     }
-
-    //node->data.expression = parse_expression(array)
-    token_array_free(array);
 }
