@@ -98,7 +98,7 @@ prec_table_index_t get_index_from_token(token_t* ptoken){
 			return DOLLAR_INDEX;
 	}
 }
-
+/*
 int position_of(x) {
 	
 	switch(x){
@@ -122,13 +122,12 @@ int position_of(x) {
 			return 7;
 	}	
 }
+*/
 
-int reduce(pstack_t* stack) {
+int reduce(pstack_t* stack, token_array_t* t_array) {
 	bool internal_err = false;
 	bool syntax_err = false;
 	bool all_ok = false;
-
-	token_array_create(&t_array);
 	
 	pstack_symbol_t* symbols[4];
 	symbols[0] = NULL;	//elem 3
@@ -201,23 +200,25 @@ int reduce(pstack_t* stack) {
 		}
 		else if(rule == POSTFIX_MERGE){
 			
-			// single EXPR na stack - spec. sym. reprezentace?
+			// single EXPR na stack - spec. sym. reprezentace
 
-			if (pstack_push(&stack, symbols[1]) != 0) {
-						internal_err = true;
-						return -1;
-					}
-			
 			if () { //symbol != specialni symbol
+				if (token_array_push_token(token_array_t* token_array, symbols[0]->token_array() ))// to array as postfix
+			}
+			
+			if () { 
 				symbols[2] // to array as postfix
 			} 
 
-			if () {
-				symbols[0] // to array as postfix
-			}
 			
-			symbols[1] //send to postfix
+			if () symbols[1] //send to postfix
 
+			if (pstack_push(&stack, symbols[1]) != 0) { //specialni symbol pro nasledujici redukci
+						internal_err = true;
+						return -1;
+					}
+
+			return 0;
 		}
 		else if(rule == REMOVE_BRACKETS){
 
@@ -245,21 +246,20 @@ int is_rule_applicable(pstack_symbol_t* a){							//if handle found ("<y")
 }
 
 
-token_array_t* parse_expression(token_array_t* postfix_t_array){
+token_array_t* parse_expression(token_array_t* t_array){
 	
 	pstack_t *stack;
 	pstack_create(&stack);											//inicializace zasobniku
-	//create_dollar_pstack_symbol(stack);
-	
-	/*char expression[20];
-	expression[0] = 36;
-	int rule_counter = 0;
-	char rule_arr[3];*/
+	pstack_push(&stack, create_dollar_pstack_symbol());
+
+	token_array_t *postfix_t_array;									//vraceny token_array
+	token_array_create(&postfix_t_array);
+
 	bool internal_err = false;
 	bool syntax_err = false;	
 	bool done = false;
 	
-	token_t *ptoken = get_token();										// pozdeji z token_array_t (od top-down)
+	token_t *ptoken = token_array_pop_token(&t_array);
 		prec_table_index_t index = get_index_from_token(ptoken);		// znak na vstupu -> b
 	
 	do {
@@ -286,12 +286,12 @@ token_array_t* parse_expression(token_array_t* postfix_t_array){
 					}
 				}
 				
-				token_t *ptoken = get_token();								//"get_token" - pozdeji z token_array_t (top-down)
+				token_t *ptoken = token_array_pop_token(t_array);			//"get_token" 
 				prec_table_index_t index = get_index_from_token(ptoken);	//znak na vstupu -> b
 				
 				break;
 			//shift	
-			case S:													//a -> a< & push b & precti dalsi
+			case S:															//a -> a< & push b & precti dalsi
 				pstack_symbol_t* new_terminal_symbol = create_terminal_pstack_symbol(ptoken);
 				if(new_terminal_symbol == NULL) {
 					internal_err = true;
@@ -308,13 +308,13 @@ token_array_t* parse_expression(token_array_t* postfix_t_array){
 					}
 				}
 				
-				token_t *ptoken = get_token();								//"get_token" - pozdeji z token_array_t (top-down)
+				token_t *ptoken = token_array_pop_token(t_array);	//"get_token" - pozdeji z token_array_t (top-down)
 				prec_table_index_t index = get_index_from_token(ptoken);	//znak na vstupu -> b
 				
 				break;
 			
 			//reduce
-			case R:													// if top == "<y" && r:A->y (rule) -> "<y" -> E & r na výstup
+			case R:															// if top == "<y" && r:A->y (rule) -> "<y" -> E & r na výstup
 				if (reduce(stack) == -1 ) {
 					syntax_err = true;
 					done = true;
@@ -324,10 +324,15 @@ token_array_t* parse_expression(token_array_t* postfix_t_array){
 				}
 				
 			//err/end
-			default:													//ERR || (if b = $ && a=$E -> expression_valid END) 				
+			default:														//ERR || (if b = $ && a=$E -> expression_valid END) 				
 				if (index == DOLLAR_INDEX && pstack_get_size(stack) == 2 && pstack_top(stack)->prec_rule_element == EXPR) {
 					syntax_err = false;
 					done = true;
+				}
+				if (index == DOLLAR_INDEX && pstack_get_size(stack) == 1 && pstack_top(stack)->prec_rule_element != EXPR){
+					syntax_err = false;
+					done = true;
+				
 				}
 				else {
 					syntax_err = true;
@@ -348,8 +353,6 @@ token_array_t* parse_expression(token_array_t* postfix_t_array){
 	else {
 		pstack_free(&stack);
 		// token_array_free(token_array)
-		return ;
+		return postfix_t_array;
 	}
 }
-
-
