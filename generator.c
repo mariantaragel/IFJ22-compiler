@@ -149,7 +149,7 @@ error_codes_t gen_true_false_jump(char* true_label, char* false_label){
 
 	G("LABEL %s", next2);	
 	G("JUMPIFNEQ %s GF@_tmp string@float", next3);
-	G("\tJUMPIFEQ %s GF@_tmp_res float@0.0", false_label);
+	G("\tJUMPIFEQ %s GF@_tmp_res float@0x0p+0", false_label);
 	G("\tJUMP %s", true_label);
 
 	G("LABEL %s", next3);	
