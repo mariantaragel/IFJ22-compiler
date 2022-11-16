@@ -76,11 +76,7 @@ typedef enum {FUNC_ID,VAR_ID,STR_LIT,INT_LIT,FLT_LIT,MUL,DIV,ADD,SUB,CONCAT,LT,G
 
 typedef struct {
 	token_type_t type;
-	union {
-		char * sval;
-		int ival;
-		double fval;
-	};
+	char * aval; // Associated value.
 } token_t;
 
 /**
@@ -90,11 +86,26 @@ typedef struct {
 token_t * t_init();
 
 /**
+ * @brief Duplicates a token.
+ * 
+ * @param t Token to duplicate.
+ * @return token_t* 
+ */
+token_t * t_dup(const token_t * t);
+
+/**
+ * @brief Attaches an associated value to a token.
+ * 
+ * @param str 
+ * @return int 
+ */
+int t_attach(token_t * t, const char * str);
+
+/**
  * @brief Deallocates token.
  * @param t Token to deallocate.
  */
 void t_dstr(token_t * t);
-
 
 /**
  * @brief Prints token attributes for logging.

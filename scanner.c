@@ -24,7 +24,6 @@
 #include "token.h"
 #include "error.h"
 
-/*
 int main() {
 	token_t * token;
 	do {
@@ -40,7 +39,7 @@ int main() {
 	} while(token->type != END && token->type != EPILOG);
 	return 0;
 }
-*/
+
 
 token_t * get_token() {
 	dynamic_string_t * ds = ds_init(); // Initialize write buffer.
@@ -165,11 +164,10 @@ void vik_handler(dynamic_string_t * ds, token_t * t, int * c) {
 		t->type = FUNC_ID;
 	}
 	/* Attach attribute */
-	t->sval = malloc(strlen(ds->str) + 1);
-	if(t->sval == NULL) {
+
+	if(t_attach(t, ds->str)) {
 		error = INTERNAL_ERROR;
-	}
-	strcpy(t->sval, ds->str);
+	};
 }
 
 void fi_handler(dynamic_string_t * ds, token_t * t, int * c) {
@@ -187,7 +185,8 @@ void fi_handler(dynamic_string_t * ds, token_t * t, int * c) {
 		/* Check if value is ok. */
 
 		char * end_ptr;
-		unsigned value = strtoumax(ds->str, &end_ptr, 10); // Try to conver value.
+		// unsigned value = strtoumax(ds->str, &end_ptr, 10); // Try to conver value.
+		strtoumax(ds->str, &end_ptr, 10);
 		
 		if(*end_ptr != '\0') { // Incorrect read.
 			error = LEXICAL_ERROR;
@@ -201,17 +200,9 @@ void fi_handler(dynamic_string_t * ds, token_t * t, int * c) {
 
 
 		/* Attaching token attribute. */
-		/* Non string option */
-		t->ival = value;
-		
-		/* String option */
-		/*
-		t->sval = malloc(strlen(ds->str) + 1);
-		if(t->sval == NULL) {
+		if(t_attach(t, ds->str)) {
 			error = INTERNAL_ERROR;
 		}
-		strcpy(t->sval, ds->str);
-		*/
 	} else {
 		do { // Read string till end.
 			if(ds_write(ds, *c)) {
@@ -222,7 +213,8 @@ void fi_handler(dynamic_string_t * ds, token_t * t, int * c) {
 		ungetc(*c, stdin);
 
 		char * end_ptr;
-		double value = strtod(ds->str, &end_ptr); // Try to convert value.
+		// double value = strtod(ds->str, &end_ptr); // Try to convert value.
+		strtod(ds->str, &end_ptr);
 
 		if(*end_ptr != '\0') { // Incorrect read.
 			fprintf(stderr, "Stopped reading at %c\n", *end_ptr);
@@ -235,18 +227,11 @@ void fi_handler(dynamic_string_t * ds, token_t * t, int * c) {
 		}
 		t->type = FLT_LIT;
 
-		/* Attachong token attribute. */
-		/* Non string option. */
-		t->fval = value;
-
+		// Conversion neccesarry.
 		/* String option */
-		/*
-		t->sval = malloc(strlen(ds->str) + 1);
-		if(t->sval == NULL) {
+		if(t_attach(t, ds->str)) {
 			error = INTERNAL_ERROR;
 		}
-		strcpy(t->sval, ds->str);
-		*/
 	}
 
 }
@@ -255,7 +240,7 @@ void fi_handler(dynamic_string_t * ds, token_t * t, int * c) {
 void s_handler(dynamic_string_t * ds, token_t * t, int * c) {
 	
 	while( (*c = fgetc(stdin)) != EOF && *c != '"') { // Write string to buffer.
-
+		// Case for whitespace and other characters.
 		if(*c == '\\') { // Escape sequence.
 			dynamic_string_t * aux_ds = ds_init();
 			if(aux_ds == NULL) {
@@ -263,8 +248,9 @@ void s_handler(dynamic_string_t * ds, token_t * t, int * c) {
 				return;
 			}
 			*c = fgetc(stdin);
+			// String interpolation...
 			switch(*c) {
-				case 'n': if(ds_write(ds, '\n')) { error = INTERNAL_ERROR; return; } break;
+				case 'n': if(ds_concat_str(ds, "\010")) { error = INTERNAL_ERROR; return; } break;
 				case 't': if(ds_write(ds, '\t')) { error = INTERNAL_ERROR; return; } break;
 				case '"': if(ds_write(ds, '"')) { error = INTERNAL_ERROR; return; } break;
 				case '\\': if(ds_write(ds, '\\')) { error = INTERNAL_ERROR; return; } break;
@@ -286,11 +272,9 @@ void s_handler(dynamic_string_t * ds, token_t * t, int * c) {
 
 	/* Set type and save associated value. */
 	t->type = STR_LIT;
-	t->sval = malloc(strlen(ds->str) + 1);
-	if(t->sval == NULL) {
+	if(t_attach(t, ds->str)) {
 		error = INTERNAL_ERROR;
 	}
-	strcpy(t->sval, ds->str);
 }
 
 void nte_handler(dynamic_string_t * ds, token_t * t, int * c) {

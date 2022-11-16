@@ -14,6 +14,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include "token.h"
 
 
@@ -22,13 +23,39 @@ token_t * t_init() {
 	if(t == NULL) {
 		return NULL;
 	}
+	t->aval = NULL;
 	return t;
+}
+
+token_t * t_dup(const token_t * t) {
+	token_t * new_token = (token_t*) calloc(1, sizeof(token_t));
+	if(new_token == NULL) {
+		return NULL;
+	}
+	if(t_attach(new_token, t->aval)) { // Attach associated value of duplicated token.
+		free(new_token);
+		return NULL;
+	}
+	new_token->type = t->type;
+	return new_token;
+}
+
+int t_attach(token_t * t, const char * str) {
+	if(str == NULL) {
+		return 0; // Noop
+	}
+	char * val_to_attach = (char*) malloc(strlen(str) + 1);
+	if(val_to_attach == NULL) {
+		return 1;
+	}
+	strcpy(val_to_attach, str);
+	t->aval = val_to_attach;
+	return 0;
 }
 
 // TODO: Deallocate associated values.
 void t_dstr(token_t * t) {
-	if(t->type == FUNC_ID || t->type == VAR_ID || t->type == STR_LIT)
-		free(t->sval);
+	free(t->aval);
 	free(t);
 	return;
 }
@@ -116,14 +143,12 @@ void t_print(token_t * t) {
 	} else if(t->type == END) {
 		printf("\ttype: END\n");
 	}
-	if(t->type == FUNC_ID || t->type == VAR_ID || t->type == STR_LIT) {
-		printf("\tAssociated value: %s\n", t->sval);
-	}
-	if(t->type == INT_LIT) {
-		printf("\tAssociated value: %d\n", t->ival);
-	}
-	if(t->type == FLT_LIT) {
-		printf("\tAssociated value: %lf\n", t->fval);
+	if(t->aval != NULL) {
+		printf("\tAssociated value: \"");
+		printf("\033[0;31m");
+		printf("%s", t->aval);
+		printf("\033[0m");
+		printf("\"\n");
 	}
 	printf("}\n");
 }
