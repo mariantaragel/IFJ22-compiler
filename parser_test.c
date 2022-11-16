@@ -2,7 +2,7 @@
  * @name parser_test.c
  * @brief Parser testing
  * @authors Marián Tarageľ
- * @date 29.10.2022
+ * @date 16.11.2022
  */
 
 #include "parser.h"
@@ -31,10 +31,10 @@ int main()
 {
     test("tests/test1.php", OK);
     test("tests/test2.php", OK);
-    test("tests/test3.php", SYNTAX_ERROR);
-    test("tests/test4.php", SYNTAX_ERROR);
-    test("tests/test5.php", SYNTAX_ERROR);
-    test("tests/test6.php", SYNTAX_ERROR);
+    test("tests/test3.php", OK);
+    test("tests/test4.php", OK);
+    test("tests/test5.php", OK);
+    test("tests/test6.php", OK);
 
     return 0;
 }

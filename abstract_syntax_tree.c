@@ -19,7 +19,7 @@ void AST_free(AST_node_t* root){
 	}
 	
 	if(root->data.str != NULL){
-		//free(root->data.str);
+		free(root->data.str);
 	}
 
 	// free root itself
@@ -146,6 +146,10 @@ void _AST_print(AST_node_t* root, size_t depth, FILE* fp){
 	}
 	
 	fprintf(fp,"%s",node_name);
+	if (root->data.str != NULL) {
+		fprintf(fp, " (%s)", root->data.str);
+	}
+	
 
 	for(size_t i = 0; i < root->children_count; ++i){
 		_AST_print(root->children_arr[i], (depth+1), fp);
