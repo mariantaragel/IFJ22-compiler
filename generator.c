@@ -101,7 +101,7 @@ error_codes_t gen_expr_vars_def_checks(AST_node_t* expr_n, generator_context_t* 
 
 	for(size_t i = 0; i < expr->token_count; ++i){
 		if(expr->array[i]->type == VAR_ID){
-			var_name = expr->array[i]->sval;
+			var_name = expr->array[i]->aval;
 
 			if((res = gen_var_def_check(var_name, gen_context)) != OK) return res;
 		}
@@ -314,9 +314,11 @@ error_codes_t gen_func_args_push(AST_node_t* func_call_n, generator_context_t* g
 	AST_node_t* arg_n;
 	char* var_name;
 	char* lit_value;
+
+	size_t arg_count = func_call_n->children_count;
 	
-	for(size_t i = 0; i < func_call_n->children_count; ++i){
-		arg_n = func_call_n->children_arr[i];
+	for(size_t i = arg_count; i > 0; --i){
+		arg_n = func_call_n->children_arr[i-1];
 
 		if(arg_n->type == ID_N){
 			var_name = arg_n->data.str;
@@ -343,8 +345,6 @@ error_codes_t gen_func_args_push(AST_node_t* func_call_n, generator_context_t* g
 	}
 
 	// as last argument push number of arguments passed to function
-	size_t arg_count = func_call_n->children_count;
-
 	G("PUSHS int@%zu", arg_count);
 	
 	return OK;
@@ -567,7 +567,7 @@ error_codes_t gen_func_params(AST_node_t* params_n){
 
 	G("\n# INIT PARAMS, CHECK PARAM TYPES START");
 	inc_ind();
-	for(size_t i = 0; i < params_n->children_count; ++i){
+	for(size_t i = 0; i < param_count; ++i){
 		param_n = params_n->children_arr[i];
 
 		type_n = param_n->children_arr[0];
