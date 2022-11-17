@@ -220,7 +220,7 @@ error_codes_t sem_expr_n(AST_node_t* expr_n, semantic_context_t* sem_context){
 	// call semantics of var name for every variable in token array
 	for(size_t i = 0; i < exp_array->token_count; ++i){
 		if(exp_array->array[i]->type == VAR_ID){
-			if((res = sem_var_name(exp_array->array[i]->sval, true, sem_context)) != OK) return res;
+			if((res = sem_var_name(exp_array->array[i]->aval, true, sem_context)) != OK) return res;
 		}
 	}
 
