@@ -1,4 +1,5 @@
 #include "abstract_syntax_tree.h"
+#include "token_array.h"
 #include <stdio.h>
 
 
@@ -14,13 +15,8 @@ void AST_free(AST_node_t* root){
 	free(root->children_arr);
 
 	// free data
-	if(root->data.expression != NULL){
-		token_array_free(root->data.expression);
-	}
-	
-	if(root->data.str != NULL){
-		//free(root->data.str);
-	}
+	token_array_free(root->data.expression);
+	free(root->data.str);
 
 	// free root itself
 	free(root);
@@ -106,6 +102,52 @@ AST_node_t* AST_create_add_child(AST_node_t* parent, AST_node_type_t type){
 	return AST_create_insert_child(parent, parent->children_count, type);
 }
 
+void _AST_print_node(AST_node_t* node, FILE* fp){
+	// get string representation of AST node type
+	char* node_name;
+	switch(node->type){
+		case PROG_N: 			node_name = "PROG_N"; break;
+		case BODY_N: 			node_name = "BODY_N"; break;	
+		case WHILE_N: 			node_name = "WHILE_N"; break;
+		case IF_N: 				node_name = "IF_N"; break;	
+		case FUNC_CALL_N:		node_name = "FUNC_CALL_N"; break;	
+		case FUNC_DEF_N:		node_name = "FUNC_DEF_N"; break;
+		case PARAM_LIST_N:		node_name = "PARAM_LIST_N"; break;
+		case PARAM_N:			node_name = "PARAM_N"; break;
+		case RETURN_N:			node_name = "RETURN_N"; break;
+		case ASS_EXPR_N:		node_name = "ASS_EXPR_N"; break;
+		case ASS_FUNC_N:		node_name = "ASS_FUNC_N"; break;
+		case EXPR_N:			node_name = "EXPR_N"; break;
+		case TYPE_N:			node_name = "TYPE_N"; break;
+		case ID_N:				node_name = "ID_N"; break;
+		case STR_LIT_N:			node_name = "STR_LIT_N"; break;
+		case INT_LIT_N:			node_name = "INT_LIT_N"; break;
+		case FLT_LIT_N:			node_name = "FLT_LIT_N"; break;
+		case NULL_LIT_N:		node_name = "NULL_LIT_N"; break;
+		case USED_VARS_LIST_N:	node_name = "USED_VARS_LIST_N"; break;
+		case USED_FUNC_LIST_N:	node_name = "USED_FUNC_LIST_N"; break;
+		case MISSING_RETURN_N:	node_name = "MISSING_RETURN_N"; break;
+		default: 				node_name = "UNKNOWN";
+	}
+	
+	// print node type
+	fprintf(fp,"%s",node_name);
+
+	// print node data
+	if(node->type == EXPR_N){
+		fprintf(fp," [");
+		token_array_expr_print(node->data.expression, fp);
+		fprintf(fp,"]");
+	}
+	else if(node->type == ID_N || node->type == STR_LIT_N || node->type == FLT_LIT_N || node->type == INT_LIT_N){
+		fprintf(fp," [");
+		if(node->data.str != NULL){
+			fprintf(fp,"%s", node->data.str);
+		}
+		fprintf(fp,"]");
+	}
+}
+
 void _AST_print(AST_node_t* root, size_t depth, FILE* fp){
 	if(depth > 0){
 		fprintf(fp, "\n");
@@ -118,34 +160,7 @@ void _AST_print(AST_node_t* root, size_t depth, FILE* fp){
 		fprintf(fp, "+----");
 	}
 
-	// get string representation of AST node type
-	char* node_name;
-	switch(root->type){
-		case PROG_N: 		node_name = "PROG_N"; break;
-		case BODY_N: 		node_name = "BODY_N"; break;	
-		case WHILE_N: 		node_name = "WHILE_N"; break;
-		case IF_N: 			node_name = "IF_N"; break;	
-		case FUNC_CALL_N:	node_name = "FUNC_CALL_N"; break;	
-		case FUNC_DEF_N:	node_name = "FUNC_DEF_N"; break;
-		case PARAM_LIST_N:	node_name = "PARAM_LIST_N"; break;
-		case PARAM_N:		node_name = "PARAM_N"; break;
-		case RETURN_N:		node_name = "RETURN_N"; break;
-		case ASS_EXPR_N:	node_name = "ASS_EXPR_N"; break;
-		case ASS_FUNC_N:	node_name = "ASS_FUNC_N"; break;
-		case EXPR_N:		node_name = "EXPR_N"; break;
-		case TYPE_N:		node_name = "TYPE_N"; break;
-		case ID_N:			node_name = "ID_N"; break;
-		case STR_LIT_N:		node_name = "STR_LIT_N"; break;
-		case INT_LIT_N:		node_name = "INT_LIT_N"; break;
-		case FLT_LIT_N:		node_name = "FLT_LIT_N"; break;
-		case NULL_LIT_N:	node_name = "NULL_LIT_N"; break;
-		case USED_VARS_LIST_N:	node_name = "USED_VARS_LIST_N"; break;
-		case USED_FUNC_LIST_N:	node_name = "USED_FUNC_LIST_N"; break;
-		case MISSING_RETURN_N:	node_name = "MISSING_RETURN_N"; break;
-		default: 			node_name = "UNKNOWN";
-	}
-	
-	fprintf(fp,"%s",node_name);
+	_AST_print_node(root, fp);
 
 	for(size_t i = 0; i < root->children_count; ++i){
 		_AST_print(root->children_arr[i], (depth+1), fp);
