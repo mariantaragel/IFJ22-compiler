@@ -1,5 +1,6 @@
 #include <stdlib.h> // NULL
 #include <stdint.h> // SIZE_MAX
+#include <stdio.h>
 
 #include "token_array.h"
 #include "token.h"
@@ -162,4 +163,55 @@ int token_array_append_tokens(token_array_t* token_array1, token_array_t* token_
 
 	// return success
 	return 0;
+}
+
+void _print_expr_token(token_t* t, FILE* fp) {
+	if(t->type == VAR_ID) {
+		fprintf(fp,"%s",t->aval);
+	} else if(t->type == STR_LIT) {
+		fprintf(fp,"str(%s)",t->aval);
+	} else if(t->type == INT_LIT) {
+		fprintf(fp,"int(%s)",t->aval);
+	} else if(t->type == FLT_LIT) {
+		fprintf(fp,"flt(%s)",t->aval);
+	} else if(t->type == MUL) {
+		fprintf(fp,"*");
+	} else if(t->type == DIV) {
+		fprintf(fp,"/");
+	} else if(t->type == ADD) {
+		fprintf(fp,"+");
+	} else if(t->type == SUB) {
+		fprintf(fp,"-");
+	} else if(t->type == CONCAT) {
+		fprintf(fp,".");
+	} else if(t->type == LT) {
+		fprintf(fp,"<");
+	} else if(t->type == GT) {
+		fprintf(fp,">");
+	} else if(t->type == LTE) {
+		fprintf(fp,"<=");
+	} else if(t->type == GTE) {
+		fprintf(fp,">=");
+	} else if(t->type == EQ) {
+		fprintf(fp,"===");
+	} else if(t->type == NEQ) {
+		fprintf(fp,"!==");
+	} else if(t->type == LB) {
+		fprintf(fp,"(");
+	} else if(t->type == RB) {
+		fprintf(fp,")");
+	} else{
+		fprintf(fp,"?(%d)",t->type);
+	}
+}
+
+void token_array_expr_print(token_array_t* expr_token_array, FILE* fp){
+	if(expr_token_array != NULL){
+		for(size_t i = 0; i < expr_token_array->token_count; ++i){
+			_print_expr_token(expr_token_array->array[i], fp);
+		}
+	}
+	else{
+		fprintf(fp,"NULL");
+	}
 }
