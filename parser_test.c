@@ -14,11 +14,13 @@ int test_num = 1;
 void test(char *test, error_codes_t correct_return_value)
 {
     freopen(test, "r", stdin);
+    printf("\n[ %s ] \n", test);
     AST_node_t* root = program();
     AST_print(root, stdout);
     AST_free(root);
-    printf("%d.test: ", test_num);
-    test_num++;
+    fprintf(stderr, "EXPECTED ");
+    error_print(correct_return_value);
+    error_print(error);
     if (error == correct_return_value) {
         printf("\033[0;32m");
         printf("passed\n\033[0m");
@@ -43,6 +45,10 @@ int main()
     test("tests/syntax/test8.php", SYNTAX_ERROR);
     test("tests/syntax/test9.php", SYNTAX_ERROR);
     test("tests/syntax/test10.php", OK);
+    test("tests/syntax/test11.php", OK);
+    test("tests/syntax/test12.php", OK);
+    test("tests/syntax/test13.php", OK);
+    test("tests/syntax/test14.php", SYNTAX_ERROR);
 
     return 0;
 }
