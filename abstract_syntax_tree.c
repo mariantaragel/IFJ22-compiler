@@ -135,19 +135,19 @@ void _AST_print_node(AST_node_t* node, FILE* fp){
 
 	// print node data
 	if(node->type == EXPR_N){
-		fprintf(fp," [");
+		fprintf(fp," [ ");
 		token_array_expr_print(node->data.expression, fp);
-		fprintf(fp,"]");
+		fprintf(fp," ]");
 	}
-	else if(node->type == ID_N || node->type == STR_LIT_N || node->type == FLT_LIT_N || node->type == INT_LIT_N){
-		fprintf(fp," {");
+	else if(node->type == ID_N || node->type == FUNC_CALL_N || node->type == FUNC_DEF_N || node->type == STR_LIT_N || node->type == FLT_LIT_N || node->type == INT_LIT_N){
+		fprintf(fp," { ");
 		if(node->data.str != NULL){
 			fprintf(fp,"%s", node->data.str);
 		}
-		fprintf(fp,"}");
+		fprintf(fp," }");
 	}
 	else if(node->type == NULL_LIT_N){
-		fprintf(fp," {null}");
+		fprintf(fp," { null }");
 	}
 }
 
