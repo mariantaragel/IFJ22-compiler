@@ -14,7 +14,9 @@ int test_num = 1;
 void test(char *test, error_codes_t correct_return_value)
 {
     freopen(test, "r", stdin);
-    program();
+    AST_node_t* root = program();
+    AST_print(root, stdout);
+    AST_free(root);
     printf("%d.test: ", test_num);
     test_num++;
     if (error == correct_return_value) {

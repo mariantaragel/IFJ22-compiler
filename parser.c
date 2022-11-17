@@ -441,7 +441,7 @@ void stmt(token_t *token, AST_node_t *parent)
             token_t *dup_token = t_dup(token);
             RETURN_INTERNAL_ERROR(dup_token)
             if (is_token_type_correct(17, dup_token, VAR_ID, STR_LIT, INT_LIT, FLT_LIT, MUL,
-                            DIV, ADD, SUB, CONCAT, LT, GT, LTE, GTE, EQ, NEQ, LB, RB)) {
+                            DIV, ADD, SUB, CONCAT, LT, GT, LTE, GTE, EQ, NEQ, LB, RB, NULL_LIT)) {
                 if (token_array_push_token(array, dup_token)) {
                     t_dstr(token);
                     RETURN_ERROR(INTERNAL_ERROR);
@@ -488,7 +488,7 @@ void exp_assignment(token_t *token, AST_node_t *parent, token_t *exp_token)
     RETURN_INTERNAL_ERROR(n_expr);
 
     if (!is_token_type_correct(17, exp_token, VAR_ID, STR_LIT, INT_LIT, FLT_LIT, MUL,
-                            DIV, ADD, SUB, CONCAT, LT, GT, LTE, GTE, EQ, NEQ, LB, RB)) {
+                            DIV, ADD, SUB, CONCAT, LT, GT, LTE, GTE, EQ, NEQ, LB, RB, NULL_LIT)) {
         RETURN_ERROR(SYNTAX_ERROR);
     }
 
@@ -722,7 +722,7 @@ int is_token_type_correct(int num_of_types, token_t *token, ...)
 void expression(token_t **token, int is_in_if_or_while, token_array_t *array)
 {
     while (is_token_type_correct(17, *token, VAR_ID, STR_LIT, INT_LIT, FLT_LIT, MUL,
-                            DIV, ADD, SUB, CONCAT, LT, GT, LTE, GTE, EQ, NEQ, LB, RB)) {
+                            DIV, ADD, SUB, CONCAT, LT, GT, LTE, GTE, EQ, NEQ, LB, RB, NULL_LIT)) {
         if (token_array_push_token(array, *token)) {
             t_dstr(*token);
             RETURN_ERROR(INTERNAL_ERROR);
