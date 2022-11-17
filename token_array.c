@@ -165,7 +165,6 @@ int token_array_append_tokens(token_array_t* token_array1, token_array_t* token_
 	return 0;
 }
 
-<<<<<<< HEAD
 void _print_expr_token(token_t* t, FILE* fp) {
 	if(t->type == VAR_ID) {
 		fprintf(fp,"%s",t->aval);
@@ -215,11 +214,4 @@ void token_array_expr_print(token_array_t* expr_token_array, FILE* fp){
 	else{
 		fprintf(fp,"NULL");
 	}
-=======
-void token_array_print(token_array_t *array)
-{
-    for (long unsigned int i = 0; i < array->token_count; i++) {
-        t_print(array->array[i]);
-    }    
->>>>>>> 3e2e33a6f3fc734f01d8ee0cc4d6e06c8dece1f3
 }
