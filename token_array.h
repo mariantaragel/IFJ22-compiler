@@ -56,6 +56,7 @@ token_t* token_array_pop_token(token_array_t* token_array);
 int token_array_append_tokens(token_array_t* token_array1, token_array_t* token_array2);
 
 /**
+<<<<<<< HEAD
  * @brief Prints token array as expression.
  * 
  * @param expr_token_array Token array to be printed.
@@ -69,5 +70,12 @@ int token_array_append_tokens(token_array_t* token_array1, token_array_t* token_
  * @param fp Stream to be printed in.
  */
 void token_array_expr_print(token_array_t* expr_token_array, FILE* fp);
+=======
+ * @brief Prints token array
+ * 
+ * @param array array to print
+ */
+void token_array_print(token_array_t *array);
+>>>>>>> 3e2e33a6f3fc734f01d8ee0cc4d6e06c8dece1f3
 
 #endif
