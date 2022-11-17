@@ -48,7 +48,8 @@ token_t* token_array_pop_token(token_array_t* token_array);
 
 /**
  * @brief Appends all tokens from token_array2 to token_array1. 
- * On success, token_array2 is freed, otherwise both token arrays remain unchanged.
+ * On success, all tokens from token_array2 are appended to token_array1, token_array2 becomes empty (token_count == 0).
+ * On failure, both token arrays remain unchanged.
  * 
  * @param token_array1
  * @param token_array2
@@ -57,18 +58,18 @@ token_t* token_array_pop_token(token_array_t* token_array);
 int token_array_append_tokens(token_array_t* token_array1, token_array_t* token_array2);
 
 /**
- * @brief Prints token array as expression.
- * 
- * @param expr_token_array Token array to be printed.
- */
-
-
-/**
  * @brief Prints token array as expression to specified stream (e.g. stdout).
  * 
  * @param expr_token_array Token array to be printed.
  * @param fp Stream to be printed in.
  */
 void token_array_expr_print(token_array_t* expr_token_array, FILE* fp);
+
+/**
+ * @brief Reverse order of tokens in token array.
+ * 
+ * @param token_array Token array to be reversed.
+ */
+void token_array_reverse(token_array_t* token_array);
 
 #endif

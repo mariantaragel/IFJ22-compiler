@@ -159,10 +159,27 @@ int token_array_append_tokens(token_array_t* token_array1, token_array_t* token_
 
     // set token count of second array to zero and then free it
     token_array2->token_count = 0;
-    token_array_free(token_array2);
 
 	// return success
 	return 0;
+}
+
+void token_array_reverse(token_array_t* token_array){
+	if(token_array != NULL){
+		token_t* tmp;
+
+		size_t l = 0;
+		size_t r = token_array->token_count - 1;
+
+		while(l != r){
+			tmp = token_array->array[l];
+			token_array->array[l] = token_array->array[r];
+			token_array->array[r] = tmp;
+
+			--l;
+			++r;
+		}
+	}
 }
 
 void _print_expr_token(token_t* t, FILE* fp) {
