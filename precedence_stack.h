@@ -15,11 +15,7 @@
  * 
  */
 typedef struct{
-    bool handle_start;
-
     prec_rule_elem_t prec_rule_element;
-    prec_table_index_t prec_table_index;
-
     token_array_t* token_array;
 }pstack_symbol_t;
 
@@ -43,39 +39,20 @@ pstack_t * pstack_create();
  */
 void pstack_free(pstack_t *pstack);
 
-/**
- * @brief Returns topmost terminal symbol from precedence stack.
- * 
- * @param pstack Precedence stack.
- * @return pstack_symbol_t* Returns topmost terminal symbol on success, otherwise NULL is returned.
- */
-pstack_symbol_t* pstack_top_terminal(pstack_t* pstack);
+prec_table_index_t pstack_get_top_terminal_prec_table_index(pstack_t* pstack);
 
-/**
- * @brief Returns top symbol from precedence stack.
- * 
- * @param pstack Precedence stack.
- * @return pstack_symbol_t* Returns top symbol on success, otherwise NULL is returned.
- */
-pstack_symbol_t* pstack_top(pstack_t* pstack);
+void pstack_set_top_terminal_handle_start(pstack_t* pstack, bool handle_start);
+
+bool pstack_is_top_handle_start(pstack_t* pstack);
 
 
-/**
- * @brief Adds new symbol to top of precedence stack.
- * 
- * @param pstack Precedence stack.
- * @param pstack_symbol Symbol to be pushed to precedence stack.
- * @return int Returns 0 on success, otherwise, if allocation error occures or pstack or pstack_symbol is NULL, non zero value is returned
- */
-int pstack_push(pstack_t* pstack, pstack_symbol_t* pstack_symbol);
+int pstack_push_terminal(pstack_t* pstack, token_t* token);
 
-/**
- * @brief Removes and returns top symbol from precedence stack.
- * 
- * @param pstack Precedence stack.
- * @return pstack_symbol_t* Returns former top symbol of precedence stack on sucess, if pstack is empty or points to NULL, NULL is returned.
- */
-pstack_symbol_t* pstack_pop(pstack_t* pstack);
+int pstack_push_nonterminal(pstack_t* pstack, token_array_t* token_array);
+
+
+
+token_array_t* pstack_pop(pstack_t* pstack, bool* is_terminal);
 
 /**
  * @brief Returns number of symbols stored in precedence stack.

@@ -2,6 +2,7 @@
 #include <stdlib.h>  // NULL, size_t
 
 #include "precedence_stack.h"
+#include "precedence_table.h"
 
 
 /**
@@ -9,7 +10,11 @@
  * 
  */
 typedef struct pstack_elem{
-    pstack_symbol_t* symbol;
+	token_array_t *token_array;
+
+	bool handle_start;
+	bool is_terminal;
+	prec_table_index_t prec_table_index;
 
     struct pstack_elem * next_ptr;
 }pstack_elem_t;
@@ -24,7 +29,6 @@ struct pstack{
 };
 
 
-
 pstack_t * pstack_create(){
 	// allocate new precedence stack structure
     pstack_t *pstack = malloc(sizeof(*pstack));
@@ -32,7 +36,19 @@ pstack_t * pstack_create(){
 
 	// initialize empty pstack
 	pstack->size = 0;
-	pstack->top_ptr = NULL;
+
+	// add initial dollar symbol
+	pstack->top_ptr = malloc(sizeof(*pstack->top_ptr));
+	if(pstack->top_ptr == NULL){
+		free(pstack);
+		return NULL;
+	}
+	pstack->top_ptr->is_terminal = true;
+	pstack->top_ptr->handle_start = false;
+	pstack->top_ptr->prec_table_index = DOLLAR_INDEX;
+	pstack->top_ptr->token_array = NULL;
+
+	pstack->top_ptr->next_ptr = NULL;
 
 	// return allocated precedence stack structure with DOLLAR element
     return pstack;
@@ -48,13 +64,8 @@ void pstack_free(pstack_t* pstack){
 		tmp_elem_ptr = pstack->top_ptr;
 		pstack->top_ptr = tmp_elem_ptr->next_ptr;
 
-		// free token array of symbol
-		if(tmp_elem_ptr->symbol->token_array != NULL){
-			token_array_free(tmp_elem_ptr->symbol->token_array);
-		}
-
-		// free symbol
-		free(tmp_elem_ptr->symbol);
+		// free token array of element
+		token_array_free(tmp_elem_ptr->token_array);
 
 		// free old top element
 		free(tmp_elem_ptr);
@@ -64,32 +75,48 @@ void pstack_free(pstack_t* pstack){
 	free(pstack);
 }
 
-pstack_symbol_t* pstack_top_terminal(pstack_t* pstack){
+prec_table_index_t pstack_get_top_terminal_prec_table_index(pstack_t* pstack){
 	pstack_elem_t* cur_elem_ptr = pstack->top_ptr;
 
 	// iterate trough elements of pstack until either end is reached or terminal is found
-	while(cur_elem_ptr != NULL && is_prec_rule_elem_term(cur_elem_ptr->symbol->prec_rule_element) != true){
+	while(cur_elem_ptr != NULL && cur_elem_ptr->is_terminal != true){
 		cur_elem_ptr = cur_elem_ptr->next_ptr;
 	}
 
 	if(cur_elem_ptr == NULL){
-		return NULL;
+		return ERROR_INDEX;
 	}
 	else{
-		return cur_elem_ptr->symbol;
+		return cur_elem_ptr->prec_table_index;
 	}
 }
 
-pstack_symbol_t* pstack_top(pstack_t* pstack){
-	if(pstack->top_ptr != NULL){
-		return pstack->top_ptr->symbol;
+void pstack_set_top_terminal_handle_start(pstack_t* pstack, bool handle_start){
+	pstack_elem_t* cur_elem_ptr = pstack->top_ptr;
+
+	// iterate trough elements of pstack until either end is reached or terminal is found
+	while(cur_elem_ptr != NULL && cur_elem_ptr->is_terminal != true){
+		cur_elem_ptr = cur_elem_ptr->next_ptr;
 	}
-	else{
-		return NULL;
+
+	if(cur_elem_ptr != NULL){
+		cur_elem_ptr->handle_start = handle_start;
 	}
 }
 
-int pstack_push(pstack_t* pstack, pstack_symbol_t* pstack_symbol){
+bool pstack_is_top_handle_start(pstack_t* pstack){
+	if(pstack == NULL || pstack->size == 0){
+		return false;
+	}
+	else{
+		return pstack->top_ptr->handle_start;
+	}
+}
+
+
+int pstack_push_terminal(pstack_t* pstack, token_t* token){
+	if(token == NULL) return -1;
+
 	// create new pstack element
 	pstack_elem_t* new_elem_ptr = malloc(sizeof(*new_elem_ptr));
 	if(new_elem_ptr == NULL){
@@ -97,7 +124,21 @@ int pstack_push(pstack_t* pstack, pstack_symbol_t* pstack_symbol){
 	}
 
 	// initialize new pstack element
-	new_elem_ptr->symbol = pstack_symbol;
+	new_elem_ptr->token_array = token_array_create();
+	if(new_elem_ptr->token_array == NULL){
+		free(new_elem_ptr);
+		return -1;
+	}
+
+	if(token_array_push_token(new_elem_ptr->token_array, token) != 0){
+		token_array_free(new_elem_ptr->token_array);
+		free(new_elem_ptr);
+		return -1;
+	}
+
+	new_elem_ptr->handle_start = false;
+	new_elem_ptr->is_terminal = true;
+	new_elem_ptr->prec_table_index = get_prec_table_index_from_token(token);
 
 	// make new element to element of pstack
 	new_elem_ptr->next_ptr = pstack->top_ptr;
@@ -110,8 +151,38 @@ int pstack_push(pstack_t* pstack, pstack_symbol_t* pstack_symbol){
 	return 0;
 }
 
-pstack_symbol_t* pstack_pop(pstack_t* pstack){
-	if(pstack->top_ptr == NULL){
+int pstack_push_nonterminal(pstack_t* pstack, token_array_t* token_array){
+	if(token_array == NULL) return -1;
+
+	// create new pstack element
+	pstack_elem_t* new_elem_ptr = malloc(sizeof(*new_elem_ptr));
+	if(new_elem_ptr == NULL){
+		return -1;
+	}
+
+	// initialize new pstack element
+	new_elem_ptr->token_array = token_array;
+
+	new_elem_ptr->handle_start = false;
+	new_elem_ptr->is_terminal = false;
+	new_elem_ptr->prec_table_index = ERROR_INDEX;
+
+	// make new element to element of pstack
+	new_elem_ptr->next_ptr = pstack->top_ptr;
+	pstack->top_ptr = new_elem_ptr;
+
+	// update pstack size
+	++(pstack->size);
+
+	// return success
+	return 0;
+}
+
+
+
+token_array_t* pstack_pop(pstack_t* pstack, bool* is_terminal){
+	if(pstack == NULL || pstack->top_ptr == NULL){
+		*is_terminal = false;
 		return NULL;
 	}
 	else{
@@ -125,11 +196,12 @@ pstack_symbol_t* pstack_pop(pstack_t* pstack){
 		pstack->top_ptr = pstack->top_ptr->next_ptr;
 
 		// free old top element and return symbol stored in it
-		pstack_symbol_t* top_symbol_ptr = tmp_elem_ptr->symbol;
+		token_array_t* token_array = tmp_elem_ptr->token_array;
+		*is_terminal = tmp_elem_ptr->is_terminal;
 		
 		free(tmp_elem_ptr);
 
-		return top_symbol_ptr;
+		return token_array;
 	}
 }
 
