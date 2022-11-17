@@ -27,16 +27,22 @@ void test(char *test, error_codes_t correct_return_value)
         printf("\033[0;31m");
         printf("fail\n\033[0m");
     }
+    error = OK;
+    fclose(stdin);
 }
 
 int main()
 {
-    test("tests/test1.php", OK);
-    test("tests/test2.php", OK);
-    test("tests/test3.php", OK);
-    test("tests/test4.php", OK);
-    test("tests/test5.php", OK);
-    test("tests/test6.php", OK);
+    test("tests/syntax/test1.php", OK);
+    test("tests/syntax/test2.php", OK);
+    test("tests/syntax/test3.php", SYNTAX_ERROR);
+    test("tests/syntax/test4.php", SYNTAX_ERROR);
+    test("tests/syntax/test5.php", SYNTAX_ERROR);
+    test("tests/syntax/test6.php", SYNTAX_ERROR);
+    test("tests/syntax/test7.php", SYNTAX_ERROR);
+    test("tests/syntax/test8.php", SYNTAX_ERROR);
+    test("tests/syntax/test9.php", SYNTAX_ERROR);
+    test("tests/syntax/test10.php", OK);
 
     return 0;
 }
