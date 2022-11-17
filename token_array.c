@@ -174,6 +174,8 @@ void _print_expr_token(token_t* t, FILE* fp) {
 		fprintf(fp,"int(%s)",t->aval);
 	} else if(t->type == FLT_LIT) {
 		fprintf(fp,"flt(%s)",t->aval);
+	} else if(t->type == NULL_LIT) {
+		fprintf(fp,"null");
 	} else if(t->type == MUL) {
 		fprintf(fp,"*");
 	} else if(t->type == DIV) {
