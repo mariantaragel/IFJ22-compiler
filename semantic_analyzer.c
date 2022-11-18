@@ -175,7 +175,7 @@ error_codes_t sem_body_n(AST_node_t* body_n, semantic_context_t* sem_context){
 				res = sem_ass_expr_n(cur_node, sem_context);
 				break;
 			case ASS_FUNC_N:
-				res = sem_ass_expr_n(cur_node, sem_context);
+				res = sem_ass_func_n(cur_node, sem_context);
 				break;
 			case FUNC_CALL_N:
 				res = sem_func_call_n(cur_node, sem_context);

@@ -24,7 +24,7 @@
 #include "token.h"
 #include "error.h"
 
-
+/*
 int main() {
 
 	// double value = 123.123;
@@ -47,7 +47,7 @@ int main() {
 	} while(token->type != END && token->type != EPILOG);
 	return 0;
 }
-
+*/
 
 token_t * get_token() {
 	dynamic_string_t * ds = ds_init(); // Initialize write buffer.
