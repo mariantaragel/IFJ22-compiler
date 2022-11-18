@@ -149,6 +149,14 @@ void t_print(token_t * t) {
 		printf("%s", t->aval);
 		printf("\033[0m");
 		printf("\"\n");
+		if(t->type == FLT_LIT) {
+			double value = strtod(t->aval, NULL);
+			printf("\tAs double: ");
+			printf("\033[0;31m");
+			printf("%lf", value);
+			printf("\033[0m");
+			printf("\n");
+		}
 	}
 	printf("}\n");
 }
