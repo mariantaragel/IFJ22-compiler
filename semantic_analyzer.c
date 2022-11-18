@@ -135,7 +135,7 @@ error_codes_t sem_prog_n(AST_node_t* prog_n, semantic_context_t* sem_context){
 				res = sem_ass_expr_n(cur_node, sem_context);
 				break;
 			case ASS_FUNC_N:
-				res = sem_ass_expr_n(cur_node, sem_context);
+				res = sem_ass_func_n(cur_node, sem_context);
 				break;
 			case FUNC_CALL_N:
 				res = sem_func_call_n(cur_node, sem_context);
@@ -374,11 +374,11 @@ error_codes_t sem_enter_func_def_context(AST_node_t* func_def_n, semantic_contex
     }
     else{
 		// function was not found in symtable
-		AST_node_t* used_func_n = AST_create_insert_child(sem_context->used_func_list_n, 0, ID_N);
-		if(used_func_n == NULL) return INTERNAL_ERROR;
+		AST_node_t* used_func_id_n = AST_create_add_child(sem_context->used_func_list_n, ID_N);
+		if(used_func_id_n == NULL) return INTERNAL_ERROR;
 
-		used_func_n->data.str = create_string_copy(func_def_n->data.str);
-		if(used_func_n->data.str == NULL) return INTERNAL_ERROR;
+		used_func_id_n->data.str = create_string_copy(func_def_n->data.str);
+		if(used_func_id_n->data.str == NULL) return INTERNAL_ERROR;
     }
 
 	// set function definition flag
@@ -419,6 +419,9 @@ error_codes_t sem_func_def_n(AST_node_t* func_def_n, semantic_context_t* sem_con
 
 	// semantics for entering function context
 	if((res = sem_enter_func_def_context(func_def_n, sem_context)) != OK) return res;
+
+	// add return type to function symbol info
+	sem_context->parent_func_symbol_info->return_type = type_n->data.type;
 
 	// semantics of params and function body
 	if((res = sem_func_params(params_n, sem_context)) != OK) return res;
