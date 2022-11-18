@@ -34,8 +34,7 @@ pstack_t * pstack_create(){
     pstack_t *pstack = malloc(sizeof(*pstack));
     if(pstack == NULL) return NULL;
 
-	// initialize empty pstack
-	pstack->size = 0;
+	pstack->size = 1;
 
 	// add initial dollar symbol
 	pstack->top_ptr = malloc(sizeof(*pstack->top_ptr));
@@ -138,7 +137,7 @@ int pstack_push_terminal(pstack_t* pstack, token_t* token){
 
 	new_elem_ptr->handle_start = false;
 	new_elem_ptr->is_terminal = true;
-	new_elem_ptr->prec_table_index = get_prec_table_index_from_token(token);
+	new_elem_ptr->prec_table_index = get_prec_table_index_of_token(token);
 
 	// make new element to element of pstack
 	new_elem_ptr->next_ptr = pstack->top_ptr;
@@ -182,7 +181,9 @@ int pstack_push_nonterminal(pstack_t* pstack, token_array_t* token_array){
 
 token_array_t* pstack_pop(pstack_t* pstack, bool* is_terminal){
 	if(pstack == NULL || pstack->top_ptr == NULL){
-		*is_terminal = false;
+		if(is_terminal != NULL){
+			*is_terminal = false;
+		}
 		return NULL;
 	}
 	else{
@@ -197,7 +198,9 @@ token_array_t* pstack_pop(pstack_t* pstack, bool* is_terminal){
 
 		// free old top element and return symbol stored in it
 		token_array_t* token_array = tmp_elem_ptr->token_array;
-		*is_terminal = tmp_elem_ptr->is_terminal;
+		if(is_terminal != NULL) {
+			*is_terminal = tmp_elem_ptr->is_terminal;
+		}
 		
 		free(tmp_elem_ptr);
 

@@ -1,6 +1,8 @@
 #include "precedence_table.h"
 #include <stdlib.h>
 
+#define PRECEDENCE_TABLE_SIZE 9
+
 /**
  * @brief Precedence table.
  * 
@@ -16,6 +18,12 @@ const prec_parser_operation_t precedence_table[PRECEDENCE_TABLE_SIZE][PRECEDENCE
     /*   i   */ {  R  ,  R  ,  R  ,  R  ,  X  ,  R  ,  X  ,  R  },
     /*   $   */ {  S  ,  S  ,  S  ,  S  ,  S  ,  X  ,  S  ,  X  }      
 };
+
+prec_parser_operation_t precedence_table_get_operation(prec_table_index_t top_term_index, prec_table_index_t input_term_index){
+	if(top_term_index < 0 || input_term_index < 0) return X;
+	if(top_term_index >= PRECEDENCE_TABLE_SIZE || input_term_index >= PRECEDENCE_TABLE_SIZE) return X;
+	return precedence_table[top_term_index][input_term_index];
+}
 
 prec_table_index_t get_prec_table_index_of_token(token_t* token){
 	if(token == NULL) return DOLLAR_INDEX;

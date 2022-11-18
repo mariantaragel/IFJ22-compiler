@@ -44,8 +44,8 @@ TEST_token_array: token_array_test
 	valgrind --leak-check=full --show-leak-kinds=all ./token_array_test
 
 # TEST precedence parser
-precedence_parser_test: precedence_parser_test.o precedence_parser.o precedence_stack.o precedence_rules.o precedence_table.o token_array.o token.o
-	$(CC) $(CFLAGS) $^ -o $@
+precedence_parser_test: precedence_parser_test.o precedence_parser.o precedence_stack.o precedence_rules.o precedence_table.o scanner.o dynamic_string.o error.o token_array.o token.o
+	$(CC) $(CFLAGS) $^ -o $@ $(LFLAGS)
 
 TEST_precedence_parser: precedence_parser_test
 	valgrind --leak-check=full --show-leak-kinds=all ./precedence_parser_test

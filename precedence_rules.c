@@ -2,14 +2,6 @@
 #include "token.h"
 #include "stdbool.h"
 
-
-bool is_prec_rule_elem_term(prec_rule_elem_t elem){
-	if(elem.category == TERM)
-		return true;
-	else
-		return false;
-}
-
 /**
  * @brief Precedence rule structure type.
  * Contains three precedence rule elements and associated action type.

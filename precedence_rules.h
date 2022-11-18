@@ -2,7 +2,6 @@
 #define PRECEDENCE_RULES_H
 
 #include <stdbool.h> // bool
-
 #include "token.h" 
 
 /**
@@ -53,22 +52,10 @@ typedef struct prec_rule_elem{
 
 
 /**
- * @brief Checks whether rule element is TERM.
- * 
- * @param elem Element to be checked.
- * @return true if element is TERM,
- * @return false if element is not TERM
- */
-bool is_prec_rule_elem_term(prec_rule_elem_t elem);
-
-
-
-/**
  * @brief Type of action linked to precedence rule.
  * 
  */
 typedef enum {ERROR_ACTION = -1, CONVERT_TO_EXPR , REMOVE_BRACKETS, POSTFIX_MERGE} prec_rule_action_t;
-
 
 
 /**
