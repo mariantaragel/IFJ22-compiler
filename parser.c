@@ -30,12 +30,7 @@ AST_node_t *program()
 
     token = get_token();
     RETURN_ROOT;
-    AST_node_t *body = AST_create_add_child(root, BODY_N);
-    if (body == NULL) {
-        error = INTERNAL_ERROR;
-        return root;
-    }
-    program_body(token, body);
+    program_body(token, root);
     t_dstr(token);
     RETURN_ROOT;
 
