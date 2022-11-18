@@ -406,6 +406,10 @@ void stmt(token_t *token, AST_node_t *parent)
         break;
 
     default: ;
+        if (!is_token_type_correct(18, token, VAR_ID, STR_LIT, INT_LIT, FLT_LIT, MUL,
+                        DIV, ADD, SUB, CONCAT, LT, GT, LTE, GTE, EQ, NEQ, LB, RB, NULL_LIT)) {
+            RETURN_ERROR(SYNTAX_ERROR);
+        }
         token_t *next_token = get_token();
         RETURN_IF_ERROR;
         if (token->type == VAR_ID && next_token->type == ASSIGN) {
