@@ -138,7 +138,7 @@ int pstack_push_terminal(pstack_t* pstack, token_t* token){
 
 	new_elem_ptr->handle_start = false;
 	new_elem_ptr->is_terminal = true;
-	new_elem_ptr->prec_table_index = get_prec_table_index_from_token(token);
+	new_elem_ptr->prec_table_index = get_prec_table_index_of_token(token);
 
 	// make new element to element of pstack
 	new_elem_ptr->next_ptr = pstack->top_ptr;

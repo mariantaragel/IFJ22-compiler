@@ -4,7 +4,7 @@ CC=gcc
 
 all: main
 
-main: main.o parser.o scanner.o dynamic_string.o token.o error.o abstract_syntax_tree.o token_array.o
+main: main.o parser.o scanner.o dynamic_string.o token.o error.o abstract_syntax_tree.o token_array.o semantic_analyzer.o symtable.o precedence_parser.o precedence_stack.o precedence_rules.o precedence_table.o token_array.o token.o
 	$(CC) $(CFLAGS) -o $@ $^ $(LFLAGS)
 
 parser: parser.o scanner.o dynamic_string.o token.o error.o
