@@ -426,7 +426,9 @@ error_codes_t sem_func_def_n(AST_node_t* func_def_n, semantic_context_t* sem_con
 
 	// add implicit return nodes to end of function body
 	if(type_n->data.type == VOID_T){
-		if(AST_create_insert_child(body_n, body_n->children_count, RETURN_N) == NULL) return INTERNAL_ERROR;
+		AST_node_t *return_n;
+		if((return_n = AST_create_insert_child(body_n, body_n->children_count, RETURN_N)) == NULL) return INTERNAL_ERROR;
+		return_n->data.type = VOID_T;
 	}
 	else{
 		if(AST_create_insert_child(body_n, body_n->children_count, MISSING_RETURN_N) == NULL) return INTERNAL_ERROR;
