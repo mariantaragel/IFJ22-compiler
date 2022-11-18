@@ -98,5 +98,9 @@ void aeq_handler(token_t * t, int * c); // ASSIGN, EQ
  */
 int isflchr(int c);
 
+int oct_write(dynamic_string_t * ds, int * c);
+
+int hex_write(dynamic_string_t * ds, int * c);
+
 
 #endif // SCANNER_H

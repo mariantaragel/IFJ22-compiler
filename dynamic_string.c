@@ -129,12 +129,12 @@ int ds_concat_str(dynamic_string_t * ds, const char * str) {
 	return 0;
 }
 
-/* USE ONLY POSITIVE VALUES GREATER THAN 1, other values are undefined.*/
 int ds_write_uint(dynamic_string_t * ds, unsigned n) {
+	size_t size = n;
 	if(n == 0) { // Look into this...
-		return 1;
+		size++;
 	}
-	size_t dummy_size =  (int)((ceil(log10(n))+2)*sizeof(char));
+	size_t dummy_size =  (int)((ceil(log10(size))+2)*sizeof(char));
 	char dummy[dummy_size];
 	sprintf(dummy, "%d", n);
 	if(ds_concat_str(ds, dummy)) {

@@ -25,19 +25,23 @@
 #include "error.h"
 
 int main() {
-	token_t * token;
-	do {
-		token = get_token();
-		t_print(token);
-		if(error == INTERNAL_ERROR) {
-			fprintf(stderr, "INTERNAL_ERROR\n");
-			return error;
-		} else if (error == LEXICAL_ERROR) {
-			fprintf(stderr, "LEXICAL_ERROR\n");
-			return error;
-		}
-	} while(token->type != END && token->type != EPILOG);
-	return 0;
+
+	double value = 123.123;
+
+	printf("%a\n", value);
+	// token_t * token;
+	// do {
+	// 	token = get_token();
+	// 	t_print(token);
+	// 	if(error == INTERNAL_ERROR) {
+	// 		fprintf(stderr, "INTERNAL_ERROR\n");
+	// 		return error;
+	// 	} else if (error == LEXICAL_ERROR) {
+	// 		fprintf(stderr, "LEXICAL_ERROR\n");
+	// 		return error;
+	// 	}
+	// } while(token->type != END && token->type != EPILOG);
+	// return 0;
 }
 
 
@@ -178,7 +182,7 @@ void fi_handler(dynamic_string_t * ds, token_t * t, int * c) {
 		}
 	} while( (*c = fgetc(stdin)) != EOF && isdigit(*c));
 
-	if(!isflchr(*c)) { // Value should be an integer literal.
+	if(*c != '.' && *c != 'e' && *c != 'E') { // Value should be an integer literal.
 	
 		ungetc(*c, stdin); // Return false read.
 
@@ -213,11 +217,11 @@ void fi_handler(dynamic_string_t * ds, token_t * t, int * c) {
 		ungetc(*c, stdin);
 
 		char * end_ptr;
-		// double value = strtod(ds->str, &end_ptr); // Try to convert value.
-		strtod(ds->str, &end_ptr);
+		double value = strtod(ds->str, &end_ptr); // Try to convert value.
+		// strtod(ds->str, &end_ptr);
 
 		if(*end_ptr != '\0') { // Incorrect read.
-			fprintf(stderr, "Stopped reading at %c\n", *end_ptr);
+			//fprintf(stderr, "Stopped reading at %c\n", *end_ptr);
 			error = LEXICAL_ERROR;
 			return;
 		}
@@ -227,9 +231,13 @@ void fi_handler(dynamic_string_t * ds, token_t * t, int * c) {
 		}
 		t->type = FLT_LIT;
 
+		char dummy[30];
+		sprintf(dummy, "%a", value); // Write into dummy.
+		dynamic_string_t * aux = ds_strinit(dummy);
+
 		// Conversion neccesarry.
 		/* String option */
-		if(t_attach(t, ds->str)) {
+		if(t_attach(t, aux->str)) {
 			error = INTERNAL_ERROR;
 		}
 	}
@@ -241,6 +249,13 @@ void s_handler(dynamic_string_t * ds, token_t * t, int * c) {
 	
 	while( (*c = fgetc(stdin)) != EOF && *c != '"') { // Write string to buffer.
 		// Case for whitespace and other characters.
+		if(*c <= 32 || *c == 35) {
+			if(ds_concat_str(ds, "\\0") || ds_write_uint(ds, *c)) {
+				error = INTERNAL_ERROR;
+				return;
+			}
+			continue;
+		}
 		if(*c == '\\') { // Escape sequence.
 			dynamic_string_t * aux_ds = ds_init();
 			if(aux_ds == NULL) {
@@ -250,16 +265,16 @@ void s_handler(dynamic_string_t * ds, token_t * t, int * c) {
 			*c = fgetc(stdin);
 			// String interpolation...
 			switch(*c) {
-				case 'n': if(ds_concat_str(ds, "\010")) { error = INTERNAL_ERROR; return; } break;
-				case 't': if(ds_write(ds, '\t')) { error = INTERNAL_ERROR; return; } break;
+				case 'n': if(ds_concat_str(ds, "\\010")) { error = INTERNAL_ERROR; return; } break;
+				case 't': if(ds_concat_str(ds, "\\009")) { error = INTERNAL_ERROR; return; } break;
 				case '"': if(ds_write(ds, '"')) { error = INTERNAL_ERROR; return; } break;
-				case '\\': if(ds_write(ds, '\\')) { error = INTERNAL_ERROR; return; } break;
+				case '\\': if(ds_concat_str(ds, "\\092")) { error = INTERNAL_ERROR; return; } break;
 				case '$': if(ds_write(ds, '$')) { error = INTERNAL_ERROR; return; } break;
-				case '0': // Octal conversion of three characters.
-				case 'x': // Hexadecimal conversion of two characters.
+				case '0': case '1': case '2': case '3': if(oct_write(ds, c)) { error = INTERNAL_ERROR; return; } break; // Octal conversion of three characters.
+				case 'x': if(hex_write(ds, c)) { error = INTERNAL_ERROR; return; } break;
 				default: 
-					if(ds_write(ds, '\\')) { error = INTERNAL_ERROR; return; }
-					if(ds_write(ds,*c)) { error = INTERNAL_ERROR; return; }
+					if(ds_concat_str(ds, "\\092")) { error = INTERNAL_ERROR; return; }
+					ungetc(*c, stdin);
 					break;
 			}
 		} else {
@@ -269,11 +284,16 @@ void s_handler(dynamic_string_t * ds, token_t * t, int * c) {
 			}
 		}
 	} // End write.
+	if(*c != '"') {
+		error = LEXICAL_ERROR;
+		return;
+	}
 
 	/* Set type and save associated value. */
 	t->type = STR_LIT;
 	if(t_attach(t, ds->str)) {
 		error = INTERNAL_ERROR;
+		return;
 	}
 }
 
@@ -386,3 +406,127 @@ int isflchr(int c) {
 	}
 }
 
+int oct_write(dynamic_string_t * ds, int * c) {
+	dynamic_string_t * aux = ds_init();
+	if(aux == NULL) {
+		error = INTERNAL_ERROR;
+		return 1;
+	}
+	if(ds_write(aux, *c)) { // Write first digit.
+		error = INTERNAL_ERROR;
+		ds_dstr(aux);
+		return 1;
+	}
+	*c = fgetc(stdin); // Get second digit.
+	if(ds_write(aux, *c)) {
+		error = INTERNAL_ERROR;
+		ds_dstr(aux);
+		return 1;
+	}
+	*c = fgetc(stdin); // Get third digit.
+	if(ds_write(aux, *c)) {
+		error = INTERNAL_ERROR;
+		ds_dstr(aux);
+		return 1;
+	}
+
+	// Try octal conversion
+	char * endptr;
+
+	unsigned value = strtoumax(aux->str, &endptr, 8);
+	if(*endptr != '\0') {
+		ds_concat_str(ds, "\\092"); // Insert escape sequence 
+		ds_concat(ds, aux); // Conversion failed
+	} else {
+		if(value >= 1 && value <= 255) {
+			if(value <= 32 || value == 35 || value == 92) { // Check for special values.
+				if(ds_concat_str(ds, "\\0") || ds_write_uint(ds, value)) {
+					error = INTERNAL_ERROR;
+					return 1;
+				}
+			} else {
+				ds_write(ds, value); // Write value directly...
+				return 0;
+			}
+		} // write as something...
+	}
+	ds_dstr(aux);
+
+	return 0;
+}
+
+
+int hex_write(dynamic_string_t * ds, int * c) {
+	dynamic_string_t * aux = ds_init();
+	if(aux == NULL) {
+		error = INTERNAL_ERROR;
+		ds_dstr(aux);
+		return 1;
+	}
+	*c = fgetc(stdin); // Get first digit.
+	if(ds_write(aux, *c)) {
+		error = INTERNAL_ERROR;
+		ds_dstr(aux);
+		return 1;
+	}
+	*c = fgetc(stdin); // Get second digit.
+	if(ds_write(aux, *c)) {
+		error = INTERNAL_ERROR;
+		ds_dstr(aux);
+		return 1;
+	}
+
+
+	// try hex conversion
+	char * endptr;
+
+
+	unsigned value = strtoumax(aux->str, &endptr, 16);
+	if(*endptr != '\0') {
+		ds_concat_str(ds, "\\092x"); // Insert escape sequence 
+		ds_concat(ds, aux); // Conversion failed
+	} else {
+		if(value >= 1 && value <= 255) {
+			if(value <= 32 || value == 35 || value == 92) { // Check for special values.
+				if(ds_concat_str(ds, "\\0") || ds_write_uint(ds, value)) {
+					error = INTERNAL_ERROR;
+					return 1;
+				}
+			} else {
+				ds_write(ds, value); // Write value directly...
+				return 0;
+			}
+		} // write as something...
+	}
+	ds_dstr(aux);
+	return 0;
+}
+
+// int float_write(dynamic_string_t * ds, int * c) {
+// 	if(*c == '.') {
+// 		do { // Read string till end.
+// 			if(ds_write(ds, *c)) {
+// 				error = INTERNAL_ERROR;
+// 				return;
+// 			}
+// 		} while( (*c = fgetc(stdin)) != EOF && (isdigit(*c)));
+// 		if(*c ==  'e' || *c == 'E') { // Exponent
+
+// 		} else {
+// 			// ACCEPT
+// 		}
+
+// 	} else if (*c == 'e' || *c == 'E') {
+// 		do { // Read string till end.
+// 			if(ds_write(ds, *c)) {
+// 				error = INTERNAL_ERROR;
+// 				return;
+// 			}
+// 		} while( (*c = fgetc(stdin)) != EOF && (isdigit(*c)));
+// 		if(*c ==  'e' || *c == 'E') { // Exponent
+
+// 		} else {
+// 			// ACCEPT
+// 		}
+// 	}
+// }
