@@ -105,7 +105,6 @@ void semantic_analyzer(AST_node_t* root){
     semantic_context_free(sem_context);
 }
 
-
 error_codes_t sem_prog_n(AST_node_t* prog_n, semantic_context_t* sem_context){
 	// context is global, thus make global_symtable active
     sem_context->active_symtable = sem_context->global_symtable;
@@ -126,8 +125,26 @@ error_codes_t sem_prog_n(AST_node_t* prog_n, semantic_context_t* sem_context){
     for(size_t i = 2; i < prog_n->children_count; ++i){
 		cur_node = prog_n->children_arr[i];
 		switch(cur_node->type){
-			case BODY_N:
-				res = sem_body_n(cur_node, sem_context);
+			case WHILE_N: 
+				res = sem_while_n(cur_node, sem_context);
+				break;
+			case IF_N:
+				res = sem_if_n(cur_node, sem_context);
+				break;
+			case ASS_EXPR_N:
+				res = sem_ass_expr_n(cur_node, sem_context);
+				break;
+			case ASS_FUNC_N:
+				res = sem_ass_expr_n(cur_node, sem_context);
+				break;
+			case FUNC_CALL_N:
+				res = sem_func_call_n(cur_node, sem_context);
+				break;	
+			case RETURN_N:
+				res = sem_return_n(cur_node, sem_context);
+				break;
+			case EXPR_N:
+				res = sem_expr_n(cur_node, sem_context);
 				break;
 			case FUNC_DEF_N:
 				res = sem_func_def_n(cur_node, sem_context);

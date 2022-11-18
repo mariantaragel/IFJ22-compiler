@@ -869,8 +869,26 @@ error_codes_t gen_prog(AST_node_t* prog_n, generator_context_t* gen_context){
     for(size_t i = 2; i < prog_n->children_count; ++i){
 		cur_node = prog_n->children_arr[i];
 		switch(cur_node->type){
-			case BODY_N:
-				res = gen_body(cur_node, gen_context);
+			case WHILE_N: 
+				res = gen_while(cur_node, gen_context);
+				break;
+			case IF_N:
+				res = gen_if(cur_node, gen_context);
+				break;
+			case ASS_EXPR_N:
+				res = gen_ass_expr(cur_node, gen_context);
+				break;
+			case ASS_FUNC_N:
+				res = gen_ass_func(cur_node, gen_context);
+				break;
+			case FUNC_CALL_N:
+				res = gen_standalone_func_call(cur_node, gen_context);
+				break;	
+			case EXPR_N:
+				res = gen_standalone_expr(cur_node, gen_context);
+				break;
+			case RETURN_N:
+				res = gen_return(cur_node, gen_context);
 				break;
 			case FUNC_DEF_N:
 				res = gen_func_def(cur_node, gen_context);
