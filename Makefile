@@ -16,7 +16,7 @@ scanner: scanner.o dynamic_string.o token.o error.o
 codegen: codegen.o dynamic_string.o
 	$(CC) $(CFLAGS) -o $@ $^ $(LFLAGS)
 
-expgen: expgen.o
+expgen: expgen.o dynamic_string.o scanner.o token.o error.o token_array.o
 	$(CC) $(CFLAGS) -o $@ $^ $(LFLAGS)
 
 clean:

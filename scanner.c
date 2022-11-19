@@ -24,7 +24,7 @@
 #include "token.h"
 #include "error.h"
 
-
+/*
 int main() {
 
 	// double value = 123.123;
@@ -47,6 +47,7 @@ int main() {
 	} while(token->type != END && token->type != EPILOG);
 	return 0;
 }
+*/
 
 
 token_t * get_token() {
@@ -254,11 +255,11 @@ void s_handler(dynamic_string_t * ds, token_t * t, int * c) {
 			continue;
 		}
 		if(*c == '\\') { // Escape sequence.
-			dynamic_string_t * aux_ds = ds_init();
-			if(aux_ds == NULL) {
-				error = INTERNAL_ERROR;
-				return;
-			}
+			// dynamic_string_t * aux_ds = ds_init();
+			// if(aux_ds == NULL) {
+			// 	error = INTERNAL_ERROR;
+			// 	return;
+			// }
 			*c = fgetc(stdin);
 			// String interpolation...
 			switch(*c) {
@@ -539,7 +540,6 @@ int float_write(dynamic_string_t * ds, int * c) {
 			ungetc(*c, stdin);
 			return 0;
 		} else {
-			// printf("Calling lex error\n");
 			error = LEXICAL_ERROR;
 			return 1;
 		}
