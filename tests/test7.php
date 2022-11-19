@@ -1,3 +1,5 @@
 <?php
 declare(strict_types=1);
-return 3 + 2;
+function readi() : int {
+  return 5;
+}
