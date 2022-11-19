@@ -6,43 +6,32 @@
 #include "token.h"
 #include "error.h"
 
-// 
-prec_rule_elem_t get_prec_rule_elem_of_token_array(token_array_t* token_array, bool is_term){
-	if(token_array == NULL || token_array->token_count == 0)
-		return PREC_RULE_ELEM_NAN;
-	else if(is_term == true)
-		return PREC_RULE_ELEM_TERM(token_array->array[0]->type);
-	else
-		return PREC_RULE_ELEM_EXPR;
-}
-
 error_codes_t reduce(pstack_t *pstack){
 	token_array_t *ta1, *ta2, *ta3;
 	ta1 = ta2 = ta3 = NULL;
 
-	bool is_term1, is_term2, is_term3;
-	is_term1 = is_term2 = is_term3 = false;
+	prec_rule_elem_t e1, e2, e3;
+	e1 = e2 = e3 = PREC_RULE_ELEM_NAN;
 
 	bool too_many_prec_rule_elements = false;
 	if(pstack_is_top_handle_start(pstack) == false){
-		ta3 = pstack_pop(pstack, &is_term3);
+		ta3 = pstack_pop(pstack, &e3);
 		if(pstack_is_top_handle_start(pstack) == false){
-			ta2 = pstack_pop(pstack, &is_term2);
+			ta2 = pstack_pop(pstack, &e2);
 			if(pstack_is_top_handle_start(pstack) == false){
-				ta1 = pstack_pop(pstack, &is_term1);
+				ta1 = pstack_pop(pstack, &e1);
 				if(pstack_is_top_handle_start(pstack) == false){
 					too_many_prec_rule_elements = true;
 				}
 			}
 			else{
 				ta1 = ta2; ta2 = ta3; ta3 = NULL;
-				is_term1 = is_term2; is_term2 = is_term3; is_term3 = false;
-
+				e1 = e2; e2 = e3; e3 = PREC_RULE_ELEM_NAN;
 			}
 		}
 		else{
 			ta1 = ta3; ta3 = NULL;
-			is_term1 = is_term3; is_term3 = false;
+			e1 = e3; e3 = PREC_RULE_ELEM_NAN;
 		}
 	}
 
@@ -54,11 +43,6 @@ error_codes_t reduce(pstack_t *pstack){
 	}
 
 	pstack_set_top_terminal_handle_start(pstack, false);
-
-	prec_rule_elem_t e1, e2, e3;
-	e1 = get_prec_rule_elem_of_token_array(ta1, is_term1);
-	e2 = get_prec_rule_elem_of_token_array(ta2, is_term2);
-	e3 = get_prec_rule_elem_of_token_array(ta3, is_term3);
 
 	prec_rule_action_t rule_action = match_precedence_rule(e1, e2, e3);
 
@@ -101,6 +85,8 @@ error_codes_t reduce(pstack_t *pstack){
 }
 
 token_array_t* parse_expression(token_array_t* expr_token_array){
+	error = OK;
+
 	// if expression token array is empty, syntax is OK and return empty expression array back
 	if(expr_token_array == NULL || expr_token_array->token_count == 0)
 		return expr_token_array;
