@@ -1,6 +1,7 @@
 #include "abstract_syntax_tree.h"
 #include "error.h"
-#include "labelgen.h"
+#include "generator_tools.h"
+
 #include <stdbool.h>
 #include <string.h>
 #include <stdio.h>
@@ -10,15 +11,6 @@ typedef struct{
     bool is_in_function;
 	char* func_end_label;
 }generator_context_t;
-
-size_t ind = 0;
-void inc_ind(){
-	++ind;
-	if(ind == 0) --ind;
-}
-void dec_ind(){
-	if(ind != 0) --ind;
-}
 
 error_codes_t gen_var_def_check(char* var_name, generator_context_t* gen_context);
 error_codes_t gen_expr_vars_def_checks(AST_node_t* expr_n, generator_context_t* gen_context);
@@ -34,7 +26,7 @@ error_codes_t gen_ass_func(AST_node_t* ass_func_n, generator_context_t* gen_cont
 error_codes_t gen_standalone_func_call(AST_node_t* func_call_n, generator_context_t* gen_context);
 error_codes_t gen_standalone_expr(AST_node_t* expr_n, generator_context_t* gen_context);
 error_codes_t gen_body(AST_node_t* body_n, generator_context_t* gen_context);
-error_codes_t gen_func_params(AST_node_t* params_n);
+error_codes_t gen_func_params(AST_node_t* params_n, char* func_name);
 error_codes_t gen_func_def(AST_node_t* func_def_n, generator_context_t* gen_context);
 error_codes_t gen_missing_return();
 error_codes_t gen_return(AST_node_t* return_n, generator_context_t* gen_context);
@@ -42,32 +34,17 @@ error_codes_t gen_func_def_flags(AST_node_t* used_func_list_n);
 error_codes_t gen_built_in_functions(AST_node_t* used_func_list_n);
 error_codes_t gen_var_defs(AST_node_t* used_vars_list_n, generator_context_t* gen_context);
 error_codes_t gen_prog(AST_node_t* prog_n, generator_context_t* gen_context);
+error_codes_t gen_type_check_jump(char* var_name, datatype_t expected_type, char* type_ok_label);
 generator_context_t* generator_context_create();
 void generator_context_free(generator_context_t* gen_context);
 
-void G(const char* fmt, ...){
-    va_list arg_list;
-    va_start(arg_list, fmt);
-
-	// print indentation
-	for(size_t i = 0; i < ind; ++i){
-		printf("    "); // print 4 spaces
-	}
-
-	// print message
-    vfprintf(stdout, fmt, arg_list);
-	printf("\n");
-
-    va_end(arg_list);
-}
-
 // OK
 error_codes_t gen_var_def_check(char* var_name, generator_context_t* gen_context){
-	G("\n# CHECK VAR [%s] INIT START", var_name);
+	G("# CHECK VAR [%s] INIT START", var_name);
 	inc_ind();
 
-	// get unique label ?var_initialised
-	char* var_init_ok_label = gen_label(NULL, "?var_init_ok", NULL, true);
+	// get unique label ?var_name?var_init_ok
+	char* var_init_ok_label = gen_label("?", var_name, "?var_init_ok", true);
 	if(var_init_ok_label == NULL) return INTERNAL_ERROR;
 
 	// check whether variable with var_name was initialised
@@ -91,7 +68,7 @@ error_codes_t gen_var_def_check(char* var_name, generator_context_t* gen_context
 
 // OK
 error_codes_t gen_expr_vars_def_checks(AST_node_t* expr_n, generator_context_t* gen_context){
-	G("\n# CHECK EXPR VARS INIT START");
+	G("# CHECK EXPR VARS INIT START");
 	inc_ind();
 
 	error_codes_t res;
@@ -113,7 +90,7 @@ error_codes_t gen_expr_vars_def_checks(AST_node_t* expr_n, generator_context_t* 
 }
 
 error_codes_t gen_expr(AST_node_t* expr_n, generator_context_t* gen_context){
-	G("\n# EXPRESSION START");
+	G("# EXPRESSION START");
 	inc_ind();
 
 	// generate code to evaluate expression, including type checks
@@ -168,7 +145,7 @@ error_codes_t gen_true_false_jump(char* true_label, char* false_label){
 
 // OK
 error_codes_t gen_while(AST_node_t* while_n, generator_context_t* gen_context){
-	G("\n# WHILE START");
+	G("# WHILE START");
 	inc_ind();
 
     AST_node_t* expr_n = while_n->children_arr[0];
@@ -209,7 +186,7 @@ error_codes_t gen_while(AST_node_t* while_n, generator_context_t* gen_context){
 
 // OK
 error_codes_t gen_if(AST_node_t* if_n, generator_context_t* gen_context){
-	G("\n# IF START");
+	G("# IF START");
 	inc_ind();
 
     AST_node_t* expr_n = if_n->children_arr[0];
@@ -254,7 +231,7 @@ error_codes_t gen_if(AST_node_t* if_n, generator_context_t* gen_context){
 
 // OK
 error_codes_t gen_ass_expr(AST_node_t* ass_expr_n, generator_context_t* gen_context){
-	G("\n# EXPR ASS START");
+	G("# EXPR ASS START");
 	inc_ind();
 
     AST_node_t* var_n = ass_expr_n->children_arr[0];
@@ -286,7 +263,7 @@ error_codes_t gen_ass_expr(AST_node_t* ass_expr_n, generator_context_t* gen_cont
 // OK
 // Generates code to check if all variable function arguments were defined (initialized)
 error_codes_t gen_func_args_def_checks(AST_node_t* func_call_n, generator_context_t* gen_context){
-	G("\n# CHECK FUNC ARG INIT START");
+	G("# CHECK FUNC ARG INIT START");
 	inc_ind();
 
 	error_codes_t res;
@@ -352,15 +329,15 @@ error_codes_t gen_func_args_push(AST_node_t* func_call_n, generator_context_t* g
 
 // OK
 error_codes_t gen_func_call(AST_node_t* func_call_n, generator_context_t* gen_context){
-	G("\n# CALL FUNC [%s] START", func_call_n->data.str);
+	G("# CALL FUNC [%s] START", func_call_n->data.str);
 	inc_ind();
 
 	error_codes_t res;
 
 	char* func_name = func_call_n->data.str;
 
-	// get unique label ?func_name
-	char* func_def_ok_label = gen_label(NULL, "?func_def_ok", NULL, true);
+	// get unique label ?func_name?func_def_ok
+	char* func_def_ok_label = gen_label("?", func_name, "?func_def_ok", true);
 	if(func_def_ok_label == NULL) return INTERNAL_ERROR;
 
 	// check if function was defined
@@ -386,7 +363,7 @@ error_codes_t gen_func_call(AST_node_t* func_call_n, generator_context_t* gen_co
 
 // OK
 error_codes_t gen_ass_func(AST_node_t* ass_func_n, generator_context_t* gen_context){
-	G("\n# FUNC ASS START");
+	G("# FUNC ASS START");
 	inc_ind();
 
     AST_node_t* var_n = ass_func_n->children_arr[0];
@@ -415,7 +392,7 @@ error_codes_t gen_ass_func(AST_node_t* ass_func_n, generator_context_t* gen_cont
 
 // OK
 error_codes_t gen_standalone_func_call(AST_node_t* func_call_n, generator_context_t* gen_context){
-	G("\n# STANDALONE FUNC CALL START");
+	G("# STANDALONE FUNC CALL START");
 	inc_ind();
 
 	error_codes_t res;
@@ -433,7 +410,7 @@ error_codes_t gen_standalone_func_call(AST_node_t* func_call_n, generator_contex
 
 // OK
 error_codes_t gen_standalone_expr(AST_node_t* expr_n, generator_context_t* gen_context){
-	G("\n# STANDALONE EXPRESSION START");
+	G("# STANDALONE EXPRESSION START");
 	inc_ind();
 
 	error_codes_t res;
@@ -448,7 +425,7 @@ error_codes_t gen_standalone_expr(AST_node_t* expr_n, generator_context_t* gen_c
 	G("POPS GF@_tmp_res");
 
 	dec_ind();
-	G("\n# STANDALONE EXPRESSION END");
+	G("# STANDALONE EXPRESSION END\n");
 	return OK;
 }
 
@@ -494,36 +471,29 @@ error_codes_t gen_body(AST_node_t* body_n, generator_context_t* gen_context){
     return OK;
 }
 
-error_codes_t gen_type_check_jump(char* var_name, datatype_t expected_type, char* matching_type_label, char* different_type_label){
-
+error_codes_t gen_type_check_jump(char* var_name, datatype_t expected_type, char* type_ok_label){
 	G("TYPE GF@_tmp_type %s", var_name);
 
 	if(expected_type == INT_T){
-		G("JUMPIFEQ %s GF@_tmp_type string@int", matching_type_label);
-		G("JUMP %s", different_type_label);
+		G("JUMPIFEQ %s GF@_tmp_type string@int", type_ok_label);
 	}
 	else if(expected_type == NINT_T){
-		G("JUMPIFEQ %s GF@_tmp_type string@int", matching_type_label);
-		G("JUMPIFEQ %s GF@_tmp_type string@nil", matching_type_label);
-		G("JUMP %s", different_type_label);
+		G("JUMPIFEQ %s GF@_tmp_type string@int", type_ok_label);
+		G("JUMPIFEQ %s GF@_tmp_type string@nil", type_ok_label);
 	}
 	else if(expected_type == FLT_T){
-		G("JUMPIFEQ %s GF@_tmp_type string@float", matching_type_label);
-		G("JUMP %s", different_type_label);
+		G("JUMPIFEQ %s GF@_tmp_type string@float", type_ok_label);
 	}
 	else if(expected_type == NFLT_T){
-		G("JUMPIFEQ %s GF@_tmp_type string@float", matching_type_label);
-		G("JUMPIFEQ %s GF@_tmp_type string@nil", matching_type_label);
-		G("JUMP %s", different_type_label);
+		G("JUMPIFEQ %s GF@_tmp_type string@float", type_ok_label);
+		G("JUMPIFEQ %s GF@_tmp_type string@nil", type_ok_label);
 	}
 	else if(expected_type == STR_T){
-		G("JUMPIFEQ %s GF@_tmp_type string@string", matching_type_label);
-		G("JUMP %s", different_type_label);
+		G("JUMPIFEQ %s GF@_tmp_type string@string", type_ok_label);
 	}
 	else if(expected_type == NSTR_T){
-		G("JUMPIFEQ %s GF@_tmp_type string@string", matching_type_label);
-		G("JUMPIFEQ %s GF@_tmp_type string@nil", matching_type_label);
-		G("JUMP %s", different_type_label);
+		G("JUMPIFEQ %s GF@_tmp_type string@string", type_ok_label);
+		G("JUMPIFEQ %s GF@_tmp_type string@nil", type_ok_label);
 	}
 	else{
 		return INTERNAL_ERROR;
@@ -533,18 +503,18 @@ error_codes_t gen_type_check_jump(char* var_name, datatype_t expected_type, char
 }
 
 
-error_codes_t gen_func_params(AST_node_t* params_n){
-	G("\n# FUNCTION PARAMS");
+error_codes_t gen_func_params(AST_node_t* params_n, char* func_name){
+	G("# FUNCTION PARAMS START");
 	inc_ind();
 
 	error_codes_t res;
 	size_t param_count = params_n->children_count;
 	
 	// get unique ?param_count_ok label
-	char* param_count_ok_label = gen_label(NULL, "?param_count_ok", NULL, true);
+	char* param_count_ok_label = gen_label("?", func_name, "?param_count_ok", false);
 	if(param_count_ok_label == NULL) return INTERNAL_ERROR;
 
-	G("\n# CHECK PARAM COUNT START");
+	G("# CHECK PARAM COUNT START");
 	inc_ind();
 
 	// check if first argument passed to function (numer of arguments) is the same as param_count (pop it from data stack and compare)
@@ -565,7 +535,7 @@ error_codes_t gen_func_params(AST_node_t* params_n){
 	char* param_name;
 	datatype_t param_type;
 
-	G("\n# INIT PARAMS, CHECK PARAM TYPES START");
+	G("# INIT PARAMS, CHECK PARAM TYPES START");
 	inc_ind();
 	for(size_t i = 0; i < param_count; ++i){
 		param_n = params_n->children_arr[i];
@@ -576,39 +546,53 @@ error_codes_t gen_func_params(AST_node_t* params_n){
 		param_type = type_n->data.type;
 		param_name = id_n->data.str;
 
+		char* tmp_func_name = gen_label("?", func_name, "?", false);
+		if(tmp_func_name == NULL) return INTERNAL_ERROR;
+		char* param_type_ok_label = gen_label(tmp_func_name, param_name, "?param_type_ok", false); // TODO ?func_name?param_name?param_type_ok
 		char* param_var_name = gen_label("LF@", param_name, NULL, false);
-		char* param_type_ok_label = gen_label(NULL, "?param_type_ok?", param_name, false);
-		char* param_type_wrong_label = gen_label(NULL, "?param_type_wrong?", param_name, false);
-		if(param_type_ok_label == NULL || param_type_wrong_label == NULL || param_var_name == NULL){
-			free(param_type_ok_label); free(param_type_wrong_label); free(param_var_name);
+		if(param_type_ok_label == NULL || param_var_name == NULL){
+			free(param_type_ok_label);  free(param_var_name); free(tmp_func_name);
 			return INTERNAL_ERROR;
 		}
 
 		G("DEFVAR LF@%s", param_name);
 		G("POPS LF@%s", param_name);
 
-		if((res = gen_type_check_jump(param_var_name, param_type, param_type_ok_label, param_type_wrong_label)) != OK){
-			free(param_type_ok_label); free(param_type_wrong_label); free(param_var_name);
+		if((res = gen_type_check_jump(param_var_name, param_type, param_type_ok_label)) != OK){
+			free(param_type_ok_label); free(param_var_name); free(tmp_func_name);
 			return res;
 		}
-
-		G("LABEL %s", param_type_wrong_label);
 		G("EXIT int@4");
 
 		G("LABEL %s", param_type_ok_label);
 
-		free(param_type_ok_label); free(param_type_wrong_label); free(param_var_name);
+		free(param_type_ok_label); free(param_var_name); free(tmp_func_name);
 	}
 	dec_ind();
-	G("# INIT PARAMS, CHECK PARAM TYPES START\n");
+	G("# INIT PARAMS, CHECK PARAM TYPES END\n");
 
 	dec_ind();
+	G("# FUNCTION PARAMS END");
 	return OK;
 }
 
+error_codes_t gen_set_func_def_flag(AST_node_t* func_def_n){
+	char* func_name = func_def_n->data.str;
+	
+	G("# FUNC [%s] DEF FLAG SET START", func_name);
+	inc_ind();
+	
+	// set function definition flag to true
+	G("MOVE GF@?%s?defined bool@true", func_name);
+	
+	dec_ind();
+	G("# FUNC [%s] DEF FLAG SET END\n", func_name);
+
+	return OK;
+}
 
 error_codes_t gen_func_def(AST_node_t* func_def_n, generator_context_t* gen_context){
-	G("\n# FUNC [%s] DEF START", func_def_n->data.str);
+	G("# FUNC [%s] DEF START", func_def_n->data.str);
 	inc_ind();
 
     AST_node_t* params_n = func_def_n->children_arr[0];
@@ -623,9 +607,6 @@ error_codes_t gen_func_def(AST_node_t* func_def_n, generator_context_t* gen_cont
 
 	gen_context->func_end_label = gen_label("?", func_name, "?end", false);
 	if(gen_context->func_end_label == NULL) return INTERNAL_ERROR;
-
-	// set function declaration flag to true
-	G("MOVE GF@?%s?defined bool@true", func_name);
 	
 	// generate function header
 	G("LABEL %s", func_name);
@@ -635,7 +616,7 @@ error_codes_t gen_func_def(AST_node_t* func_def_n, generator_context_t* gen_cont
 	error_codes_t res;
 
 	// generate code for accepting function params
-	if((res = gen_func_params(params_n)) != OK) return res;
+	if((res = gen_func_params(params_n, func_name)) != OK) return res;
 
 	// generate definitions of used variable inside function
 	if((res = gen_var_defs(used_variables_n, gen_context)) != OK) return res;
@@ -661,7 +642,7 @@ error_codes_t gen_func_def(AST_node_t* func_def_n, generator_context_t* gen_cont
 
 //OK
 error_codes_t gen_missing_return(){
-	G("\n# MISSING RETURN START");
+	G("# MISSING RETURN START");
 	G("\tEXIT int@6"); // reached end of non void function, that has not returned anything
 	G("# MISSING RETURN END\n");
 	return OK;
@@ -669,7 +650,7 @@ error_codes_t gen_missing_return(){
 
 // OK
 error_codes_t gen_return(AST_node_t* return_n, generator_context_t* gen_context){
-	G("\n# RETURN START");
+	G("# RETURN START");
 	inc_ind();
 
 	// get expression node
@@ -700,21 +681,12 @@ error_codes_t gen_return(AST_node_t* return_n, generator_context_t* gen_context)
             // we are in function, expected_return_type != -1
 
 			// check if type of expression result on top of data stack is expected type
-			char* return_type_wrong_label = gen_label(NULL, "?return_type_wrong", NULL, true);
-			if(return_type_wrong_label == NULL){
-				free(return_type_wrong_label);
-				return INTERNAL_ERROR;
-			}
-
 			G("POPS GF@_tmp_res");
 			G("PUSHS GF@_tmp_res");
 
-			if((res = gen_type_check_jump("GF@_tmp_res", expected_return_type, gen_context->func_end_label, return_type_wrong_label)) != OK){
-				free(return_type_wrong_label);
+			if((res = gen_type_check_jump("GF@_tmp_res", expected_return_type, gen_context->func_end_label)) != OK){
 				return res;
 			}
-
-			G("LABEL %s", return_type_wrong_label);
 			G("EXIT int@4");
         }
         else{
@@ -730,7 +702,7 @@ error_codes_t gen_return(AST_node_t* return_n, generator_context_t* gen_context)
 
 // OK
 error_codes_t gen_func_def_flags(AST_node_t* used_func_list_n){
-	G("\n# FUNC DEF FLAGS START");
+	G("# FUNC DEF FLAGS START");
 	inc_ind();
 
     AST_node_t* id_n;
@@ -779,7 +751,7 @@ bool is_built_in_func(char* func_name){
 
 // OK
 error_codes_t gen_built_in_functions(AST_node_t* used_func_list_n){
-	G("\n# BUILT IN FUNCTIONS START");
+	G("# BUILT IN FUNCTIONS START");
 	inc_ind();
 
     AST_node_t* id_n;
@@ -801,9 +773,28 @@ error_codes_t gen_built_in_functions(AST_node_t* used_func_list_n){
     return OK;
 }
 
+error_codes_t gen_user_functions(AST_node_t* prog_n, generator_context_t* gen_context){
+	G("# USER FUNCTIONS START");
+	inc_ind();
+
+	error_codes_t res;
+
+	AST_node_t* cur_node;
+	for(size_t i = 2; i < prog_n->children_count; ++i){
+		cur_node = prog_n->children_arr[i];
+		if(cur_node->type == FUNC_DEF_N){
+			if((res = gen_func_def(cur_node, gen_context)) != OK) return res;
+		}
+    }
+
+	dec_ind();
+	G("# USER FUNCTIONS END\n");
+	return OK;
+}
+
 // OK
 error_codes_t gen_var_defs(AST_node_t* used_vars_list_n, generator_context_t* gen_context){
-	G("\n# DEFINE VARIABLES START");
+	G("# DEFINE USED VARS START");
 	inc_ind();
 
     AST_node_t* id_n;
@@ -821,7 +812,7 @@ error_codes_t gen_var_defs(AST_node_t* used_vars_list_n, generator_context_t* ge
     }
 
 	dec_ind();
-	G("# DEFINE VARIABLES END\n");
+	G("# DEFINE USED VARS END\n");
     return OK;
 }
 
@@ -836,7 +827,8 @@ error_codes_t gen_prog(AST_node_t* prog_n, generator_context_t* gen_context){
 	G(".IFJcode22");
 
 	// generate global temporary variables
-	G("\n# TMP VARS START");
+	
+	G("# TMP VARS START");
 	inc_ind();
 	G("DEFVAR GF@_tmp1");
 	G("DEFVAR GF@_tmp2");
@@ -853,9 +845,6 @@ error_codes_t gen_prog(AST_node_t* prog_n, generator_context_t* gen_context){
 
     // generate function definition flags
     gen_func_def_flags(used_func_list_n);
-
-    // generate built in functions
-    gen_built_in_functions(used_func_list_n);
     
     // get node containing all used variables in main body
     AST_node_t* used_vars_list_n = prog_n->children_arr[1];
@@ -891,7 +880,7 @@ error_codes_t gen_prog(AST_node_t* prog_n, generator_context_t* gen_context){
 				res = gen_return(cur_node, gen_context);
 				break;
 			case FUNC_DEF_N:
-				res = gen_func_def(cur_node, gen_context);
+				res = gen_set_func_def_flag(cur_node);
 				break;
 			default:
 				res = INTERNAL_ERROR;
@@ -899,6 +888,15 @@ error_codes_t gen_prog(AST_node_t* prog_n, generator_context_t* gen_context){
 
 		if(res != OK) return res;
     }
+
+	// end of body
+	G("EXIT int@0\n");
+
+	// generate user functions
+	if((res = gen_user_functions(prog_n, gen_context)) != OK) return res;
+
+	// generate built in functions
+    if((res = gen_built_in_functions(used_func_list_n)) != OK) return res;
 
     return OK;
 }
