@@ -30,12 +30,7 @@ AST_node_t *program()
 
     token = get_token();
     RETURN_ROOT;
-    AST_node_t *body = AST_create_add_child(root, BODY_N);
-    if (body == NULL) {
-        error = INTERNAL_ERROR;
-        return root;
-    }
-    program_body(token, body);
+    program_body(token, root);
     t_dstr(token);
     RETURN_ROOT;
 
@@ -411,6 +406,10 @@ void stmt(token_t *token, AST_node_t *parent)
         break;
 
     default: ;
+        if (!is_token_type_correct(18, token, VAR_ID, STR_LIT, INT_LIT, FLT_LIT, MUL,
+                        DIV, ADD, SUB, CONCAT, LT, GT, LTE, GTE, EQ, NEQ, LB, RB, NULL_LIT)) {
+            RETURN_ERROR(SYNTAX_ERROR);
+        }
         token_t *next_token = get_token();
         RETURN_IF_ERROR;
         if (token->type == VAR_ID && next_token->type == ASSIGN) {

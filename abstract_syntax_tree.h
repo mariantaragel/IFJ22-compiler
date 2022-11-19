@@ -23,7 +23,7 @@ typedef int datatype_t;
  * 
  */
 typedef enum {
-	/**	Ch_count: X | Ch: { FUNC_DEF_N, BODY_N }
+	/**	Ch_count: X | Ch: { FUNC_DEF_N, FUNC_CALL_N, EXPR_N, ASS_EXPR_N, ASS_FUNC_N, IF_N, WHILE_N, RETURN_N }
 	* 	Data: None */
 	PROG_N,		
 

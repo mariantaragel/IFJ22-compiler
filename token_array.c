@@ -157,7 +157,7 @@ int token_array_append_tokens(token_array_t* token_array1, token_array_t* token_
         (token_array1->token_count)++;
     }
 
-    // set token count of second array to zero and then free it
+    // set token count of second array to zero
     token_array2->token_count = 0;
 
 	// return success
@@ -165,19 +165,24 @@ int token_array_append_tokens(token_array_t* token_array1, token_array_t* token_
 }
 
 void token_array_reverse(token_array_t* token_array){
-	if(token_array != NULL){
+	if(token_array != NULL && token_array->token_count != 0){
 		token_t* tmp;
 
-		size_t l = 0;
-		size_t r = token_array->token_count - 1;
+		// left and right index of token_array
+		// left index will move from left to right, right index will move from right to left
+		size_t left = 0;
+		size_t right = token_array->token_count - 1;
 
-		while(l != r){
-			tmp = token_array->array[l];
-			token_array->array[l] = token_array->array[r];
-			token_array->array[r] = tmp;
+		// iterate until left index has not crossed with right index
+		while(left < right){
+			// swap left and right tokens
+			tmp = token_array->array[left];
+			token_array->array[left] = token_array->array[right];
+			token_array->array[right] = tmp;
 
-			--l;
-			++r;
+			// move left and right index
+			++left;
+			--right;
 		}
 	}
 }

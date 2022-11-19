@@ -28,7 +28,7 @@
 prec_table_index_t get_prec_table_index_of_token(token_t* token);
 
 /**
- * @brief Precedence table operation type.
+ * @brief Precedence parser operation type.
  * 
  */
 typedef enum {
@@ -38,12 +38,14 @@ typedef enum {
 	X  // # (ERR)
 } prec_parser_operation_t;
 
-#define PRECEDENCE_TABLE_SIZE 9
-
 /**
- * @brief Precedence table.
+ * @brief Return precedence analyzer operation from precedence table.
  * 
+ * @param top_term_index Precedence index of top precedence stack terminal.
+ * @param input_term_index Precedence index of input terminal.
+ * @return prec_parser_operation_t Precedence parser operation.
  */
-extern const prec_parser_operation_t precedence_table[PRECEDENCE_TABLE_SIZE][PRECEDENCE_TABLE_SIZE];
+prec_parser_operation_t precedence_table_get_operation(prec_table_index_t top_term_index, prec_table_index_t input_term_index);
+
 
 #endif //PRECEDENCE_TABLE_H

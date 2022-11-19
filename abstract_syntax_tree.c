@@ -102,6 +102,22 @@ AST_node_t* AST_create_add_child(AST_node_t* parent, AST_node_type_t type){
 	return AST_create_insert_child(parent, parent->children_count, type);
 }
 
+void _AST_print_datatype(datatype_t datatype, FILE* fp){
+	char *datatype_str;
+	switch(datatype){
+		case -1: 		datatype_str = "ANY"; break;
+		case VOID_T:	datatype_str = "VOID_T"; break;
+		case INT_T:		datatype_str = "INT_T"; break;
+		case NINT_T:	datatype_str = "NINT_T"; break;
+		case FLT_T:		datatype_str = "FLT_T"; break;
+		case NFLT_T:	datatype_str = "NFLT_T"; break;
+		case STR_T:		datatype_str = "STR_T"; break;
+		case NSTR_T:	datatype_str = "NSTR_T"; break;
+		default:		datatype_str = "?";
+	}
+	fprintf(fp,"%s", datatype_str);
+}
+
 void _AST_print_node(AST_node_t* node, FILE* fp){
 	// get string representation of AST node type
 	char* node_name;
@@ -148,6 +164,11 @@ void _AST_print_node(AST_node_t* node, FILE* fp){
 	}
 	else if(node->type == NULL_LIT_N){
 		fprintf(fp," { null }");
+	}
+	else if(node->type == TYPE_N || node->type == RETURN_N){
+		fprintf(fp," { ");
+		_AST_print_datatype(node->data.type, fp);
+		fprintf(fp," }");
 	}
 }
 
