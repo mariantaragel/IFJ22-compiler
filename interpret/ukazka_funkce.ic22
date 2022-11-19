@@ -1,0 +1,86 @@
+# priklad pro funkci:
+#
+#   function nazev_funkce (int? prom1, string prom2) : string {
+#       return "ahoj"
+#   }
+#
+
+.IFJcode22
+
+DEFVAR GF@_tmp1
+DEFVAR GF@_tmp_type
+
+JUMP ?nazev_funkce?skip
+############
+# zacatek toho co budes psat ty
+
+LABEL nazev_funkce
+    CREATEFRAME
+    PUSHFRAME
+        # zkontroluj spravny pocet argumentu
+        POPS GF@_tmp1
+        JUMPIFEQ ?nazev_funkce?param_count_ok GF@_tmp1 int@2
+            EXIT int@4
+        LABEL ?nazev_funkce?param_count_ok
+
+        # uloz argumenty do lokalnich promennych a zkontroluj jejich typy
+        DEFVAR LF@prom1
+        POPS LF@prom1
+        TYPE GF@_tmp_type LF@prom1 # zkontroluj jestli typ je ?int
+            JUMPIFEQ ?nazev_funkce?prom1?param_type_ok GF@_tmp_type string@int
+            JUMPIFEQ ?nazev_funkce?prom1?param_type_ok GF@_tmp_type string@nil
+                EXIT int@4
+            LABEL ?nazev_funkce?prom1?param_type_ok
+
+        DEFVAR LF@prom2
+        POPS LF@prom2
+        TYPE GF@_tmp_type LF@prom2 # zkontroluj jestli typ je string
+            JUMPIFEQ ?nazev_funkce?prom2?param_type_ok GF@_tmp_type string@string
+                EXIT int@4
+            LABEL ?nazev_funkce?prom2?param_type_ok
+        
+        # telo funkce ...
+        # dulezite: vsechny labels musi byt ve formatu ?naze_funkce?neco..
+        # dulezite: globalni promenne ktere muzes vyuzit GF@_tmp1, GF@_tmp2, GF@_tmp_resG, GF@_tmp_type
+        #           zacinaji podtrzitkem, lokalni promenne nesmi zacinat podtrzitkem
+        #           nazvy globalnich promennych asi jeste zmenime, podle toho co je potreba v expression generatoru
+        #           => pokud muzes radeji pouzivej lokalni promenne
+        # dulezite: uklid si po sobe datovy zasobnik, pokud na nej neco ukladas, aby na konci funkce na nem zbyla jen navratova hodnota
+        #           pozor NEpouzivej funkci CLEARS (vymaze cely datovy zasobnik) - pouze POPS pro to co jsi PUSHS
+        # dulezite: dej si pozor na stringy a floaty at jsou ve spravnem formatu
+
+        # navrat hodnoty z funkce
+        # navratova hodnota se uklada ne vrchol datoveho zasobniku
+
+        PUSHS string@ahoj
+        
+        # dulezite: pokud je funkce void musis vratit nil@nil (PUSHS nil@nil)
+
+    POPFRAME
+    RETURN
+
+# konec toho co budes psat
+###############
+LABEL ?nazev_funkce?skip
+
+# pozn. jak bude funkce volana
+DEFVAR GF@prom1
+MOVE GF@prom1 nil@nil
+DEFVAR GF@prom2
+MOVE GF@prom2 string@blabla
+DEFVAR GF@vysledek
+
+# pushuj argumenty v opacen poradi
+PUSHS GF@prom2
+PUSHS GF@prom1
+PUSHS int@2 # nakonec pushni pocet parametru
+
+# zavolej funkci
+CALL nazev_funkce
+
+# ziskej vysledek
+POPS GF@vysledek
+
+WRITE GF@vysledek
+
+EXIT int@0
