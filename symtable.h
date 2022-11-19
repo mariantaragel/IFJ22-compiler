@@ -15,23 +15,16 @@ typedef int datatype_t;
 #endif
 
 /**
- * @brief Type of symbol.
- */
-typedef enum{
-	VAR_SYMBOL,
-	FUNC_SYMBOL
-} symbol_type_t;
-
-/**
  * @brief Symbol structure data type.
  *
  */
 typedef struct{
-	symbol_type_t symbol_type;
-
+	bool used;
+	
 	bool defined;
 
 	datatype_t return_type;
+	
 } symbol_info_t;
 
 
@@ -99,7 +92,9 @@ symbol_info_t * symtable_lookup(symtable_t * t, symbol_name_t name);
 /**
  * @brief Searches symbol table for symbol with specified name.
  * If found, function returns pointer to corresponding symbol info and sets name_found flag to true.
- * If symbol was not found, new symbol with specified name is created, initialized and added to symbol table.
+ * If symbol was not found, new symbol with specified name is created, initialized and added to symbol table. name_found is set to false.
+ * 
+ * If name_found is NULL, then function will not attempt to store any value in it.
  * 
  * @param t Symbol table to be searched in or to which new symbol will be added.
  * @param name Name of symbol to be searched for or name of symbol to be added to symtable.

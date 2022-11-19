@@ -105,6 +105,25 @@ void semantic_analyzer(AST_node_t* root){
     semantic_context_free(sem_context);
 }
 
+error_codes_t insert_all_built_in_functions_to_symtable(semantic_context_t* sem_context){
+	// built-in functions: reads, readi, readf, write, floatval, intval, strval, strlen, substring, ord, chr
+	char built_in_func_names[][10] = {"reads", "readi", "readf", "write", 
+	"floatval", "intval", "strval", "strlen", "substring", "ord", "chr"};
+
+	const size_t built_in_func_count = sizeof(built_in_func_names) / sizeof(built_in_func_names[0]);
+
+	// insert all built in functions to symtable and set them as defined
+	symbol_info_t* func_info;
+	for(size_t i = 0; i < built_in_func_count; ++i){
+		if((func_info = symtable_lookup_insert(sem_context->global_symtable, built_in_func_names[i], NULL))== NULL){
+			return INTERNAL_ERROR;
+		}
+		func_info->defined = true;
+	}
+	
+	return OK;
+}
+
 error_codes_t sem_prog_n(AST_node_t* prog_n, semantic_context_t* sem_context){
 	// context is global, thus make global_symtable active
     sem_context->active_symtable = sem_context->global_symtable;
@@ -120,6 +139,8 @@ error_codes_t sem_prog_n(AST_node_t* prog_n, semantic_context_t* sem_context){
     }
 
 	error_codes_t res = OK;
+
+	if((res = insert_all_built_in_functions_to_symtable(sem_context)) != OK) return res;
 
 	AST_node_t* cur_node;
     for(size_t i = 2; i < prog_n->children_count; ++i){
@@ -310,16 +331,18 @@ error_codes_t sem_func_args(AST_node_t* func_call_n, semantic_context_t* sem_con
 }
 
 error_codes_t sem_func_call_n(AST_node_t* func_call_n, semantic_context_t* sem_context){
-	bool name_found;
-	symbol_info_t* func_info = symtable_lookup_insert(sem_context->global_symtable, func_call_n->data.str, &name_found);
+	char* func_name = func_call_n->data.str;
+	symbol_info_t* func_info = symtable_lookup_insert(sem_context->global_symtable, func_name, NULL);
     if(func_info == NULL) return INTERNAL_ERROR;
 
-	if(name_found == false){
+	if(func_info->used == false){
 		AST_node_t* used_func_n = AST_create_insert_child(sem_context->used_func_list_n, 0, ID_N);
 		if(used_func_n == NULL) return INTERNAL_ERROR;
 
-		used_func_n->data.str = create_string_copy(func_call_n->data.str);
+		used_func_n->data.str = create_string_copy(func_name);
 		if(used_func_n->data.str == NULL) return INTERNAL_ERROR;
+
+		func_info->used = true;
 	}
 
 	error_codes_t res = OK;
@@ -366,13 +389,12 @@ error_codes_t sem_enter_func_def_context(AST_node_t* func_def_n, semantic_contex
     symbol_info_t* func_info = symtable_lookup_insert(sem_context->global_symtable, func_def_n->data.str, &name_found);
     if(func_info == NULL) return INTERNAL_ERROR;
 
-    if(name_found == true){
-        if(func_info->defined == true){
-            // attempted function redefinition
-            return SEM_ERROR_3;
-        }
+    if(func_info->defined == true){
+        // attempted function redefinition
+        return SEM_ERROR_3;
     }
-    else{
+
+	if(func_info->used == false){
 		// function was not found in symtable
 		AST_node_t* used_func_id_n = AST_create_add_child(sem_context->used_func_list_n, ID_N);
 		if(used_func_id_n == NULL) return INTERNAL_ERROR;
@@ -381,8 +403,9 @@ error_codes_t sem_enter_func_def_context(AST_node_t* func_def_n, semantic_contex
 		if(used_func_id_n->data.str == NULL) return INTERNAL_ERROR;
     }
 
-	// set function definition flag
+	// set function definition and usage flags
 	func_info->defined = true;
+	func_info->used = true;
 
 	// create new local function USED_VARS_LIST_N
 	AST_node_t* new_used_vars_list_n = AST_create_insert_child(func_def_n, 2, USED_VARS_LIST_N);

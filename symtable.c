@@ -62,7 +62,10 @@ symtable_item_t *symtable_item_create(symbol_name_t name){
 
 	// initialize new item // TODO: initialize symbol info
 	new_item->name = name_copy;
-	//new_item->symbol.info = ...
+	new_item->symbol_info.used = false;
+	new_item->symbol_info.defined = false;
+	new_item->symbol_info.return_type = -1;
+	
 
     return new_item;
 }
@@ -282,13 +285,13 @@ symbol_info_t * symtable_lookup_insert(symtable_t * t, symbol_name_t name, bool 
 	}
 	
 	if(cmp_ret == 0){// if symbol with searched name was found
-        *name_found = true;
+        if(name_found != NULL) *name_found = true;
         
         // return already existing symbol
         return &(cur_item->symbol_info);
     }
     else{
-        *name_found = false;
+        if(name_found != NULL) *name_found = false;
 
         // create new item
         symtable_item_t * new_item = symtable_item_create(name);
