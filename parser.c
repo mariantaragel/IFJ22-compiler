@@ -380,7 +380,9 @@ void stmt(token_t *token, AST_node_t *parent)
         token_array_t *array = token_array_create();
         RETURN_INTERNAL_ERROR(array)
         expression(&token, FALSE, array);
-        n_expr->data.expression = array;
+        token_array_t *postfix = parse_expression(array);
+        RETURN_IF_ERROR;
+        n_expr->data.expression = postfix;
         
         if (token->type != SCOLON) {
             t_dstr(token);
@@ -460,7 +462,9 @@ void stmt(token_t *token, AST_node_t *parent)
             RETURN_INTERNAL_ERROR(dup_token)
             expression(&dup_token, FALSE, array);
             token = dup_token;
-            n_expr->data.expression = array;
+            token_array_t *postfix = parse_expression(array);
+            RETURN_IF_ERROR;
+            n_expr->data.expression = postfix;
 
             if (token->type != SCOLON) {
                 t_dstr(token);
@@ -494,7 +498,9 @@ void exp_assignment(token_t *token, AST_node_t *parent, token_t *exp_token)
     token_array_t *array = token_array_create();
     RETURN_INTERNAL_ERROR(array)
     expression(&exp_token, FALSE, array);
-    n_expr->data.expression = array;
+    token_array_t *postfix = parse_expression(array);
+    RETURN_IF_ERROR;
+    n_expr->data.expression = postfix;
 
     if (exp_token->type != SCOLON) {
         RETURN_ERROR(SYNTAX_ERROR);
@@ -532,7 +538,9 @@ void while_stmt(token_t *token, AST_node_t *parent)
     token_array_t *array = token_array_create();
     RETURN_INTERNAL_ERROR(array)
     expression(&token, TRUE, array);
-    n_expr->data.expression = array;
+    token_array_t *postfix = parse_expression(array);
+    RETURN_IF_ERROR;
+    n_expr->data.expression = postfix;
     
     if (token->type != LCB) {
         t_dstr(token);
@@ -566,7 +574,9 @@ void if_stmt(token_t *token, AST_node_t *parent)
     token_array_t *array = token_array_create();
     RETURN_INTERNAL_ERROR(array)
     expression(&token, TRUE, array);
-    n_expr->data.expression = array;
+    token_array_t *postfix = parse_expression(array);
+    RETURN_IF_ERROR;
+    n_expr->data.expression = postfix;
     
     if (token->type != LCB) {
         t_dstr(token);

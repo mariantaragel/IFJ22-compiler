@@ -26,7 +26,7 @@ run:
 	make scanner
 	cat ./tests/test1.php | ./scanner > ./tests/res1.txt
 
-parser_test: parser_test.o parser.o scanner.o dynamic_string.o token.o error.o abstract_syntax_tree.o token_array.o
+parser_test: parser_test.o parser.o scanner.o dynamic_string.o token.o error.o abstract_syntax_tree.o token_array.o precedence_parser.o precedence_stack.o precedence_rules.o precedence_table.o
 	$(CC) $(CFLAGS) -g $^ -o $@ $(LFLAGS)
 
 # TEST symtable
