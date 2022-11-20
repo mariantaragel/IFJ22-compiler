@@ -278,7 +278,7 @@ error_codes_t gen_func_args_def_checks(AST_node_t* func_call_n, generator_contex
 	}
 
 	dec_ind();
-	G("# CHECK FUNC ARG INIT START\n");
+	G("# CHECK FUNC ARG INIT END\n");
 	return OK;
 }
 
@@ -696,59 +696,50 @@ error_codes_t gen_return(AST_node_t* return_n, generator_context_t* gen_context)
 	return OK;
 }
 
-// OK
-error_codes_t gen_func_def_flags(AST_node_t* used_func_list_n){
-	G("# FUNC DEF FLAGS START");
-	inc_ind();
-
-    AST_node_t* id_n;
-    char* func_name;
-
-    // iterate over every ID node of used_func_list_n to generate definition flags for all functions
-    for(size_t i = 0; i < used_func_list_n->children_count; ++i){
-        id_n = used_func_list_n->children_arr[i];
-        func_name = id_n->data.str;
-
-		G("DEFVAR GF@?%s?defined", func_name);
-		G("MOVE GF@?%s?defined bool@false", func_name);
-    }
-
-	dec_ind();
-	G("# FUNC DEF FLAGS END\n");
-    return OK;
-}
 
 bool is_built_in_func(char* func_name){
-	if(strcmp(func_name, "reads"))
-		return true;
-	else if(strcmp(func_name, "readi"))
-		return true;
-	else if(strcmp(func_name, "readf"))
-		return true;
-	else if(strcmp(func_name, "write"))
-		return true;
-	else if(strcmp(func_name, "floatval"))
-		return true;
-	else if(strcmp(func_name, "intval"))
-		return true;
-	else if(strcmp(func_name, "strval"))
-		return true;
-	else if(strcmp(func_name, "strlen"))
-		return true;
-	else if(strcmp(func_name, "substring"))
-		return true;
-	else if(strcmp(func_name, "ord"))
-		return true;
-	else if(strcmp(func_name, "chr"))
-		return true;
-	else
-		return false;
+	const char built_in_func_names[][10] = {"reads", "readi", "readf", "write", 
+	"floatval", "intval", "strval", "strlen", "substring", "ord", "chr"};
+
+	const size_t built_in_func_count = sizeof(built_in_func_names) / sizeof(built_in_func_names[0]);
+	
+	for(size_t i = 0; i < built_in_func_count; ++i){
+		if(strcmp(func_name, built_in_func_names[i]) == 0){
+			return true;
+		}
+	}
+
+	return false;
+}
+
+void gen_built_in_func(char* func_name){
+	if(strcmp(func_name, "reads") == 0)
+		G(BUILTIN_READS);
+	else if(strcmp(func_name, "readi") == 0)
+		G(BUILTIN_READI);
+	else if(strcmp(func_name, "readf") == 0)
+		G(BUILTIN_READF);
+	else if(strcmp(func_name, "write") == 0)
+		G(BUILTIN_WRITE);
+	else if(strcmp(func_name, "floatval") == 0)
+		G(BUILIN_FLOATVAL);
+	else if(strcmp(func_name, "intval") == 0)
+		G(BUILIN_INTVAL);
+	else if(strcmp(func_name, "strval") == 0)
+		G(BUILIN_STRVAL);
+	else if(strcmp(func_name, "strlen") == 0)
+		G(BUILIN_STRLEN);
+	else if(strcmp(func_name, "substring") == 0)
+		G(BUILIN_SUBSTRING);
+	else if(strcmp(func_name, "ord") == 0)
+		G(BUILIN_ORD);
+	else if(strcmp(func_name, "chr") == 0)
+		G(BUILIN_CHR);
 }
 
 // OK
 error_codes_t gen_built_in_functions(AST_node_t* used_func_list_n){
 	G("# BUILT IN FUNCTIONS START");
-	inc_ind();
 
     AST_node_t* id_n;
     char* func_name;
@@ -759,12 +750,10 @@ error_codes_t gen_built_in_functions(AST_node_t* used_func_list_n){
         func_name = id_n->data.str;
 
 		if(is_built_in_func(func_name) == true){
-			G("MOVE GF@?%s$defined bool@true", func_name);
-			// generate built in function //TODO
+			gen_built_in_func(func_name);
 		}
     }
 
-	dec_ind();
 	G("# BUILT IN FUNCTIONS END\n");
     return OK;
 }
@@ -809,6 +798,33 @@ error_codes_t gen_var_defs(AST_node_t* used_vars_list_n, generator_context_t* ge
 
 	dec_ind();
 	G("# DEFINE USED VARS END\n");
+    return OK;
+}
+
+// OK
+error_codes_t gen_func_def_flags(AST_node_t* used_func_list_n){
+	G("# FUNC DEF FLAGS START");
+	inc_ind();
+
+    AST_node_t* id_n;
+    char* func_name;
+
+    // iterate over every ID node of used_func_list_n to generate definition flags for all functions
+    for(size_t i = 0; i < used_func_list_n->children_count; ++i){
+        id_n = used_func_list_n->children_arr[i];
+        func_name = id_n->data.str;
+
+		G("DEFVAR GF@?%s?defined", func_name);
+		if(is_built_in_func(func_name)){
+			G("MOVE GF@?%s?defined bool@true", func_name);
+		}
+		else{
+			G("MOVE GF@?%s?defined bool@false", func_name);
+		}
+    }
+
+	dec_ind();
+	G("# FUNC DEF FLAGS END\n");
     return OK;
 }
 
