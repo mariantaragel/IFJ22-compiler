@@ -19,7 +19,7 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
-extern unsigned ind;
+extern size_t ind;
 
 void inc_ind();
 

@@ -34,7 +34,7 @@ error_codes_t gen_ass_func(AST_node_t* ass_func_n, generator_context_t* gen_cont
 error_codes_t gen_standalone_func_call(AST_node_t* func_call_n, generator_context_t* gen_context);
 error_codes_t gen_standalone_expr(AST_node_t* expr_n, generator_context_t* gen_context);
 error_codes_t gen_body(AST_node_t* body_n, generator_context_t* gen_context);
-error_codes_t gen_func_params(AST_node_t* params_n);
+error_codes_t gen_func_params(AST_node_t* params_n, char* func_name);
 error_codes_t gen_func_def(AST_node_t* func_def_n, generator_context_t* gen_context);
 error_codes_t gen_missing_return();
 error_codes_t gen_return(AST_node_t* return_n, generator_context_t* gen_context);

@@ -30,6 +30,7 @@ char * rhs = "GF@_rhs";
 char * tlhs = "GF@_tlhs";
 char * trhs = "GF@_trhs";
 
+/*
 int main() {
     token_array_t * tarr;
     tarr = get_exp("null*2+3");
@@ -56,7 +57,7 @@ int main() {
 
 
 }
-
+*/
 void gen_expression(token_array_t * tarr, generator_context_t * gc) {
     char * scope_label;
     operation_t operation;

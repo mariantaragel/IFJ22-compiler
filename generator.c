@@ -1,19 +1,13 @@
 #include "abstract_syntax_tree.h"
 #include "error.h"
-<<<<<<< HEAD
-#include "labelgen.h"
-#include "generator.h"
-=======
 #include "generator_tools.h"
-
->>>>>>> abc653678008145c183e8e466fe375210c91f4e7
+#include "generator.h"
 #include <stdbool.h>
 #include <string.h>
 #include <stdio.h>
 #include <stdarg.h>
 
 
-<<<<<<< HEAD
 size_t ind = 0;
 
 void inc_ind(){
@@ -39,33 +33,6 @@ void G(const char* fmt, ...){
 
     va_end(arg_list);
 }
-=======
-error_codes_t gen_var_def_check(char* var_name, generator_context_t* gen_context);
-error_codes_t gen_expr_vars_def_checks(AST_node_t* expr_n, generator_context_t* gen_context);
-error_codes_t gen_expr(AST_node_t* expr_n, generator_context_t* gen_context);
-error_codes_t gen_true_false_jump(char* true_label, char* false_label);
-error_codes_t gen_while(AST_node_t* while_n, generator_context_t* gen_context);
-error_codes_t gen_if(AST_node_t* if_n, generator_context_t* gen_context);
-error_codes_t gen_ass_expr(AST_node_t* ass_expr_n, generator_context_t* gen_context);
-error_codes_t gen_func_args_def_checks(AST_node_t* func_call_n, generator_context_t* gen_context);
-error_codes_t gen_func_args_push(AST_node_t* func_call_n, generator_context_t* gen_context);
-error_codes_t gen_func_call(AST_node_t* func_call_n, generator_context_t* gen_context);
-error_codes_t gen_ass_func(AST_node_t* ass_func_n, generator_context_t* gen_context);
-error_codes_t gen_standalone_func_call(AST_node_t* func_call_n, generator_context_t* gen_context);
-error_codes_t gen_standalone_expr(AST_node_t* expr_n, generator_context_t* gen_context);
-error_codes_t gen_body(AST_node_t* body_n, generator_context_t* gen_context);
-error_codes_t gen_func_params(AST_node_t* params_n, char* func_name);
-error_codes_t gen_func_def(AST_node_t* func_def_n, generator_context_t* gen_context);
-error_codes_t gen_missing_return();
-error_codes_t gen_return(AST_node_t* return_n, generator_context_t* gen_context);
-error_codes_t gen_func_def_flags(AST_node_t* used_func_list_n);
-error_codes_t gen_built_in_functions(AST_node_t* used_func_list_n);
-error_codes_t gen_var_defs(AST_node_t* used_vars_list_n, generator_context_t* gen_context);
-error_codes_t gen_prog(AST_node_t* prog_n, generator_context_t* gen_context);
-error_codes_t gen_type_check_jump(char* var_name, datatype_t expected_type, char* type_ok_label);
-generator_context_t* generator_context_create();
-void generator_context_free(generator_context_t* gen_context);
->>>>>>> abc653678008145c183e8e466fe375210c91f4e7
 
 // OK
 error_codes_t gen_var_def_check(char* var_name, generator_context_t* gen_context){
@@ -532,14 +499,8 @@ error_codes_t gen_type_check_jump(char* var_name, datatype_t expected_type, char
 }
 
 
-<<<<<<< HEAD
-
-error_codes_t gen_func_params(AST_node_t* params_n){
-	G("\n# FUNCTION PARAMS");
-=======
 error_codes_t gen_func_params(AST_node_t* params_n, char* func_name){
 	G("# FUNCTION PARAMS START");
->>>>>>> abc653678008145c183e8e466fe375210c91f4e7
 	inc_ind();
 
 	error_codes_t res;
