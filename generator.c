@@ -1,6 +1,7 @@
 #include "abstract_syntax_tree.h"
 #include "error.h"
 #include "generator_tools.h"
+#include "generator_builtin.h"
 
 #include <stdbool.h>
 #include <string.h>
@@ -510,23 +511,23 @@ error_codes_t gen_func_params(AST_node_t* params_n, char* func_name){
 	error_codes_t res;
 	size_t param_count = params_n->children_count;
 	
-	// get unique ?param_count_ok label
-	char* param_count_ok_label = gen_label("?", func_name, "?param_count_ok", false);
-	if(param_count_ok_label == NULL) return INTERNAL_ERROR;
+	// get unique ?arg_count_ok label
+	char* arg_count_ok_label = gen_label("?", func_name, "?arg_count_ok", false);
+	if(arg_count_ok_label == NULL) return INTERNAL_ERROR;
 
-	G("# CHECK PARAM COUNT START");
+	G("# CHECK ARG COUNT START");
 	inc_ind();
 
 	// check if first argument passed to function (numer of arguments) is the same as param_count (pop it from data stack and compare)
 	G("POPS GF@_tmp1");
-	G("JUMPIFEQ %s GF@_tmp1 int@%zu", param_count_ok_label, param_count);
+	G("JUMPIFEQ %s GF@_tmp1 int@%zu", arg_count_ok_label, param_count);
 	G("EXIT int@4"); // wrong number of arguments
-	G("LABEL %s", param_count_ok_label);
+	G("LABEL %s", arg_count_ok_label);
 
 	dec_ind();
-	G("# CHECK PARAM COUNT START END\n");
+	G("# CHECK ARG COUNT END\n");
 
-	free(param_count_ok_label);
+	free(arg_count_ok_label);
 
 	AST_node_t* param_n;
 	AST_node_t* id_n;
@@ -834,6 +835,11 @@ error_codes_t gen_prog(AST_node_t* prog_n, generator_context_t* gen_context){
 	G("DEFVAR GF@_tmp2");
 	G("DEFVAR GF@_tmp_res");
 	G("DEFVAR GF@_tmp_type");
+	
+	G("DEFVAR GF@_rhs");
+	G("DEFVAR GF@_lhs");
+	G("DEFVAR GF@_tlhs");
+	G("DEFVAR GF@_trhs");
 	dec_ind();
 	G("# TMP VARS END\n");
 
