@@ -69,7 +69,7 @@ generator_test: generator_test.o generator.o generator_tools.o semantic_analyzer
 	$(CC) $(CFLAGS) $^ -o $@ $(LFLAGS)
 
 TEST_generator: generator_test
-	valgrind --leak-check=full --show-leak-kinds=all ./$^
+	valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes ./$^
 
 # TEST clean
 tclean:

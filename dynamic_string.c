@@ -51,7 +51,7 @@ dynamic_string_t * ds_strinit(const char * str) {
 	while(size <= strlen(str)) {
 		size *= 2;
 	}
-	ds->str = (char*) malloc(size*sizeof(char)); // Allocate string buffer with write reserve.
+	ds->str = (char*) calloc(1, size*sizeof(char)); // Allocate string buffer with write reserve.
 
 	if(ds->str == NULL) {
 		free(ds);
@@ -110,7 +110,7 @@ int ds_concat(dynamic_string_t * a, dynamic_string_t * b) {
 }
 
 int ds_concat_str(dynamic_string_t * ds, const char * str) {
-	if(str == NULL) {
+	if(str == NULL || ds == NULL || ds->str == NULL) {
 		return 0; // Change nothing when NULL string.
 	}
 	size_t new_size = ds->size;
@@ -129,6 +129,9 @@ int ds_concat_str(dynamic_string_t * ds, const char * str) {
 }
 
 int ds_write_uint(dynamic_string_t * ds, unsigned n) {
+	if(ds == NULL) {
+		return 1;
+	}
 	size_t size = n;
 	if(n == 0) { // Look into this...
 		size++;

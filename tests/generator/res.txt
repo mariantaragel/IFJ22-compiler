@@ -1,0 +1,6 @@
+gcc -std=c11 -Wall -Wextra -pedantic -g   -c -o generator_test.o generator_test.c
+gcc -std=c11 -Wall -Wextra -pedantic -g generator_test.o generator.o generator_tools.o semantic_analyzer.o symtable.o abstract_syntax_tree.o dynamic_string.o token_array.o token.o error.o -o generator_test -lm
+valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes ./generator_test
+a normal stringMOVE,CREATEFRAME,PUSHFRAME,POPFRAME,DEFVAR,CALL,RETURN,PUSHS,POPS,CLEARS,ADD,SUB,MUL,DIV,IDIV,ADDS,SUBS,MULS, DIVS,IDIVS,LT,GT,EQ,LTS,GTS,EQNOT,ANDS,ORS,NOTS,INT2FL_________19900_________OAT,INT2CHAR,STRI2INT,INT2FLOATS,FLOAT2INTS,INT2,PIFNEQ,JUMP T,ANDS,ORS,NOTS,INT2FLOAT,INT2CHAR,STRI2INT,INT2FLOATS,FLOAT2INTS,INT2CHARS,STRI2INTS, READ,WRITE,CONCAT,STRLEN,GETCHAR,SETCHAR,TYPE,LABEL,JUMP,JUMPIFEQ,JUMPIFNEQ,JUMPIF2
+size 512
+length 433
