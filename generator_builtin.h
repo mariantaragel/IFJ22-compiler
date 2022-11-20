@@ -85,4 +85,13 @@ POPFRAME												\n\
 RETURN													\n\
 "
 
+#define BUILIN_FLOATVAL ""
+#define BUILIN_INTVAL ""
+#define BUILIN_STRVAL ""
+#define BUILIN_STRLEN ""
+#define BUILIN_SUBSTRING ""
+#define BUILIN_ORD ""
+#define BUILIN_CHR ""
+
+
 #endif
