@@ -16,7 +16,7 @@ scanner: scanner.o dynamic_string.o token.o error.o
 codegen: codegen.o dynamic_string.o
 	$(CC) $(CFLAGS) -o $@ $^ $(LFLAGS)
 
-expgen: expgen.o dynamic_string.o scanner.o token.o error.o token_array.o
+expgen: expgen.o dynamic_string.o scanner.o token.o error.o token_array.o generator.o semantic_analyzer.o symtable.o abstract_syntax_tree.o labelgen.o precedence_parser.o precedence_stack.o precedence_rules.o precedence_table.o
 	$(CC) $(CFLAGS) -o $@ $^ $(LFLAGS)
 
 clean:
@@ -26,7 +26,7 @@ run:
 	make scanner
 	cat ./tests/test1.php | ./scanner > ./tests/res1.txt
 
-parser_test: parser_test.o parser.o scanner.o dynamic_string.o token.o error.o abstract_syntax_tree.o token_array.o
+parser_test: parser_test.o parser.o scanner.o dynamic_string.o token.o error.o abstract_syntax_tree.o token_array.o 
 	$(CC) $(CFLAGS) -g $^ -o $@ $(LFLAGS)
 
 # TEST symtable

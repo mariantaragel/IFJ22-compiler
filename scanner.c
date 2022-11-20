@@ -48,10 +48,6 @@ int main() {
 	return 0;
 }
 */
-<<<<<<< HEAD
-
-=======
->>>>>>> 6b0364bb2d8c26815193ea2520b48a6a4b34e2b4
 
 token_t * get_token() {
 	dynamic_string_t * ds = ds_init(); // Initialize write buffer.
@@ -258,11 +254,6 @@ void s_handler(dynamic_string_t * ds, token_t * t, int * c) {
 			continue;
 		}
 		if(*c == '\\') { // Escape sequence.
-			// dynamic_string_t * aux_ds = ds_init();
-			// if(aux_ds == NULL) {
-			// 	error = INTERNAL_ERROR;
-			// 	return;
-			// }
 			*c = fgetc(stdin);
 			// String interpolation...
 			switch(*c) {

@@ -34,9 +34,10 @@
 
 char * gen_label(char * prefix, char * infix, char * suffix, bool gen_num) {
     static unsigned num = 1;
-    dynamic_string_t * ds = ds_strinit(prefix);
-    ds_concat_str(ds, infix);
-    ds_concat_str(ds, suffix);
+    dynamic_string_t * ds;
+    if(prefix != NULL) { ds = ds_strinit(prefix); } else { ds = ds_init(); }
+    if(infix != NULL) { ds_concat_str(ds, infix); }
+    if(suffix != NULL) { ds_concat_str(ds, suffix); }
     if(gen_num) {
         ds_write(ds, '_');
         ds_write_uint(ds, num);
@@ -104,5 +105,32 @@ bool gen_if_labels(char ** branch_true, char ** branch_false, char ** end) {
         return false;
     }
     if_count++;
+    return true;
+}
+
+
+bool gen_pop_labels(char ** type_ok, char ** skip_nil_conversion) {
+    static unsigned pop_count = 1;
+    dynamic_string_t * ds_type_ok = ds_strinit("?type_ok");
+    dynamic_string_t * ds_skip_nil_conversion = ds_strinit("?skip_nil_conversion");
+
+    if(ds_type_ok == NULL || ds_skip_nil_conversion == NULL) {
+        ds_dstr(ds_type_ok);
+        ds_dstr(ds_skip_nil_conversion);
+        return false;
+    }
+    if(ds_write_uint(ds_type_ok, pop_count) || ds_write_uint(ds_skip_nil_conversion, pop_count)) {
+        ds_dstr(ds_type_ok);
+        ds_dstr(ds_skip_nil_conversion);
+        return false;
+    }
+    if(!(*type_ok = ds_get_str(ds_type_ok, true)) || !(*skip_nil_conversion = ds_get_str(ds_skip_nil_conversion, true))) {
+        free(*type_ok);
+        free(*skip_nil_conversion);
+        ds_dstr(ds_type_ok);
+        ds_dstr(ds_skip_nil_conversion);
+        return false;
+    }
+    pop_count++;
     return true;
 }

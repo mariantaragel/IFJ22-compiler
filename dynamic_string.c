@@ -98,7 +98,6 @@ int ds_write(dynamic_string_t * ds, int c) {
 	return 0;
 }
 
-
 // can be done as ds_concat_str wher
 int ds_concat(dynamic_string_t * a, dynamic_string_t * b) {
 	if(a == NULL || b == NULL) {

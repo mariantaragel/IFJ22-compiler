@@ -27,4 +27,6 @@ bool gen_while_labels(char ** start, char ** body_start, char ** end);
 
 bool gen_if_labels(char ** branch_true, char ** branch_false, char ** end);
 
+bool gen_pop_labels(char ** type_ok, char ** skip_nil_conversion);
+
 #endif // LABELGEN_H

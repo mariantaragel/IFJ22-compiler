@@ -20,7 +20,6 @@ void test_precedence_parser(char* expression, error_codes_t expected_error_code)
 	printf("===================================\n");
 	FILE* fp = fopen("./tests/precedence_parser/test_in.php","w+");
 	if(fp == NULL) exit(1);
-
 	fprintf(fp, "%s", expression);
 	fclose(fp);
 
@@ -87,4 +86,6 @@ int main(){
 	test_precedence_parser("1*(2+3)", OK);
 	test_precedence_parser("-3", SYNTAX_ERROR);
 	test_precedence_parser("1+2-\"3\".\"4\"*(6+7/8)", OK);
+	test_precedence_parser("\"a\"+2", SYNTAX_ERROR);
+	test_precedence_parser("null+3", SYNTAX_ERROR);
 }
