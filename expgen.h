@@ -21,7 +21,7 @@
 #define EXPGEN_H
 
 
-typedef enum {RELATIONAL, ARITHMETIC, DIVISION, STRING} operation_t;
+typedef enum {RELATIONAL, ARITHMETIC, DIVISION, STRING, EQUALITY} operation_t;
 
 void gen_expression(token_array_t * tarr, generator_context_t * gc);
 void push_operand(token_t * token, const char * scope_label);

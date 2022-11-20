@@ -6,62 +6,19 @@ DEFVAR GF@_trhs
 
 
 
-PUSHS int@3
-PUSHS int@2
-PUSHS nil@nil
+PUSHS int@1
+PUSHS string@hello
 POPS GF@_lhs
 TYPE GF@_tlhs GF@_lhs
-JUMPIFNEQ ?type_ok1 GF@_tlhs string@string
-EXIT int@7
-LABEL ?type_ok1
-JUMPIFNEQ ?skip_nil_conversion1 GF@_tlhs string@nil
-MOVE GF@_lhs int@0
-LABEL ?skip_nil_conversion1
-TYPE GF@_tlhs GF@_lhs
 POPS GF@_rhs
-TYPE GF@_trhs GF@_rhs
-JUMPIFNEQ ?type_ok2 GF@_trhs string@string
-EXIT int@7
-LABEL ?type_ok2
-JUMPIFNEQ ?skip_nil_conversion2 GF@_trhs string@nil
-MOVE GF@_rhs int@0
-LABEL ?skip_nil_conversion2
 TYPE GF@_trhs GF@_rhs
 JUMPIFEQ ?execute_1 GF@_tlhs GF@_trhs
-JUMPIFEQ ?convert_rhs_2 GF@_tlhs string@float
-INT2FLOAT GF@_lhs GF@_lhs
-JUMP ?execute_1
-LABEL ?convert_rhs_2
-INT2FLOAT GF@_rhs GF@_rhs
+MOVE GF@_lhs bool@true
+PUSHS bool@true
+JUMP end
 LABEL ?execute_1
-MUL GF@_lhs GF@_lhs GF@_rhs
+EQ GF@_lhs GF@_lhs GF@_rhs
+NOT GF@_lhs GF@_lhs
 PUSHS GF@_lhs
-POPS GF@_lhs
-TYPE GF@_tlhs GF@_lhs
-JUMPIFNEQ ?type_ok3 GF@_tlhs string@string
-EXIT int@7
-LABEL ?type_ok3
-JUMPIFNEQ ?skip_nil_conversion3 GF@_tlhs string@nil
-MOVE GF@_lhs int@0
-LABEL ?skip_nil_conversion3
-TYPE GF@_tlhs GF@_lhs
-POPS GF@_rhs
-TYPE GF@_trhs GF@_rhs
-JUMPIFNEQ ?type_ok4 GF@_trhs string@string
-EXIT int@7
-LABEL ?type_ok4
-JUMPIFNEQ ?skip_nil_conversion4 GF@_trhs string@nil
-MOVE GF@_rhs int@0
-LABEL ?skip_nil_conversion4
-TYPE GF@_trhs GF@_rhs
-JUMPIFEQ ?execute_3 GF@_tlhs GF@_trhs
-JUMPIFEQ ?convert_rhs_4 GF@_tlhs string@float
-INT2FLOAT GF@_lhs GF@_lhs
-JUMP ?execute_3
-LABEL ?convert_rhs_4
-INT2FLOAT GF@_rhs GF@_rhs
-LABEL ?execute_3
-ADD GF@_lhs GF@_lhs GF@_rhs
-PUSHS GF@_lhs
-WRITE GF@_lhs
-WRITE string@\010
+LABEL end
+BREAK
