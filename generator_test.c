@@ -14,6 +14,7 @@ READ,WRITE,CONCAT,STRLEN,GETCHAR,SETCHAR,TYPE,LABEL,JUMP,JUMPIFEQ,JUMPIFNEQ,JUMP
 int main(){
 	char* label = gen_label("A",NULL,NULL, true);
 	printf("%s", label);
+	free(label);
 	/*
 	AST_node_t* prog_n = AST_create_node(PROG_N);
 	if(prog_n == NULL) return 2;
