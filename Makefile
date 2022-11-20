@@ -16,7 +16,7 @@ scanner: scanner.o dynamic_string.o token.o error.o
 codegen: codegen.o dynamic_string.o
 	$(CC) $(CFLAGS) -o $@ $^ $(LFLAGS)
 
-expgen: expgen.o dynamic_string.o scanner.o token.o error.o token_array.o generator.o semantic_analyzer.o symtable.o abstract_syntax_tree.o labelgen.o precedence_parser.o precedence_stack.o precedence_rules.o precedence_table.o
+expgen: expgen.o dynamic_string.o scanner.o token.o error.o token_array.o precedence_parser.o precedence_stack.o precedence_rules.o precedence_table.o generator_tools.o
 	$(CC) $(CFLAGS) -o $@ $^ $(LFLAGS)
 
 clean:

@@ -14,50 +14,52 @@
 
 #include <stdio.h>
 #include <stdbool.h>
+#include "generator_tools.h"
 #include "expgen.h"
 #include "token_array.h"
-#include "generator.h"
-#include "labelgen.h"
+#include "generator.c"
 #include "scanner.h"
 #include "error.h"
 #include "precedence_parser.h"
-#include "abstract_syntax_tree.h"
 
 /* Global variables */
 char * lhs = "GF@_lhs";
 char * rhs = "GF@_rhs";
-// char * res = "GF@_res";
 char * tlhs = "GF@_tlhs";
 char * trhs = "GF@_trhs";
 
-/*
 int main() {
-    token_array_t * tarr;
-    tarr = get_exp("null*2+3");
-    // printf("OUTPUT: ");
-	// token_array_expr_print(tarr, stdout);
-    G(".IFJcode22");
-    G("DEFVAR %s", lhs);
-    G("DEFVAR %s", rhs);
-    G("DEFVAR %s", tlhs);
-    G("DEFVAR %s", trhs);
-	printf("\n\n\n");
-    generator_context_t * gc = generator_context_create();
-    if(gc == NULL) {
-        return 1;
-    }
-    gen_expression(tarr, gc);
+    // token_array_t * tarr;
+    // tarr = get_exp("null*2+3");
+    // // printf("OUTPUT: ");
+	// // token_array_expr_print(tarr, stdout);
+    // G(".IFJcode22");
+    // G("DEFVAR %s", lhs);
+    // G("DEFVAR %s", rhs);
+    // G("DEFVAR %s", tlhs);
+    // G("DEFVAR %s", trhs);
+	// printf("\n\n\n");
+    // generator_context_t * gc = generator_context_create();
+    // if(gc == NULL) {
+    //     return 1;
+    // }
+    // gen_expression(tarr, gc);
 
 
-    G("WRITE GF@_lhs");
-    G("WRITE string@\\010");
+    // G("WRITE GF@_lhs");
+    // G("WRITE string@\\010");
 
-    token_array_free(tarr);
+    // token_array_free(tarr);
 
+    char * label;
+
+    label = gen_label(NULL, NULL, "test", true);
+    printf("%s\n", label);
+    free(label);
 
 
 }
-*/
+
 void gen_expression(token_array_t * tarr, generator_context_t * gc) {
     char * scope_label;
     operation_t operation;

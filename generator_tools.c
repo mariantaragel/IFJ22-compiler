@@ -59,6 +59,7 @@ void G(const char* fmt, ...){
 
     va_end(arg_list);
 }
+
 char * gen_label(char * prefix, char * infix, char * suffix, bool gen_num) {
     static unsigned num = 1;
     dynamic_string_t * ds;
