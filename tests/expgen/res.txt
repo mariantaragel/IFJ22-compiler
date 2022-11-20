@@ -1,0 +1,50 @@
+.IFJcode22
+
+
+DEFVAR GF@_lhs
+DEFVAR GF@_rhs
+DEFVAR GF@_trhs
+DEFVAR GF@_tlhs
+
+PUSHS int@1
+PUSHS int@1
+
+# POPPING OPERAND
+POPS GF@_lhs
+TYPE GF@_tlhs GF@_lhs
+JUMPIFNEQ ?type_ok1 GF@_tlhs string@string
+EXIT int@7
+LABEL ?type_ok1
+JUMPIFNEQ ?skip_nil_conversion1 GF@_tlhs string@nil
+MOVE GF@_lhs int@0
+LABEL ?skip_nil_conversion1
+TYPE GF@_tlhs GF@_lhs
+# END POP
+
+
+# POPPING OPERAND
+POPS GF@_rhs
+TYPE GF@_trhs GF@_rhs
+JUMPIFNEQ ?type_ok2 GF@_trhs string@string
+EXIT int@7
+LABEL ?type_ok2
+JUMPIFNEQ ?skip_nil_conversion2 GF@_trhs string@nil
+MOV GF@_rhs int@0
+LABEL ?skip_nil_conversion2
+TYPE GF@_trhs GF@_rhs
+# END POP
+
+### CHECKING OPERAND TYPES
+JUMPIFEQ ?execute_1 GF@_tlhs GF@_trhs
+JUMPIFEQ ?convert_rhs_2 GF@_tlhs string@float
+INT2FLOAT GF@_lhs GF@_lhs
+JUMP ?execute_1
+LABEL ?convert_rhs_2
+INT2FLOAT GF@_rhs GF@_rhs
+### EXECUTE
+LABEL ?execute_1
+ADD GF@_lhs GF@_lhs GF@_rhs
+PUSHS GF@_lhs
+### END OPERATION
+
+WRITE GF@_lhs

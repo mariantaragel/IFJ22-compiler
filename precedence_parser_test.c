@@ -20,7 +20,6 @@ void test_precedence_parser(char* expression, error_codes_t expected_error_code)
 	printf("===================================\n");
 	FILE* fp = fopen("./tests/precedence_parser/test_in.php","w+");
 	if(fp == NULL) exit(1);
-
 	fprintf(fp, "%s", expression);
 	fclose(fp);
 

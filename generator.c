@@ -2,16 +2,12 @@
 #include "error.h"
 #include "generator_tools.h"
 #include "generator_builtin.h"
-
+#include "generator.h"
 #include <stdbool.h>
 #include <string.h>
 #include <stdio.h>
 #include <stdarg.h>
 
-typedef struct{
-    bool is_in_function;
-	char* func_end_label;
-}generator_context_t;
 
 error_codes_t gen_var_def_check(char* var_name, generator_context_t* gen_context);
 error_codes_t gen_expr_vars_def_checks(AST_node_t* expr_n, generator_context_t* gen_context);
@@ -35,7 +31,6 @@ error_codes_t gen_func_def_flags(AST_node_t* used_func_list_n);
 error_codes_t gen_built_in_functions(AST_node_t* used_func_list_n);
 error_codes_t gen_var_defs(AST_node_t* used_vars_list_n, generator_context_t* gen_context);
 error_codes_t gen_prog(AST_node_t* prog_n, generator_context_t* gen_context);
-error_codes_t gen_type_check_jump(char* var_name, datatype_t expected_type, char* type_ok_label);
 generator_context_t* generator_context_create();
 void generator_context_free(generator_context_t* gen_context);
 

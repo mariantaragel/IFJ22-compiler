@@ -254,11 +254,6 @@ void s_handler(dynamic_string_t * ds, token_t * t, int * c) {
 			continue;
 		}
 		if(*c == '\\') { // Escape sequence.
-			// dynamic_string_t * aux_ds = ds_init();
-			// if(aux_ds == NULL) {
-			// 	error = INTERNAL_ERROR;
-			// 	return;
-			// }
 			*c = fgetc(stdin);
 			// String interpolation...
 			switch(*c) {
