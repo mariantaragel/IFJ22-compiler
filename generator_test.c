@@ -1,4 +1,5 @@
 #include "generator.h"
+#include "generator_tools.h"
 #include "semantic_analyzer.h"
 #include "abstract_syntax_tree.h"
 #include "error.h"
@@ -11,6 +12,9 @@ READ,WRITE,CONCAT,STRLEN,GETCHAR,SETCHAR,TYPE,LABEL,JUMP,JUMPIFEQ,JUMPIFNEQ,JUMP
 }instr_t;*/
 
 int main(){
+	char* label = gen_label("A",NULL,NULL, true);
+	printf("%s", label);
+	/*
 	AST_node_t* prog_n = AST_create_node(PROG_N);
 	if(prog_n == NULL) return 2;
 
@@ -22,5 +26,5 @@ int main(){
 
 	if(error != OK) return error;
 
-	AST_free(prog_n);
+	AST_free(prog_n);*/
 }
