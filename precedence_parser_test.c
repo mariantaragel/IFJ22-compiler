@@ -86,6 +86,11 @@ int main(){
 	test_precedence_parser("1*(2+3)", OK);
 	test_precedence_parser("-3", SYNTAX_ERROR);
 	test_precedence_parser("1+2-\"3\".\"4\"*(6+7/8)", OK);
+<<<<<<< HEAD
 	test_precedence_parser("\"a\"+2", SYNTAX_ERROR);
 	test_precedence_parser("null+3", SYNTAX_ERROR);
+=======
+	test_precedence_parser("1+{}", SYNTAX_ERROR);
+	test_precedence_parser("1 + 1", OK);
+>>>>>>> abc653678008145c183e8e466fe375210c91f4e7
 }

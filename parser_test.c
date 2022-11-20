@@ -49,6 +49,16 @@ int main()
     test("tests/syntax/test12.php", OK);
     test("tests/syntax/test13.php", OK);
     test("tests/syntax/test14.php", SYNTAX_ERROR);
+    test("tests/syntax/test15.php", OK);
+    test("tests/syntax/test16.php", OK);
+    test("tests/syntax/test17.php", OK);
+    test("tests/syntax/test18.php", OK);
+    test("tests/syntax/test19.php", OK);
+    test("tests/syntax/test20.php", SYNTAX_ERROR);
+    test("tests/syntax/test21.php", SYNTAX_ERROR);
+    test("tests/syntax/test22.php", SYNTAX_ERROR);
+    test("tests/syntax/test23.php", OK);
+    test("tests/syntax/test24.php", OK);
 
     return 0;
 }

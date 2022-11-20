@@ -3,7 +3,7 @@
 
 #include "precedence_stack.h"
 #include "precedence_table.h"
-
+#include "precedence_rules.h"
 
 /**
  * @brief Precedence stack element.
@@ -178,11 +178,10 @@ int pstack_push_nonterminal(pstack_t* pstack, token_array_t* token_array){
 }
 
 
-
-token_array_t* pstack_pop(pstack_t* pstack, bool* is_terminal){
+token_array_t* pstack_pop(pstack_t* pstack, prec_rule_elem_t* prec_rule_elem){
 	if(pstack == NULL || pstack->top_ptr == NULL){
-		if(is_terminal != NULL){
-			*is_terminal = false;
+		if(prec_rule_elem != NULL){
+			*prec_rule_elem = PREC_RULE_ELEM_NAN;
 		}
 		return NULL;
 	}
@@ -198,8 +197,16 @@ token_array_t* pstack_pop(pstack_t* pstack, bool* is_terminal){
 
 		// free old top element and return symbol stored in it
 		token_array_t* token_array = tmp_elem_ptr->token_array;
-		if(is_terminal != NULL) {
-			*is_terminal = tmp_elem_ptr->is_terminal;
+
+		if(prec_rule_elem != NULL){
+			if(tmp_elem_ptr->is_terminal){
+				// expression token array has only 1 token which represents terminal symbol
+				*prec_rule_elem = PREC_RULE_ELEM_TERM(token_array->array[0]->type);
+			}
+			else{
+				// expression token array has only X tokens representing nonterminal symbol
+				*prec_rule_elem = PREC_RULE_ELEM_EXPR;
+			}
 		}
 		
 		free(tmp_elem_ptr);
