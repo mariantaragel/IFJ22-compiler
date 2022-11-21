@@ -34,6 +34,7 @@ bool isoperator(token_t * token);
 
 void gen_operation_functions();
 void gen_arithmetic_operation(token_type_t operation);
+void gen_division_operation();
 void gen_string_operation(token_type_t operation);
 void gen_equality_operation(token_type_t operation);
 void gen_ltgt_operation(token_type_t operation);

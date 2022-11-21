@@ -43,7 +43,7 @@ int main() {
 
 
     token_array_t * tarr;
-    tarr = get_exp("null < 2");
+    tarr = get_exp("12.4/2");
     
 	printf("\n\n\n");
     generator_context_t * gc = generator_context_create();
@@ -52,7 +52,9 @@ int main() {
     }
     gen_expression(tarr, gc);
 
-    G("BREAK");
+    G("WRITE GF@_lhs");
+    G("WRITE string@\\010");
+    G("FLOAT2INt GF@_lhs GF@_lhs");
     G("WRITE GF@_lhs");
     G("WRITE string@\\010");
 
@@ -62,9 +64,11 @@ int main() {
 }
 
 void gen_operation_functions() {
+    // error_codes_t error_local;
     gen_arithmetic_operation(ADD);
     gen_arithmetic_operation(MUL);
     gen_arithmetic_operation(SUB);
+    gen_division_operation();
     gen_string_operation(CONCAT);
     gen_equality_operation(EQ);
     gen_equality_operation(NEQ);
@@ -89,7 +93,7 @@ void gen_expression(token_array_t * tarr, generator_context_t * gc) {
                 case ADD: G("CALL %%add_op"); break;
                 case MUL: G("CALL %%mul_op"); break;
                 case SUB: G("CALL %%sub_op"); break;
-                // case DIV: G("CALL %%div_op"); break;
+                case DIV: G("CALL %%div_op"); break;
                 case CONCAT: G("CALL %%concat_op"); break;
                 case EQ: G("CALL %%eq_op"); break;
                 case NEQ: G("CALL %%neq_op"); break;
@@ -99,16 +103,6 @@ void gen_expression(token_array_t * tarr, generator_context_t * gc) {
                 // case LTE: G("CALL %%lte_op"); break;
                 default: break;
             }
-            // char * execute_label = gen_label(NULL, NULL, "?execute", true);
-            // if(execute_label == NULL) {
-            //     error = INTERNAL_ERROR;
-            //     return;
-            // }
-            // set_operator(&operation, token);
-            // pop_operand(operation, lhs, tlhs);
-            // pop_operand(operation, rhs, trhs);
-            // check_types(operation, execute_label);
-            // execute_operation(operation, token->type, execute_label);
         }
     }
 }
@@ -139,7 +133,6 @@ void set_operator(operation_t * operation, token_t * token) {
 }
 
 void pop_operand(operation_t operation, const char * operand, const char * operand_type) {
-    // G("\n# POPPING OPERAND");
     G("POPS %s", operand); // Pop operand to global variable.
     if(operation == ARITHMETIC) {
         char * type_ok;
@@ -157,7 +150,26 @@ void pop_operand(operation_t operation, const char * operand, const char * opera
         G("MOVE %s int@0", operand); // nil to int conversion
         G("LABEL %s", skip_nil_conv);
         G("TYPE %s %s", operand_type, operand);
+    } else if(operation == DIVISION) {
+        char * type_ok;
+        char * skip_nil_conv;
+        if(!gen_pop_labels(&type_ok, &skip_nil_conv)) {
+            error = INTERNAL_ERROR;
+            return;
+        }
+        char * skip_int_conversion = gen_label(NULL, NULL, "int_conversion", true);
+        G("TYPE %s %s", operand_type, operand);
+        G("JUMPIFNEQ %s %s string@string", type_ok, operand_type);
+        G("EXIT int@7");
+        G("LABEL %s", type_ok);
+        G("JUMPIFNEQ %s %s string@nil", skip_nil_conv, operand_type);
+        G("MOVE %s int@0", operand);
+        G("LABEL %s", skip_nil_conv);
 
+        G("TYPE %s %s", operand_type, operand);
+        G("JUMPIFEQ %s %s string@float", skip_int_conversion, operand_type);
+        G("INT2FLOAT %s %s", operand, operand);
+        G("LABEL %s", skip_int_conversion);
     } else if (operation == STRING) {
         char * type_ok;
         char * skip_nil_conv;
@@ -183,95 +195,91 @@ void pop_operand(operation_t operation, const char * operand, const char * opera
     }
 }
 
-void check_types(operation_t operation, char * execute_label) {
-    // G("### CHECKING OPERAND TYPES");
-    if(operation == ARITHMETIC) {
-        char * convert_rhs = gen_label(NULL, NULL, "?convert_rhs", true);
-        G("JUMPIFEQ %s %s %s", execute_label, tlhs, trhs);
-        G("JUMPIFEQ %s %s string@float", convert_rhs, tlhs);
-        G("INT2FLOAT %s %s", lhs, lhs);
-        G("JUMP %s", execute_label);
-        G("LABEL %s", convert_rhs);
-        G("INT2FLOAT %s %s", rhs, rhs);
-    }
-}
-
-void execute_operation(operation_t operation, token_type_t operator, char * execute_label) {
-    // G("### EXECUTE");
-    if(operation == ARITHMETIC) {
-        G("LABEL %s", execute_label);
-        switch(operator) {
-            case MUL: G("MUL %s %s %s", lhs, lhs, rhs); break;
-            case SUB: G("SUB %s %s %s", lhs, lhs, rhs); break;
-            case ADD: G("ADD %s %s %s", lhs, lhs, rhs); break;
-            default: break;
-        }
-        G("PUSHS %s", lhs); // Result write back
-    } else if (operation == STRING) {
-        G("CONCAT %s %s %s", lhs, lhs, rhs);
-        G("PUSHS %s", lhs);
-    } else if (operation == EQUALITY) {
-        char * end_label = gen_label(NULL,NULL,"?end_op", true);
-        G("JUMPIFEQ %s %s %s", execute_label, tlhs, trhs);
-        switch(operator) {
-            case EQ: G("MOVE %s bool@false", lhs); break;
-            case NEQ: G("MOVE %s bool@true", lhs); break;
-            default: break;
-        }
-        G("JUMP %s", end_label);
-        G("LABEL %s", execute_label);
-        G("EQ %s %s %s", lhs, lhs, rhs);
-        if(operator == NEQ) {
-            G("NOT %s %s", lhs, lhs);
-        }
-        G("LABEL %s", end_label);
-        G("PUSHS %s", lhs);
-    } else if (operation == LTGT) {
-        char * end_label = gen_label(NULL,NULL,"?end_op", true);
-        char * skip_lhs_cast_label = gen_label(NULL,NULL,"?skip_lhs_cast", true);
-        char * skip_rhs_cast_label = gen_label(NULL,NULL,"?skip_rhs_cast", true);
-        char * lhs_ok_label = gen_label(NULL, NULL, "?lhs_ok", true);
-        char * rhs_ok_label = gen_label(NULL, NULL, "?rhs_ok", true);
-        char * lhs_nil_label = gen_label(NULL, NULL, "?lhs_nil", true);
-        char * rhs_nil_label = gen_label(NULL, NULL, "?rhs_nil", true);
 
 
-        G("JUMPIFNEQ %s %s string@nil",lhs_nil_label, tlhs); // If nil, exit.
-        G("MOVE %s bool@false", lhs);
-        G("JUMP %s", end_label);
-        G("LABEL %s", lhs_nil_label);
-        G("JUMPIFNEQ %s %s string@nil", rhs_nil_label, trhs); // If nil, exit.
-        G("MOVE %s bool@false", lhs);
-        G("JUMP %s", end_label);
-        G("LABEL %s", rhs_nil_label);
+// void execute_operation(operation_t operation, token_type_t operator, char * execute_label) {
+//     // G("### EXECUTE");
+//     if(operation == ARITHMETIC) {
+//         char * convert_rhs = gen_label(NULL, NULL, "?convert_rhs", true);
+//         G("JUMPIFEQ %s %s %s", execute_label, tlhs, trhs);
+//         G("JUMPIFEQ %s %s string@float", convert_rhs, tlhs);
+//         G("INT2FLOAT %s %s", lhs, lhs);
+//         G("JUMP %s", execute_label);
+//         G("LABEL %s", convert_rhs);
+//         G("INT2FLOAT %s %s", rhs, rhs);
+//         G("LABEL %s", execute_label);
+//         switch(operator) {
+//             case MUL: G("MUL %s %s %s", lhs, lhs, rhs); break;
+//             case SUB: G("SUB %s %s %s", lhs, lhs, rhs); break;
+//             case ADD: G("ADD %s %s %s", lhs, lhs, rhs); break;
+//             default: break;
+//         }
+//         G("PUSHS %s", lhs); // Result write back
+//     } else if (operation == STRING) {
+//         G("CONCAT %s %s %s", lhs, lhs, rhs);
+//         G("PUSHS %s", lhs);
+//     } else if (operation == EQUALITY) {
+//         char * end_label = gen_label(NULL,NULL,"?end_op", true);
+//         G("JUMPIFEQ %s %s %s", execute_label, tlhs, trhs);
+//         switch(operator) {
+//             case EQ: G("MOVE %s bool@false", lhs); break;
+//             case NEQ: G("MOVE %s bool@true", lhs); break;
+//             default: break;
+//         }
+//         G("JUMP %s", end_label);
+//         G("LABEL %s", execute_label);
+//         G("EQ %s %s %s", lhs, lhs, rhs);
+//         if(operator == NEQ) {
+//             G("NOT %s %s", lhs, lhs);
+//         }
+//         G("LABEL %s", end_label);
+//         G("PUSHS %s", lhs);
+//     } else if (operation == LTGT) {
+//         char * end_label = gen_label(NULL,NULL,"?end_op", true);
+//         char * skip_lhs_cast_label = gen_label(NULL,NULL,"?skip_lhs_cast", true);
+//         char * skip_rhs_cast_label = gen_label(NULL,NULL,"?skip_rhs_cast", true);
+//         char * lhs_ok_label = gen_label(NULL, NULL, "?lhs_ok", true);
+//         char * rhs_ok_label = gen_label(NULL, NULL, "?rhs_ok", true);
+//         char * lhs_nil_label = gen_label(NULL, NULL, "?lhs_nil", true);
+//         char * rhs_nil_label = gen_label(NULL, NULL, "?rhs_nil", true);
 
-        /* LABELS -> rhs_ok, lhs_ok */
-        G("JUMPIFEQ %s %s %s", execute_label, tlhs, trhs);
-        G("JUMPIFNEQ %s %s string@string", lhs_ok_label, tlhs);
-        G("EXIT int@7");
-        G("LABEL %s", lhs_ok_label);
-        G("JUMPIFNEQ %s %s string@string", rhs_ok_label, trhs);
-        G("EXIT int@7");
-        G("LABEL %s", rhs_ok_label);
-        /* Execute label, skip_lhs_cast, skip_rhs_cast, */
 
-        G("JUMPIFNEQ %s %s string@int", skip_lhs_cast_label,tlhs); // No type cast.
-        G("INT2FLOAT %s %s", lhs, lhs);
-        G("LABEL %s", skip_lhs_cast_label);
-        G("JUMPIFNEQ %s %s string@int", skip_rhs_cast_label, trhs);
-        G("INT2FLOAT %s %s", rhs, rhs);
-        G("LABEL %s", skip_rhs_cast_label);
-        G("LABEL %s", execute_label);
-        switch(operator) {
-            case LT: G("LT %s %s %s", lhs, lhs, rhs); break; // lhs <- lhs < rhs
-            case GT: G("GT %s %s %s", lhs, lhs, rhs); break; // lhs <- lhs > rhs
-            default: break;
-        }
-        G("LABEL %s", end_label);
-        G("PUSHS %s", lhs);
-    }
-    // G("### END OPERATION");
-}
+//         G("JUMPIFNEQ %s %s string@nil",lhs_nil_label, tlhs); // If nil, exit.
+//         G("MOVE %s bool@false", lhs);
+//         G("JUMP %s", end_label);
+//         G("LABEL %s", lhs_nil_label);
+//         G("JUMPIFNEQ %s %s string@nil", rhs_nil_label, trhs); // If nil, exit.
+//         G("MOVE %s bool@false", lhs);
+//         G("JUMP %s", end_label);
+//         G("LABEL %s", rhs_nil_label);
+
+//         /* LABELS -> rhs_ok, lhs_ok */
+//         G("JUMPIFEQ %s %s %s", execute_label, tlhs, trhs);
+//         G("JUMPIFNEQ %s %s string@string", lhs_ok_label, tlhs);
+//         G("EXIT int@7");
+//         G("LABEL %s", lhs_ok_label);
+//         G("JUMPIFNEQ %s %s string@string", rhs_ok_label, trhs);
+//         G("EXIT int@7");
+//         G("LABEL %s", rhs_ok_label);
+//         /* Execute label, skip_lhs_cast, skip_rhs_cast, */
+
+//         G("JUMPIFNEQ %s %s string@int", skip_lhs_cast_label,tlhs); // No type cast.
+//         G("INT2FLOAT %s %s", lhs, lhs);
+//         G("LABEL %s", skip_lhs_cast_label);
+//         G("JUMPIFNEQ %s %s string@int", skip_rhs_cast_label, trhs);
+//         G("INT2FLOAT %s %s", rhs, rhs);
+//         G("LABEL %s", skip_rhs_cast_label);
+//         G("LABEL %s", execute_label);
+//         switch(operator) {
+//             case LT: G("LT %s %s %s", lhs, lhs, rhs); break; // lhs <- lhs < rhs
+//             case GT: G("GT %s %s %s", lhs, lhs, rhs); break; // lhs <- lhs > rhs
+//             default: break;
+//         }
+//         G("LABEL %s", end_label);
+//         G("PUSHS %s", lhs);
+//     }
+//     // G("### END OPERATION");
+// }
 
 bool isoperand(token_t * token) {
     switch(token->type) {
@@ -302,13 +310,34 @@ void gen_arithmetic_operation(token_type_t operation) {
     }
     pop_operand(ARITHMETIC, lhs, tlhs);
     pop_operand(ARITHMETIC, rhs, trhs);
-    check_types(ARITHMETIC, execute_label);
-    execute_operation(ARITHMETIC, operation, execute_label);
+    
+    char * convert_rhs = gen_label(NULL, NULL, "?convert_rhs", true);
+    G("JUMPIFEQ %s %s %s", execute_label, tlhs, trhs);
+    G("JUMPIFEQ %s %s string@float", convert_rhs, tlhs);
+    G("INT2FLOAT %s %s", lhs, lhs);
+    G("JUMP %s", execute_label);
+    G("LABEL %s", convert_rhs);
+    G("INT2FLOAT %s %s", rhs, rhs);
+    G("LABEL %s", execute_label);
+    switch(operation) {
+        case MUL: G("MUL %s %s %s", lhs, lhs, rhs); break;
+        case SUB: G("SUB %s %s %s", lhs, lhs, rhs); break;
+        case ADD: G("ADD %s %s %s", lhs, lhs, rhs); break;
+        default: break;
+    }
+    G("PUSHS %s", lhs); // Result write back
     G("RETURN");
     G("\n\n");
 }
 
-// void gen_division_operation();
+void gen_division_operation() {
+    G("LABEL %%div_op");
+    pop_operand(DIVISION, lhs, tlhs);
+    pop_operand(DIVISION, rhs, trhs);
+    G("DIV %s %s %s", lhs, lhs, rhs);
+    G("PUSHS %s", lhs);
+    G("RETURN");
+}
 
 void gen_equality_operation(token_type_t operation) {
     switch(operation) {
@@ -323,8 +352,22 @@ void gen_equality_operation(token_type_t operation) {
     }
     pop_operand(EQUALITY, lhs, tlhs);
     pop_operand(EQUALITY, rhs, trhs);
-    check_types(EQUALITY, execute_label);
-    execute_operation(EQUALITY, operation, execute_label);
+    // check_types(EQUALITY, execute_label);
+    char * end_label = gen_label(NULL,NULL,"?end_op", true);
+    G("JUMPIFEQ %s %s %s", execute_label, tlhs, trhs);
+    switch(operation) {
+        case EQ: G("MOVE %s bool@false", lhs); break;
+        case NEQ: G("MOVE %s bool@true", lhs); break;
+        default: break;
+    }
+    G("JUMP %s", end_label);
+    G("LABEL %s", execute_label);
+    G("EQ %s %s %s", lhs, lhs, rhs);
+    if(operation == NEQ) {
+        G("NOT %s %s", lhs, lhs);
+    }
+    G("LABEL %s", end_label);
+    G("PUSHS %s", lhs);
     G("RETURN");
     G("\n\n");
 }
@@ -338,8 +381,9 @@ void gen_string_operation(token_type_t operation) {
     }
     pop_operand(STRING, lhs, tlhs);
     pop_operand(STRING, rhs, trhs);
-    check_types(STRING, execute_label);
-    execute_operation(STRING, operation, execute_label);
+    // check_types(STRING, execute_label);
+    G("CONCAT %s %s %s", lhs, lhs, rhs);
+    G("PUSHS %s", lhs);
     G("RETURN");
     G("\n\n");
 }
@@ -357,8 +401,44 @@ void gen_ltgt_operation(token_type_t operation) {
     }
     pop_operand(LTGT, lhs, tlhs);
     pop_operand(LTGT, rhs, trhs);
-    check_types(LTGT, execute_label);
-    execute_operation(LTGT, operation, execute_label);
+    char * end_label = gen_label(NULL,NULL,"?end_op", true);
+    char * skip_lhs_cast_label = gen_label(NULL,NULL,"?skip_lhs_cast", true);
+    char * skip_rhs_cast_label = gen_label(NULL,NULL,"?skip_rhs_cast", true);
+    char * lhs_ok_label = gen_label(NULL, NULL, "?lhs_ok", true);
+    char * rhs_ok_label = gen_label(NULL, NULL, "?rhs_ok", true);
+    char * lhs_nil_label = gen_label(NULL, NULL, "?lhs_nil", true);
+    char * rhs_nil_label = gen_label(NULL, NULL, "?rhs_nil", true);
+    G("JUMPIFNEQ %s %s string@nil",lhs_nil_label, tlhs); // If nil, exit.
+    G("MOVE %s bool@false", lhs);
+    G("JUMP %s", end_label);
+    G("LABEL %s", lhs_nil_label);
+    G("JUMPIFNEQ %s %s string@nil", rhs_nil_label, trhs); // If nil, exit.
+    G("MOVE %s bool@false", lhs);
+    G("JUMP %s", end_label);
+    G("LABEL %s", rhs_nil_label);
+    /* LABELS -> rhs_ok, lhs_ok */
+    G("JUMPIFEQ %s %s %s", execute_label, tlhs, trhs);
+    G("JUMPIFNEQ %s %s string@string", lhs_ok_label, tlhs);
+    G("EXIT int@7");
+    G("LABEL %s", lhs_ok_label);
+    G("JUMPIFNEQ %s %s string@string", rhs_ok_label, trhs);
+    G("EXIT int@7");
+    G("LABEL %s", rhs_ok_label);
+    /* Execute label, skip_lhs_cast, skip_rhs_cast, */
+    G("JUMPIFNEQ %s %s string@int", skip_lhs_cast_label,tlhs); // No type cast.
+    G("INT2FLOAT %s %s", lhs, lhs);
+    G("LABEL %s", skip_lhs_cast_label);
+    G("JUMPIFNEQ %s %s string@int", skip_rhs_cast_label, trhs);
+    G("INT2FLOAT %s %s", rhs, rhs);
+    G("LABEL %s", skip_rhs_cast_label);
+    G("LABEL %s", execute_label);
+    switch(operation) {
+        case LT: G("LT %s %s %s", lhs, lhs, rhs); break; // lhs <- lhs < rhs
+        case GT: G("GT %s %s %s", lhs, lhs, rhs); break; // lhs <- lhs > rhs
+        default: break;
+    }
+    G("LABEL %s", end_label);
+    G("PUSHS %s", lhs);
     G("RETURN");
     G("\n\n");
 }
