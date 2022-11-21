@@ -85,13 +85,48 @@ POPFRAME												\n\
 RETURN													\n\
 "
 
-#define BUILIN_FLOATVAL ""
-#define BUILIN_INTVAL ""
-#define BUILIN_STRVAL ""
-#define BUILIN_STRLEN ""
-#define BUILIN_SUBSTRING ""
-#define BUILIN_ORD ""
-#define BUILIN_CHR ""
+#define BUILTIN_FLOATVAL ""
+#define BUILTIN_INTVAL ""
+#define BUILTIN_STRVAL ""
+#define BUILTIN_STRLEN ""
+#define BUILTIN_SUBSTRING ""
+#define BUILTIN_ORD ""
+#define BUILTIN_CHR ""
+
+#define HELPER_TO_BOOL_ "\
+LABEL &to_bool											\n\
+	POPS GF@_tmp										\n\
+	TYPE GF@_tmp_type GF@_tmp							\n\
+														\n\
+	JUMPIFNEQ ?&to_bool?next1 GF@_tmp_type string@nil	\n\
+		JUMP ?&to_bool?false							\n\
+														\n\
+	LABEL ?&to_bool?next1								\n\
+	JUMPIFNEQ ?&to_bool?next2 GF@_tmp_type string@int	\n\
+		JUMPIFEQ ?&to_bool?false GF@_tmp int@0			\n\
+		JUMP ?&to_bool?true								\n\
+														\n\
+	LABEL ?&to_bool?next2								\n\
+	JUMPIFNEQ ?&to_bool?next3 GF@_tmp_type string@float	\n\
+		JUMPIFEQ ?&to_bool?false GF@_tmp float@0x0p+0	\n\
+		JUMP ?&to_bool?true								\n\
+														\n\
+	LABEL ?&to_bool?next3								\n\
+	JUMPIFNEQ ?&to_bool?next4 GF@_tmp_type string@string\n\
+		JUMPIFEQ ?&to_bool?false GF@_tmp string@		\n\
+		JUMP ?&to_bool?true								\n\
+														\n\
+	LABEL ?&to_bool?next4								\n\
+		JUMPIFEQ ?&to_bool?false GF@_tmp bool@false		\n\
+														\n\
+    LABEL ?&to_bool?true								\n\
+        PUSHS bool@true									\n\
+        RETURN											\n\
+														\n\
+    LABEL ?&to_bool?false								\n\
+        PUSHS bool@false								\n\
+        RETURN											\n\
+"
 
 
 #endif
