@@ -42,11 +42,14 @@ int main(){
 		}
 	}
 
+	token_array_reverse(token_array1);
 	test_push(token_array1, ta[0]);
+	token_array_reverse(token_array1);
 	test_pop(token_array1);
 	test_pop(token_array1);
 	test_push(token_array1, ta[1]);
 	test_push(token_array1, ta[2]);
+	token_array_reverse(token_array1);
 	test_pop(token_array1);
 	test_pop(token_array1);
 	test_push(token_array1, ta[3]);
@@ -57,6 +60,7 @@ int main(){
 	test_push(token_array1, ta[4]);
 	test_push(token_array1, ta[5]);
 	test_push(token_array1, ta[6]);
+	token_array_reverse(token_array1);
 
 	token_array_t* token_array2 = token_array_create();
 	if(token_array2 == NULL){
@@ -74,6 +78,7 @@ int main(){
 	
 	if(token_array_append_tokens(token_array2, token_array1) != 0) return -1;
 
+	token_array_free(token_array1);
 	token_array_free(token_array2);
 
 	return 0;
