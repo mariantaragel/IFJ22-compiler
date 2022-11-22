@@ -3,6 +3,7 @@ DEFVAR GF@_lhs
 DEFVAR GF@_rhs
 DEFVAR GF@_tlhs
 DEFVAR GF@_trhs
+DEFVAR GF@_aux1
 JUMP program_start
 
 
@@ -10,23 +11,21 @@ JUMP program_start
 LABEL &add_op
 POPS GF@_lhs
 TYPE GF@_tlhs GF@_lhs
-JUMPIFNEQ ?type_ok1 GF@_tlhs string@string
-WRITE int@7
+JUMPIFNEQ ?type_ok_1 GF@_tlhs string@string
 EXIT int@7
-LABEL ?type_ok1
-JUMPIFNEQ ?skip_nil_conversion1 GF@_tlhs string@nil
+LABEL ?type_ok_1
+JUMPIFNEQ ?skip_nil_conversion_1 GF@_tlhs string@nil
 MOVE GF@_lhs int@0
-LABEL ?skip_nil_conversion1
+LABEL ?skip_nil_conversion_1
 TYPE GF@_tlhs GF@_lhs
 POPS GF@_rhs
 TYPE GF@_trhs GF@_rhs
-JUMPIFNEQ ?type_ok2 GF@_trhs string@string
-WRITE int@7
+JUMPIFNEQ ?type_ok_2 GF@_trhs string@string
 EXIT int@7
-LABEL ?type_ok2
-JUMPIFNEQ ?skip_nil_conversion2 GF@_trhs string@nil
+LABEL ?type_ok_2
+JUMPIFNEQ ?skip_nil_conversion_2 GF@_trhs string@nil
 MOVE GF@_rhs int@0
-LABEL ?skip_nil_conversion2
+LABEL ?skip_nil_conversion_2
 TYPE GF@_trhs GF@_rhs
 JUMPIFEQ ?add_op?execute GF@_tlhs GF@_trhs
 JUMPIFEQ ?add_op?convert_rhs GF@_tlhs string@float
@@ -44,23 +43,21 @@ RETURN
 LABEL &mul_op
 POPS GF@_lhs
 TYPE GF@_tlhs GF@_lhs
-JUMPIFNEQ ?type_ok3 GF@_tlhs string@string
-WRITE int@7
+JUMPIFNEQ ?type_ok_3 GF@_tlhs string@string
 EXIT int@7
-LABEL ?type_ok3
-JUMPIFNEQ ?skip_nil_conversion3 GF@_tlhs string@nil
+LABEL ?type_ok_3
+JUMPIFNEQ ?skip_nil_conversion_3 GF@_tlhs string@nil
 MOVE GF@_lhs int@0
-LABEL ?skip_nil_conversion3
+LABEL ?skip_nil_conversion_3
 TYPE GF@_tlhs GF@_lhs
 POPS GF@_rhs
 TYPE GF@_trhs GF@_rhs
-JUMPIFNEQ ?type_ok4 GF@_trhs string@string
-WRITE int@7
+JUMPIFNEQ ?type_ok_4 GF@_trhs string@string
 EXIT int@7
-LABEL ?type_ok4
-JUMPIFNEQ ?skip_nil_conversion4 GF@_trhs string@nil
+LABEL ?type_ok_4
+JUMPIFNEQ ?skip_nil_conversion_4 GF@_trhs string@nil
 MOVE GF@_rhs int@0
-LABEL ?skip_nil_conversion4
+LABEL ?skip_nil_conversion_4
 TYPE GF@_trhs GF@_rhs
 JUMPIFEQ ?mul_op?execute GF@_tlhs GF@_trhs
 JUMPIFEQ ?mul_op?convert_rhs GF@_tlhs string@float
@@ -78,23 +75,21 @@ RETURN
 LABEL &sub_op
 POPS GF@_lhs
 TYPE GF@_tlhs GF@_lhs
-JUMPIFNEQ ?type_ok5 GF@_tlhs string@string
-WRITE int@7
+JUMPIFNEQ ?type_ok_5 GF@_tlhs string@string
 EXIT int@7
-LABEL ?type_ok5
-JUMPIFNEQ ?skip_nil_conversion5 GF@_tlhs string@nil
+LABEL ?type_ok_5
+JUMPIFNEQ ?skip_nil_conversion_5 GF@_tlhs string@nil
 MOVE GF@_lhs int@0
-LABEL ?skip_nil_conversion5
+LABEL ?skip_nil_conversion_5
 TYPE GF@_tlhs GF@_lhs
 POPS GF@_rhs
 TYPE GF@_trhs GF@_rhs
-JUMPIFNEQ ?type_ok6 GF@_trhs string@string
-WRITE int@7
+JUMPIFNEQ ?type_ok_6 GF@_trhs string@string
 EXIT int@7
-LABEL ?type_ok6
-JUMPIFNEQ ?skip_nil_conversion6 GF@_trhs string@nil
+LABEL ?type_ok_6
+JUMPIFNEQ ?skip_nil_conversion_6 GF@_trhs string@nil
 MOVE GF@_rhs int@0
-LABEL ?skip_nil_conversion6
+LABEL ?skip_nil_conversion_6
 TYPE GF@_trhs GF@_rhs
 JUMPIFEQ ?sub_op?execute GF@_tlhs GF@_trhs
 JUMPIFEQ ?sub_op?convert_rhs GF@_tlhs string@float
@@ -112,51 +107,51 @@ RETURN
 LABEL &div_op
 POPS GF@_lhs
 TYPE GF@_tlhs GF@_lhs
-JUMPIFNEQ ?type_ok7 GF@_tlhs string@string
+JUMPIFNEQ ?type_ok_7 GF@_tlhs string@string
 EXIT int@7
-LABEL ?type_ok7
-JUMPIFNEQ ?skip_nil_conversion7 GF@_tlhs string@nil
+LABEL ?type_ok_7
+JUMPIFNEQ ?skip_nil_conversion_7 GF@_tlhs string@nil
 MOVE GF@_lhs int@0
-LABEL ?skip_nil_conversion7
+LABEL ?skip_nil_conversion_7
 TYPE GF@_tlhs GF@_lhs
-JUMPIFEQ int_conversion_1 GF@_tlhs string@float
+JUMPIFEQ ?skip_int_conversion_1 GF@_tlhs string@float
 INT2FLOAT GF@_lhs GF@_lhs
-LABEL int_conversion_1
+LABEL ?skip_int_conversion_1
 POPS GF@_rhs
 TYPE GF@_trhs GF@_rhs
-JUMPIFNEQ ?type_ok8 GF@_trhs string@string
+JUMPIFNEQ ?type_ok_8 GF@_trhs string@string
 EXIT int@7
-LABEL ?type_ok8
-JUMPIFNEQ ?skip_nil_conversion8 GF@_trhs string@nil
+LABEL ?type_ok_8
+JUMPIFNEQ ?skip_nil_conversion_8 GF@_trhs string@nil
 MOVE GF@_rhs int@0
-LABEL ?skip_nil_conversion8
+LABEL ?skip_nil_conversion_8
 TYPE GF@_trhs GF@_rhs
-JUMPIFEQ int_conversion_2 GF@_trhs string@float
+JUMPIFEQ ?skip_int_conversion_2 GF@_trhs string@float
 INT2FLOAT GF@_rhs GF@_rhs
-LABEL int_conversion_2
+LABEL ?skip_int_conversion_2
 DIV GF@_lhs GF@_lhs GF@_rhs
 PUSHS GF@_lhs
 RETURN
 LABEL &concat_op
 POPS GF@_lhs
 TYPE GF@_tlhs GF@_lhs
-JUMPIFNEQ ?type_ok9 GF@_tlhs string@float
-JUMPIFNEQ ?type_ok9 GF@_tlhs string@int
+JUMPIFEQ ?type_ok_9 GF@_tlhs string@string
+JUMPIFEQ ?type_ok_9 GF@_tlhs string@nil
 EXIT int@7
-LABEL ?type_ok9
-JUMPIFNEQ ?skip_nil_conversion9 GF@_tlhs string@nil
+LABEL ?type_ok_9
+JUMPIFNEQ ?skip_nil_conversion_9 GF@_tlhs string@nil
 MOVE GF@_lhs string@
-LABEL ?skip_nil_conversion9
+LABEL ?skip_nil_conversion_9
 TYPE GF@_tlhs GF@_lhs
 POPS GF@_rhs
 TYPE GF@_trhs GF@_rhs
-JUMPIFNEQ ?type_ok10 GF@_trhs string@float
-JUMPIFNEQ ?type_ok10 GF@_trhs string@int
+JUMPIFEQ ?type_ok_10 GF@_trhs string@string
+JUMPIFEQ ?type_ok_10 GF@_trhs string@nil
 EXIT int@7
-LABEL ?type_ok10
-JUMPIFNEQ ?skip_nil_conversion10 GF@_trhs string@nil
+LABEL ?type_ok_10
+JUMPIFNEQ ?skip_nil_conversion_10 GF@_trhs string@nil
 MOVE GF@_rhs string@
-LABEL ?skip_nil_conversion10
+LABEL ?skip_nil_conversion_10
 TYPE GF@_trhs GF@_rhs
 CONCAT GF@_lhs GF@_lhs GF@_rhs
 PUSHS GF@_lhs
@@ -167,14 +162,14 @@ RETURN
 LABEL &eq_op
 POPS GF@_lhs
 TYPE GF@_tlhs GF@_lhs
-JUMPIFNEQ ?type_ok11 GF@_tlhs string@bool
+JUMPIFNEQ ?type_ok_11 GF@_tlhs string@bool
 EXIT int@7
-LABEL ?type_ok11
+LABEL ?type_ok_11
 POPS GF@_rhs
 TYPE GF@_trhs GF@_rhs
-JUMPIFNEQ ?type_ok12 GF@_trhs string@bool
+JUMPIFNEQ ?type_ok_12 GF@_trhs string@bool
 EXIT int@7
-LABEL ?type_ok12
+LABEL ?type_ok_12
 JUMPIFEQ ?eq_op?execute GF@_tlhs GF@_trhs
 MOVE GF@_lhs bool@false
 JUMP ?eq_op?end
@@ -189,14 +184,14 @@ RETURN
 LABEL &neq_op
 POPS GF@_lhs
 TYPE GF@_tlhs GF@_lhs
-JUMPIFNEQ ?type_ok13 GF@_tlhs string@bool
+JUMPIFNEQ ?type_ok_13 GF@_tlhs string@bool
 EXIT int@7
-LABEL ?type_ok13
+LABEL ?type_ok_13
 POPS GF@_rhs
 TYPE GF@_trhs GF@_rhs
-JUMPIFNEQ ?type_ok14 GF@_trhs string@bool
+JUMPIFNEQ ?type_ok_14 GF@_trhs string@bool
 EXIT int@7
-LABEL ?type_ok14
+LABEL ?type_ok_14
 JUMPIFEQ ?neq_op?execute GF@_tlhs GF@_trhs
 MOVE GF@_lhs bool@true
 JUMP ?neq_op?end
@@ -209,17 +204,231 @@ RETURN
 
 
 
+LABEL &lt_op
+POPS GF@_lhs
+TYPE GF@_tlhs GF@_lhs
+JUMPIFNEQ ?type_ok_15 GF@_tlhs string@bool
+EXIT int@7
+LABEL ?type_ok_15
+POPS GF@_rhs
+TYPE GF@_trhs GF@_rhs
+JUMPIFNEQ ?type_ok_16 GF@_trhs string@bool
+EXIT int@7
+LABEL ?type_ok_16
+JUMPIFNEQ ?lt_op?lhs_not_nil GF@_tlhs string@nil
+MOVE GF@_lhs bool@false
+JUMP ?lt_op?end
+LABEL ?lt_op?lhs_not_nil
+JUMPIFNEQ ?lt_op?rhs_not_nil GF@_trhs string@nil
+MOVE GF@_lhs bool@false
+JUMP ?lt_op?end
+LABEL ?lt_op?rhs_not_nil
+JUMPIFEQ ?lt_op?execute GF@_tlhs GF@_trhs
+JUMPIFNEQ ?lt_op?lhs_not_string GF@_tlhs string@string
+MOVE GF@_lhs bool@false
+JUMP ?lt_op?end
+LABEL ?lt_op?lhs_not_string
+JUMPIFNEQ ?lt_op?rhs_not_string GF@_trhs string@string
+MOVE GF@_lhs bool@false
+JUMP ?lt_op?end
+LABEL ?lt_op?rhs_not_string
+JUMPIFNEQ ?lt_op?skip_lhs_cast GF@_tlhs string@int
+INT2FLOAT GF@_lhs GF@_lhs
+LABEL ?lt_op?skip_lhs_cast
+JUMPIFNEQ ?lt_op?skip_rhs_cast GF@_trhs string@int
+INT2FLOAT GF@_rhs GF@_rhs
+LABEL ?lt_op?skip_rhs_cast
+LABEL ?lt_op?execute
+LT GF@_lhs GF@_lhs GF@_rhs
+LABEL ?lt_op?end
+PUSHS GF@_lhs
+RETURN
+
+
+
+LABEL &gt_op
+POPS GF@_lhs
+TYPE GF@_tlhs GF@_lhs
+JUMPIFNEQ ?type_ok_17 GF@_tlhs string@bool
+EXIT int@7
+LABEL ?type_ok_17
+POPS GF@_rhs
+TYPE GF@_trhs GF@_rhs
+JUMPIFNEQ ?type_ok_18 GF@_trhs string@bool
+EXIT int@7
+LABEL ?type_ok_18
+JUMPIFNEQ ?gt_op?lhs_not_nil GF@_tlhs string@nil
+MOVE GF@_lhs bool@false
+JUMP ?gt_op?end
+LABEL ?gt_op?lhs_not_nil
+JUMPIFNEQ ?gt_op?rhs_not_nil GF@_trhs string@nil
+MOVE GF@_lhs bool@false
+JUMP ?gt_op?end
+LABEL ?gt_op?rhs_not_nil
+JUMPIFEQ ?gt_op?execute GF@_tlhs GF@_trhs
+JUMPIFNEQ ?gt_op?lhs_not_string GF@_tlhs string@string
+MOVE GF@_lhs bool@false
+JUMP ?gt_op?end
+LABEL ?gt_op?lhs_not_string
+JUMPIFNEQ ?gt_op?rhs_not_string GF@_trhs string@string
+MOVE GF@_lhs bool@false
+JUMP ?gt_op?end
+LABEL ?gt_op?rhs_not_string
+JUMPIFNEQ ?gt_op?skip_lhs_cast GF@_tlhs string@int
+INT2FLOAT GF@_lhs GF@_lhs
+LABEL ?gt_op?skip_lhs_cast
+JUMPIFNEQ ?gt_op?skip_rhs_cast GF@_trhs string@int
+INT2FLOAT GF@_rhs GF@_rhs
+LABEL ?gt_op?skip_rhs_cast
+LABEL ?gt_op?execute
+GT GF@_lhs GF@_lhs GF@_rhs
+LABEL ?gt_op?end
+PUSHS GF@_lhs
+RETURN
+
+
+
+LABEL &lte_op
+POPS GF@_lhs
+TYPE GF@_tlhs GF@_lhs
+JUMPIFNEQ ?type_ok_19 GF@_tlhs string@bool
+EXIT int@7
+LABEL ?type_ok_19
+POPS GF@_rhs
+TYPE GF@_trhs GF@_rhs
+JUMPIFNEQ ?type_ok_20 GF@_trhs string@bool
+EXIT int@7
+LABEL ?type_ok_20
+JUMPIFNEQ ?lte_op?skip_lhs_nil_conversion GF@_tlhs string@nil
+JUMPIFEQ ?lte_op?skip_lhs_to_int_conversion GF@_trhs string@string
+JUMPIFEQ ?lte_op?skip_lhs_to_int_conversion GF@_trhs string@float
+MOVE GF@_lhs int@0
+TYPE GF@_tlhs GF@_lhs
+JUMP ?lte_op?skip_lhs_nil_conversion
+LABEL ?lte_op?skip_lhs_to_int_conversion
+JUMPIFNEQ ?lte_op?skip_lhs_to_string_conversion GF@_trhs string@string
+MOVE GF@_lhs string@
+TYPE GF@_tlhs GF@_lhs
+JUMP ?lte_op?skip_lhs_nil_conversion
+LABEL ?lte_op?skip_lhs_to_string_conversion
+MOVE GF@_lhs int@0
+INT2FLOAT GF@_lhs GF@_lhs
+TYPE GF@_tlhs GF@_lhs
+LABEL ?lte_op?skip_lhs_nil_conversion
+JUMPIFNEQ ?lte_op?skip_rhs_nil_conversion GF@_trhs string@nil
+JUMPIFEQ ?lte_op?skip_rhs_to_int_conversion GF@_tlhs string@string
+JUMPIFEQ ?lte_op?skip_rhs_to_int_conversion GF@_tlhs string@float
+MOVE GF@_rhs int@0
+TYPE GF@_trhs GF@_rhs
+JUMP ?lte_op?skip_rhs_nil_conversion
+LABEL ?lte_op?skip_rhs_to_int_conversion
+JUMPIFNEQ ?lte_op?skip_rhs_to_string_conversion GF@_trhs string@string
+MOVE GF@_rhs string@
+TYPE GF@_trhs GF@_rhs
+JUMP ?lte_op?skip_rhs_nil_conversion
+LABEL ?lte_op?skip_rhs_to_string_conversion
+MOVE GF@_rhs int@0
+INT2FLOAT GF@_rhs GF@_rhs
+TYPE GF@_trhs GF@_rhs
+LABEL ?lte_op?skip_rhs_nil_conversion
+JUMPIFEQ ?lte_op?execute GF@_tlhs GF@_trhs
+JUMPIFNEQ ?lte_op?lhs_not_string GF@_tlhs string@string
+MOVE GF@_lhs bool@false
+JUMP ?lte_op?end
+LABEL ?lte_op?lhs_not_string
+JUMPIFNEQ ?lte_op?rhs_not_string GF@_trhs string@string
+MOVE GF@_lhs bool@false
+JUMP ?lte_op?end
+LABEL ?lte_op?rhs_not_string
+JUMPIFNEQ ?lte_op?skip_lhs_cast GF@_tlhs string@int
+INT2FLOAT GF@_lhs GF@_lhs
+LABEL ?lte_op?skip_lhs_cast
+JUMPIFNEQ ?lte_op?skip_rhs_cast GF@_trhs string@int
+INT2FLOAT GF@_rhs GF@_rhs
+LABEL ?lte_op?skip_rhs_cast
+LABEL ?lte_op?execute
+LT GF@_aux1 GF@_lhs GF@_rhs
+EQ GF@_lhs GF@_lhs GF@_rhs
+OR GF@_lhs GF@_lhs GF@_aux1
+LABEL ?lte_op?end
+PUSHS GF@_lhs
+RETURN
+
+
+
+LABEL &gte_op
+POPS GF@_lhs
+TYPE GF@_tlhs GF@_lhs
+JUMPIFNEQ ?type_ok_21 GF@_tlhs string@bool
+EXIT int@7
+LABEL ?type_ok_21
+POPS GF@_rhs
+TYPE GF@_trhs GF@_rhs
+JUMPIFNEQ ?type_ok_22 GF@_trhs string@bool
+EXIT int@7
+LABEL ?type_ok_22
+JUMPIFNEQ ?gte_op?skip_lhs_nil_conversion GF@_tlhs string@nil
+JUMPIFEQ ?gte_op?skip_lhs_to_int_conversion GF@_trhs string@string
+JUMPIFEQ ?gte_op?skip_lhs_to_int_conversion GF@_trhs string@float
+MOVE GF@_lhs int@0
+TYPE GF@_tlhs GF@_lhs
+JUMP ?gte_op?skip_lhs_nil_conversion
+LABEL ?gte_op?skip_lhs_to_int_conversion
+JUMPIFNEQ ?gte_op?skip_lhs_to_string_conversion GF@_trhs string@string
+MOVE GF@_lhs string@
+TYPE GF@_tlhs GF@_lhs
+JUMP ?gte_op?skip_lhs_nil_conversion
+LABEL ?gte_op?skip_lhs_to_string_conversion
+MOVE GF@_lhs int@0
+INT2FLOAT GF@_lhs GF@_lhs
+TYPE GF@_tlhs GF@_lhs
+LABEL ?gte_op?skip_lhs_nil_conversion
+JUMPIFNEQ ?gte_op?skip_rhs_nil_conversion GF@_trhs string@nil
+JUMPIFEQ ?gte_op?skip_rhs_to_int_conversion GF@_tlhs string@string
+JUMPIFEQ ?gte_op?skip_rhs_to_int_conversion GF@_tlhs string@float
+MOVE GF@_rhs int@0
+TYPE GF@_trhs GF@_rhs
+JUMP ?gte_op?skip_rhs_nil_conversion
+LABEL ?gte_op?skip_rhs_to_int_conversion
+JUMPIFNEQ ?gte_op?skip_rhs_to_string_conversion GF@_trhs string@string
+MOVE GF@_rhs string@
+TYPE GF@_trhs GF@_rhs
+JUMP ?gte_op?skip_rhs_nil_conversion
+LABEL ?gte_op?skip_rhs_to_string_conversion
+MOVE GF@_rhs int@0
+INT2FLOAT GF@_rhs GF@_rhs
+TYPE GF@_trhs GF@_rhs
+LABEL ?gte_op?skip_rhs_nil_conversion
+JUMPIFEQ ?gte_op?execute GF@_tlhs GF@_trhs
+JUMPIFNEQ ?gte_op?lhs_not_string GF@_tlhs string@string
+MOVE GF@_lhs bool@false
+JUMP ?gte_op?end
+LABEL ?gte_op?lhs_not_string
+JUMPIFNEQ ?gte_op?rhs_not_string GF@_trhs string@string
+MOVE GF@_lhs bool@false
+JUMP ?gte_op?end
+LABEL ?gte_op?rhs_not_string
+JUMPIFNEQ ?gte_op?skip_lhs_cast GF@_tlhs string@int
+INT2FLOAT GF@_lhs GF@_lhs
+LABEL ?gte_op?skip_lhs_cast
+JUMPIFNEQ ?gte_op?skip_rhs_cast GF@_trhs string@int
+INT2FLOAT GF@_rhs GF@_rhs
+LABEL ?gte_op?skip_rhs_cast
+LABEL ?gte_op?execute
+GT GF@_aux1 GF@_lhs GF@_rhs
+EQ GF@_lhs GF@_lhs GF@_rhs
+OR GF@_lhs GF@_lhs GF@_aux1
+LABEL ?gte_op?end
+PUSHS GF@_lhs
+RETURN
+
+
+
 LABEL program_start
 
 
 
 PUSHS int@2
-PUSHS int@6
-PUSHS int@2
-CALL &mul_op
-PUSHS int@8
-PUSHS int@12
-CALL &add_op
-CALL &sub_op
-CALL &div_op
+PUSHS nil@nil
+CALL &gte_op
 BREAK
