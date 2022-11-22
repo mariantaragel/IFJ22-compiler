@@ -73,10 +73,10 @@ int main(){
 	test_precedence_parser("3+4", OK);
 	test_precedence_parser("1*2/3*4", OK);
 	test_precedence_parser("1<2", OK);
-	test_precedence_parser("1<2<3", SYNTAX_ERROR);
+	test_precedence_parser("1<2<3", OK);
 	test_precedence_parser("1<2===3<4", OK);
-	test_precedence_parser("1===2<3===4", SYNTAX_ERROR);
-	test_precedence_parser("1<2===3<4===5", SYNTAX_ERROR);
+	test_precedence_parser("1===2<3===4", OK);
+	test_precedence_parser("1<2===3<4===5", OK);
 	test_precedence_parser("", OK);
 	test_precedence_parser("1<<5", SYNTAX_ERROR);
 	test_precedence_parser("1<", SYNTAX_ERROR);
@@ -87,5 +87,8 @@ int main(){
 	test_precedence_parser("-3", SYNTAX_ERROR);
 	test_precedence_parser("1+2-\"3\".\"4\"*(6+7/8)", OK);
 	test_precedence_parser("1+{}", SYNTAX_ERROR);
-	test_precedence_parser("1 + 1", OK);
+	test_precedence_parser("0.0 + 1.0", OK);
+	test_precedence_parser("5+3*(6+(3))", OK);
+	test_precedence_parser("5+3*(6+(3)", SYNTAX_ERROR);
+	test_precedence_parser("5+3*6+(3))", SYNTAX_ERROR);
 }
