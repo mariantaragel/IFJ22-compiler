@@ -20,27 +20,7 @@
 #ifndef EXPGEN_H
 #define EXPGEN_H
 
-
-typedef enum {ARITHMETIC, DIVISION, STRING, EQUALITY, LTGT, LTEGTE} operation_t;
-
 void gen_expression(token_array_t * tarr, generator_context_t * gc);
-void push_operand(token_t * token, const char * scope_label);
-void set_operator(operation_t * operation, token_t * token);
-void pop_operand(operation_t operation, const char * operand, const char * operand_type);
-void check_types(operation_t operation, char * execute_label);
-void execute_operation(operation_t operation, token_type_t operator, char * execute_label);
-bool isoperand(token_t * token);
-bool isoperator(token_t * token);
-
 void gen_operation_functions();
-void gen_arithmetic_operation(token_type_t operation);
-void gen_division_operation();
-void gen_string_operation(token_type_t operation);
-void gen_equality_operation(token_type_t operation);
-void gen_ltgt_operation(token_type_t operation);
-
-// TESTING ONLY
-token_array_t * get_exp(char* expression);
-
 
 #endif // EXPGEN_H

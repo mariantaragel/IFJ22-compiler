@@ -139,8 +139,8 @@ bool gen_if_labels(char ** branch_true, char ** branch_false, char ** end) {
 
 bool gen_pop_labels(char ** type_ok, char ** skip_nil_conversion) {
     static unsigned pop_count = 1;
-    dynamic_string_t * ds_type_ok = ds_strinit("?type_ok");
-    dynamic_string_t * ds_skip_nil_conversion = ds_strinit("?skip_nil_conversion");
+    dynamic_string_t * ds_type_ok = ds_strinit("?type_ok_");
+    dynamic_string_t * ds_skip_nil_conversion = ds_strinit("?skip_nil_conversion_");
 
     if(ds_type_ok == NULL || ds_skip_nil_conversion == NULL) {
         ds_dstr(ds_type_ok);
