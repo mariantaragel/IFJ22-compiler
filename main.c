@@ -9,20 +9,34 @@
 #include "error.h"
 #include "abstract_syntax_tree.h"
 #include "semantic_analyzer.h"
+#include "generator.h"
 #include <stdio.h>
 
 int main()
 {
     AST_node_t *root = program();
-    AST_print(root, stdout);
+    //AST_print(root, stdout);
     if (error != OK) {
         AST_free(root);
         error_print(error);
         return error;
     }
-    printf("\n");
+
     semantic_analyzer(root);
-    AST_print(root, stdout);
+	//AST_print(root, stdout);
+	if (error != OK) {
+        AST_free(root);
+        error_print(error);
+        return error;
+    }
+
+	generator(root);
+	if (error != OK) {
+        AST_free(root);
+        error_print(error);
+        return error;
+    }
+    
     AST_free(root);
     error_print(error);
     return error;
