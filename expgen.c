@@ -43,41 +43,39 @@ void gen_ltgt_operation(const token_type_t operation);
 
 void push_operand(token_t * token, const char * scope_label);
 bool isoperand(token_t * token);
-bool isoperator(token_t * token);
 
 token_array_t * get_exp(char* expression);
 
-
-int main() {
-    G(".IFJcode22");
-    G("DEFVAR %s", lhs);
-    G("DEFVAR %s", rhs);
-    G("DEFVAR %s", tlhs);
-    G("DEFVAR %s", trhs);
-    G("JUMP program_start");
-    G("\n\n");
-    gen_operation_functions();
-
-
-    G("LABEL program_start");
+// int main() {
+//     G(".IFJcode22");
+//     G("DEFVAR %s", lhs);
+//     G("DEFVAR %s", rhs);
+//     G("DEFVAR %s", tlhs);
+//     G("DEFVAR %s", trhs);
+//     G("JUMP program_start");
+//     G("\n\n");
+//     gen_operation_functions();
 
 
-    token_array_t * tarr;
-    tarr = get_exp("(12 + 8 - 2 * 6)/2");
+//     G("LABEL program_start");
+
+
+//     token_array_t * tarr;
+//     tarr = get_exp("(12 + 8 - 2 * 6)/2");
     
-	printf("\n\n\n");
-    generator_context_t * gc = generator_context_create();
-    if(gc == NULL) {
-        return 1;
-    }
-    gen_expression(tarr, gc);
+// 	printf("\n\n\n");
+//     generator_context_t * gc = generator_context_create();
+//     if(gc == NULL) {
+//         return 1;
+//     }
+//     gen_expression(tarr, gc);
 
-    G("BREAK");
+//     G("BREAK");
 
-    token_array_free(tarr);
-    generator_context_free(gc);
+//     token_array_free(tarr);
+//     generator_context_free(gc);
 
-}
+// }
 
 void gen_operation_functions() {
     // error_codes_t error_local;
@@ -412,11 +410,4 @@ bool isoperand(token_t * token) {
         default: return false; break;
     }
 
-}
-
-bool isoperator(token_t * token) {
-    switch(token->type) {
-        case VAR_ID: case STR_LIT: case FLT_LIT: case INT_LIT: case NULL_LIT: return false; break;
-        default: return true; break;
-    }
 }
