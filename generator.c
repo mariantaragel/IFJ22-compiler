@@ -3,6 +3,7 @@
 #include "generator_tools.h"
 #include "generator_builtin.h"
 #include "generator.h"
+#include "expgen.h"
 #include <stdbool.h>
 #include <string.h>
 #include <stdio.h>
@@ -50,7 +51,7 @@ error_codes_t gen_var_def_check(char* var_name, generator_context_t* gen_context
 		G("TYPE GF@_tmp GF@%s", var_name);
 	}
 
-	G("JUMPIFEQ %s GF@_tmp string@", var_init_ok_label);
+	G("JUMPIFNEQ %s GF@_tmp string@", var_init_ok_label);
 	G("EXIT int@5"); // use of undefined variable
 	G("LABEL %s", var_init_ok_label);
 
@@ -90,6 +91,7 @@ error_codes_t gen_expr(AST_node_t* expr_n, generator_context_t* gen_context){
 
 	// generate code to evaluate expression, including type checks
 	// expression result should be at the top of data stack
+	gen_expression(expr_n->data.expression, gen_context);
 
 	dec_ind();
 	G("# EXPRESSION END\n");
@@ -513,7 +515,7 @@ error_codes_t gen_func_params(AST_node_t* params_n, char* func_name){
 
 		char* tmp_func_name = gen_label("?", func_name, "?", false);
 		if(tmp_func_name == NULL) return INTERNAL_ERROR;
-		char* param_type_ok_label = gen_label(tmp_func_name, param_name, "?param_type_ok", false); // TODO ?func_name?param_name?param_type_ok
+		char* param_type_ok_label = gen_label(tmp_func_name, param_name, "?param_type_ok", false);
 		char* param_var_name = gen_label("LF@", param_name, NULL, false);
 		if(param_type_ok_label == NULL || param_var_name == NULL){
 			free(param_type_ok_label);  free(param_var_name); free(tmp_func_name);
@@ -796,7 +798,25 @@ error_codes_t gen_func_def_flags(AST_node_t* used_func_list_n){
 void gen_helper_functions(){
 	G("# HELPER FUNCTIONS START");
 	G(HELPER_TO_BOOL_);
+	gen_operation_functions();
 	G("# HELPER FUNCTIONS END\n");
+}
+
+void gen_tmp_vars(){
+	G("# TMP VARS START");
+	inc_ind();
+	G("DEFVAR GF@_tmp");
+	G("DEFVAR GF@_tmp_res");
+	G("DEFVAR GF@_tmp_type");
+	G("DEFVAR GF@_arg_count");
+	
+	G("DEFVAR GF@_rhs");
+	G("DEFVAR GF@_lhs");
+	G("DEFVAR GF@_tlhs");
+	G("DEFVAR GF@_trhs");
+	G("DEFVAR GF@_aux1");
+	dec_ind();
+	G("# TMP VARS END\n");
 }
 
 // OK
@@ -809,20 +829,8 @@ error_codes_t gen_prog(AST_node_t* prog_n, generator_context_t* gen_context){
 	G(".IFJcode22");
 
 	// generate global temporary variables
+	gen_tmp_vars();
 	
-	G("# TMP VARS START");
-	inc_ind();
-	G("DEFVAR GF@_tmp");
-	G("DEFVAR GF@_tmp_res");
-	G("DEFVAR GF@_tmp_type");
-	
-	G("DEFVAR GF@_rhs");
-	G("DEFVAR GF@_lhs");
-	G("DEFVAR GF@_tlhs");
-	G("DEFVAR GF@_trhs");
-	dec_ind();
-	G("# TMP VARS END\n");
-
     // set context to global, we are in main body
     gen_context->is_in_function = false;
 
