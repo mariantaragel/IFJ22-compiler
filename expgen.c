@@ -17,7 +17,6 @@
 #include "generator_tools.h"
 #include "expgen.h"
 #include "token_array.h"
-#include "generator.c" // Testing only.
 #include "scanner.h"
 #include "error.h"
 #include "precedence_parser.h"
