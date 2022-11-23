@@ -610,7 +610,7 @@ error_codes_t gen_func_def(AST_node_t* func_def_n, generator_context_t* gen_cont
 //OK
 error_codes_t gen_missing_return(){
 	G("# MISSING RETURN START");
-	G("\tEXIT int@6"); // reached end of non void function, that has not returned anything
+	G("\tEXIT int@4"); // reached end of non void function, that has not returned anything
 	G("# MISSING RETURN END\n");
 	return OK;
 }
@@ -619,9 +619,6 @@ error_codes_t gen_missing_return(){
 error_codes_t gen_return(AST_node_t* return_n, generator_context_t* gen_context){
 	G("# RETURN START");
 	inc_ind();
-
-	// get expression node
-	AST_node_t* expr_n = return_n->children_arr[0];
 
     // get expected return type
     datatype_t expected_return_type = return_n->data.type;
@@ -641,6 +638,9 @@ error_codes_t gen_return(AST_node_t* return_n, generator_context_t* gen_context)
         }
     }
 	else{
+		// get expression node
+		AST_node_t* expr_n = return_n->children_arr[0];
+		
 		// generate expression, expression result will be top element of data stack
         if((res = gen_expr(expr_n, gen_context)) != OK) return res;
 
