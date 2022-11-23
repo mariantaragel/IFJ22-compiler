@@ -9,10 +9,10 @@
     <stmt_list_bracket_start> -> { <stmt_list_bracket_end>
 
 		<stmt> -> if <if_stmt>
-			<if_stmt> -> ( <exp> ) <stmt_list_bracket_start> else <stmt_list_bracket_start>
+			<if_stmt> -> <if_stmt> -> ( <exp> ) { <stmt_list_bracket_end> else { <stmt_list_bracket_end>
 		
 		<stmt> ->  while <while_stmt>
-			<while_stmt> -> ( <exp> ) <stmt_list_bracket_start>
+			<while_stmt> -> ( <exp> ) { <stmt_list_bracket_end>
 		
 		<stmt> -> return <exp> ;
 
@@ -36,7 +36,7 @@
 				<stmt> -> <exp> ; // zde top-down analýza předá řízení bottom-up analýze
 ==============================
 			
-	<func_def> -> function func_id ( <param_list> : <return_type> <stmt_list_bracket_start>
+	<func_def> -> function func_id ( <param_list> : <return_type> { <stmt_list_bracket_end>
 
 		<param_list> -> ) | <type> $var_id <param_next>
 		<param_next> -> ) | , <type> $var_id <param_next>

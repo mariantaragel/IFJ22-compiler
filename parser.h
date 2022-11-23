@@ -2,7 +2,7 @@
  * @name parser.h
  * @brief Interface of top-down parser
  * @authors Marián Tarageľ
- * @date 15.11.2022
+ * @date 24.11.2022
  */
 
 #ifndef PARSER_H
@@ -10,14 +10,6 @@
 
 #include "token.h"
 #include "abstract_syntax_tree.h"
-
-#define RETURN_IF_ERROR if (error != OK) return
-#define RETURN_ERROR(error_code) error = error_code; return
-#define RETURN_ROOT if (error != OK) return root
-#define RETURN_INTERNAL_ERROR(ptr) if (ptr == NULL) {RETURN_ERROR(INTERNAL_ERROR);}
-
-#define TRUE 1
-#define FALSE 0
 
 /**
  * @brief Checks syntax of a program

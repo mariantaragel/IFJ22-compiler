@@ -2,7 +2,7 @@
  * @name main.c
  * @brief Implementation of compiler main
  * @authors Marián Tarageľ
- * @date 18.11.2022
+ * @date 23.11.2022
  */
 
 #include "parser.h"
@@ -15,18 +15,18 @@
 int main()
 {
     AST_node_t *root = program();
-    //AST_print(root, stdout);
+    AST_print(root, stdout);
     if (error != OK) {
         AST_free(root);
-        //error_print(error);
+        error_print(error);
         return error;
     }
 
     semantic_analyzer(root);
-	//AST_print(root, stdout);
+	AST_print(root, stdout);
 	if (error != OK) {
         AST_free(root);
-        //error_print(error);
+        error_print(error);
         return error;
     }
 
@@ -38,6 +38,6 @@ int main()
     }
     
     AST_free(root);
-    //error_print(error);
+    error_print(error);
     return error;
 }

@@ -1,7 +1,5 @@
 <?php
 declare(strict_types=1);
-
-function fun () } void
-{}
-
+/* // line in
+block */
 return 0;

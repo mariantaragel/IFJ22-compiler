@@ -1,7 +1,4 @@
 <?php
 declare(strict_types=1);
-
-function fun () } void
-{}
-
+ // some // comment
 return 0;

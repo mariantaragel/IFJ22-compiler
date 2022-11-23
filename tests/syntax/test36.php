@@ -1,7 +1,6 @@
 <?php
 declare(strict_types=1);
-
-function fun () } void
-{}
-
+/*
+    /*$var = 10;*/
+*/
 return 0;

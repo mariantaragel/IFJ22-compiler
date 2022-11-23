@@ -20,7 +20,7 @@ expgen: expgen.o dynamic_string.o scanner.o token.o error.o token_array.o preced
 	$(CC) $(CFLAGS) -o $@ $^ $(LFLAGS)
 
 clean:
-	rm -f scanner parser parser_test codegen expgen main *.o
+	rm -f scanner parser parser_test codegen expgen main precedence_parser_test generator_test *.o
 
 run:
 	make scanner

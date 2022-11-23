@@ -2,7 +2,7 @@
  * @name parser.c
  * @brief Implementation of top-down parser
  * @authors Marián Tarageľ
- * @date 16.11.2022
+ * @date 23.11.2022
  */
 
 #include "parser.h"
@@ -14,20 +14,31 @@
 #include <string.h>
 #include <stdarg.h>
 
+#define RETURN_IF_ERROR if (error != OK) return
+#define RETURN_ERROR(error_code) error = error_code; return
+#define RETURN_ROOT if (error != OK) return root
+#define RETURN_INTERNAL_ERROR(ptr) if (ptr == NULL) {RETURN_ERROR(INTERNAL_ERROR);}
+
+#define TRUE 1
+#define FALSE 0
+
 AST_node_t *program()
 {
+    // create root node of AST
     AST_node_t *root = AST_create_node(PROG_N);
     if (root == NULL) {
         error = INTERNAL_ERROR;
         return root;
     }
     
+    // check prolog of program
     token_t *token = get_token();
     RETURN_ROOT;
     php_start(token);
     t_dstr(token);
     RETURN_ROOT;
 
+    // check main body of program
     token = get_token();
     RETURN_ROOT;
     program_body(token, root);
@@ -39,13 +50,13 @@ AST_node_t *program()
 
 void php_start(token_t *token)
 {
-
     if (token->type != PROLOG) {
         RETURN_ERROR(SYNTAX_ERROR);
     }
 
     for (int i = 0; i < 7; i++) {
         token = get_token();
+        RETURN_IF_ERROR;
 
         switch (i)
         {
@@ -108,6 +119,9 @@ void program_body(token_t *token, AST_node_t *parent)
         t_dstr(token);
         return;
     }
+    if (error == LEXICAL_ERROR || error == INTERNAL_ERROR) {
+        RETURN_IF_ERROR;
+    }
     
     error = OK;
     stmt(token, parent);
@@ -118,6 +132,9 @@ void program_body(token_t *token, AST_node_t *parent)
         t_dstr(token);
         return;
     }
+    if (error == LEXICAL_ERROR || error == INTERNAL_ERROR) {
+        RETURN_IF_ERROR;
+    }
 
     error = OK;
     stmt_list_bracket_start(token, parent);
@@ -127,6 +144,9 @@ void program_body(token_t *token, AST_node_t *parent)
         program_body(token, parent);
         t_dstr(token);
         return;
+    }
+    if (error == LEXICAL_ERROR || error == INTERNAL_ERROR) {
+        RETURN_IF_ERROR;
     }
 
     error = OK;
@@ -380,6 +400,7 @@ void stmt(token_t *token, AST_node_t *parent)
         token_array_t *array = token_array_create();
         RETURN_INTERNAL_ERROR(array)
         expression(&token, FALSE, array);
+        RETURN_IF_ERROR;
         token_array_t *postfix = parse_expression(array);
         RETURN_IF_ERROR;
         n_expr->data.expression = postfix;
@@ -461,6 +482,7 @@ void stmt(token_t *token, AST_node_t *parent)
             dup_token = t_dup(token);
             RETURN_INTERNAL_ERROR(dup_token)
             expression(&dup_token, FALSE, array);
+            RETURN_IF_ERROR;
             token = dup_token;
             token_array_t *postfix = parse_expression(array);
             RETURN_IF_ERROR;
@@ -498,6 +520,7 @@ void exp_assignment(token_t *token, AST_node_t *parent, token_t *exp_token)
     token_array_t *array = token_array_create();
     RETURN_INTERNAL_ERROR(array)
     expression(&exp_token, FALSE, array);
+    RETURN_IF_ERROR;
     token_array_t *postfix = parse_expression(array);
     RETURN_IF_ERROR;
     n_expr->data.expression = postfix;
@@ -538,6 +561,7 @@ void while_stmt(token_t *token, AST_node_t *parent)
     token_array_t *array = token_array_create();
     RETURN_INTERNAL_ERROR(array)
     expression(&token, TRUE, array);
+    RETURN_IF_ERROR;
     token_array_t *postfix = parse_expression(array);
     RETURN_IF_ERROR;
     n_expr->data.expression = postfix;
@@ -574,6 +598,7 @@ void if_stmt(token_t *token, AST_node_t *parent)
     token_array_t *array = token_array_create();
     RETURN_INTERNAL_ERROR(array)
     expression(&token, TRUE, array);
+    RETURN_IF_ERROR;
     token_array_t *postfix = parse_expression(array);
     RETURN_IF_ERROR;
     n_expr->data.expression = postfix;
@@ -710,6 +735,9 @@ void arg(token_t *token, AST_node_t *parent)
     }
 }
 
+/**
+ * @brief Checks if token type is equivalent to one of the parameters
+ */
 int is_token_type_correct(int num_of_types, token_t *token, ...)
 {
     va_list valist;
@@ -728,6 +756,9 @@ int is_token_type_correct(int num_of_types, token_t *token, ...)
     return return_status;
 }
 
+/**
+ * @brief Reads expression to token array
+ */
 void expression(token_t **token, int is_in_if_or_while, token_array_t *array)
 {
     while (is_token_type_correct(18, *token, VAR_ID, STR_LIT, INT_LIT, FLT_LIT, MUL,
@@ -753,6 +784,9 @@ void expression(token_t **token, int is_in_if_or_while, token_array_t *array)
     }
 }
 
+/**
+ * @brief Associated value of token will be moved to AST node
+ */
 void add_aval_to_node(token_t *token, AST_node_t *node)
 {
     char *new_value = malloc((strlen(token->aval) + 1) * sizeof(char));
