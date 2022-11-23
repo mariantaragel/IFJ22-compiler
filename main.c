@@ -18,7 +18,7 @@ int main()
     //AST_print(root, stdout);
     if (error != OK) {
         AST_free(root);
-        error_print(error);
+        //error_print(error);
         return error;
     }
 
@@ -26,7 +26,7 @@ int main()
 	//AST_print(root, stdout);
 	if (error != OK) {
         AST_free(root);
-        error_print(error);
+        //error_print(error);
         return error;
     }
 
@@ -38,6 +38,6 @@ int main()
     }
     
     AST_free(root);
-    error_print(error);
+    //error_print(error);
     return error;
 }
