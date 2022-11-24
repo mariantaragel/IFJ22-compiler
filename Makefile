@@ -26,6 +26,11 @@ run:
 	make scanner
 	cat ./tests/test1.php | ./scanner > ./tests/res1.txt
 
+FILES_TO_ZIP = abstract_syntax_tree.* dynamic_string.* error.* expgen.* generator_builtin.* generator_tools.* generator.* main.c parser.* precedence_parser.* precedence_rules.* precedence_table.* precedence_stack.* scanner.* semantic_analyzer.* symtable.* token_array.* token.*
+
+zip: 
+	zip xklajb00.zip $(FILES_TO_ZIP) Makefile dokumentace.pdf rozdeleni
+
 parser_test: parser_test.o parser.o scanner.o dynamic_string.o token.o error.o abstract_syntax_tree.o token_array.o precedence_parser.o precedence_stack.o precedence_rules.o precedence_table.o
 	$(CC) $(CFLAGS) -g $^ -o $@ $(LFLAGS)
 
