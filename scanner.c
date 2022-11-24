@@ -85,9 +85,10 @@ token_t * get_token() {
 						if((c = fgetc(stdin)) == '/') {
 							in_comment = false;
 							c = fgetc(stdin);
-						}
-						if(c == EOF) {
+						} else if (c == EOF) {
+							ds_dstr(ds);
 							error = LEXICAL_ERROR;
+							return t;
 						}
 					}
 				}
@@ -284,7 +285,7 @@ void s_handler(dynamic_string_t * ds, token_t * t, int * c) {
 			}
 		}
 	} // End write.
-	if(*c != '"' || *c == EOF) {
+	if(*c != '"') {
 		error = LEXICAL_ERROR;
 		return;
 	}
@@ -496,7 +497,7 @@ int hex_write(dynamic_string_t * ds, int * c) {
 
 int float_write(dynamic_string_t * ds, int * c) {
 	if(*c == '.') {
-		*c = fgetc(stdin);
+		// *c = fgetc(stdin);
 		// if(!isdigit(*c) || *c != 'E' || *c != 'e') {
 		// 	error = LEXICAL_ERROR;
 		// 	return 1;
