@@ -497,7 +497,7 @@ int hex_write(dynamic_string_t * ds, int * c) {
 int float_write(dynamic_string_t * ds, int * c) {
 	if(*c == '.') {
 		*c = fgetc(stdin);
-		if(!isdigit(*c)) {
+		if(!isdigit(*c) || *c != 'E' || *c != 'e') {
 			error = LEXICAL_ERROR;
 			return 1;
 		}
