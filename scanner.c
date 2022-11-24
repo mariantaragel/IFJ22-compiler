@@ -24,30 +24,30 @@
 #include "token.h"
 #include "error.h"
 
-/*
-int main() {
 
-	// double value = 123.123;
-	// double value2 = 0x1.ec7df3b645a1dp+6;
+// int main() {
 
-	// printf("Standard -> %lf\n", value2);
-	// printf("Hex -> %a\n", value2);
-	token_t * token;
-	do {
-		token = get_token();
-		t_print(token);
+// 	// double value = 123.123;
+// 	// double value2 = 0x1.ec7df3b645a1dp+6;
+
+// 	// printf("Standard -> %lf\n", value2);
+// 	// printf("Hex -> %a\n", value2);
+// 	token_t * token;
+// 	do {
+// 		token = get_token();
+// 		t_print(token);
 		
-		if(error == INTERNAL_ERROR) {
-			fprintf(stderr, "INTERNAL_ERROR\n");
-			return error;
-		} else if (error == LEXICAL_ERROR) {
-			fprintf(stderr, "LEXICAL_ERROR\n");
-			return error;
-		}
-	} while(token->type != END && token->type != EPILOG);
-	return 0;
-}
-*/
+// 		if(error == INTERNAL_ERROR) {
+// 			fprintf(stderr, "INTERNAL_ERROR\n");
+// 			return error;
+// 		} else if (error == LEXICAL_ERROR) {
+// 			fprintf(stderr, "LEXICAL_ERROR\n");
+// 			return error;
+// 		}
+// 	} while(token->type != END && token->type != EPILOG);
+// 	return 0;
+// }
+
 
 token_t * get_token() {
 	dynamic_string_t * ds = ds_init(); // Initialize write buffer.
@@ -76,10 +76,18 @@ token_t * get_token() {
 				bool in_comment =  true;
 				while(in_comment && c != EOF) {
 					c = fgetc(stdin);
+					if(c == EOF) { // Unterminated comment.
+						ds_dstr(ds);
+						error = LEXICAL_ERROR;
+						return t;
+					}
 					if(c == '*') {
 						if((c = fgetc(stdin)) == '/') {
 							in_comment = false;
 							c = fgetc(stdin);
+						}
+						if(c == EOF) {
+							error = LEXICAL_ERROR;
 						}
 					}
 				}
@@ -276,7 +284,7 @@ void s_handler(dynamic_string_t * ds, token_t * t, int * c) {
 			}
 		}
 	} // End write.
-	if(*c != '"') {
+	if(*c != '"' || *c == EOF) {
 		error = LEXICAL_ERROR;
 		return;
 	}
@@ -488,6 +496,11 @@ int hex_write(dynamic_string_t * ds, int * c) {
 
 int float_write(dynamic_string_t * ds, int * c) {
 	if(*c == '.') {
+		*c = fgetc(stdin);
+		if(!isdigit(*c)) {
+			error = LEXICAL_ERROR;
+			return 1;
+		}
 		do { // Read string till end.
 			if(ds_write(ds, *c)) {
 				error = INTERNAL_ERROR;
