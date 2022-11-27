@@ -605,7 +605,7 @@ error_codes_t gen_func_def(AST_node_t* func_def_n, generator_context_t* gen_cont
 //OK
 error_codes_t gen_missing_return(){
 	G("# MISSING RETURN START");
-	G("\tEXIT int@4"); // reached end of non void function, that has not returned anything // TODO: int@8 vs int@4
+	G("\tEXIT int@4"); // reached end of non void function, that has not returned anything
 	G("# MISSING RETURN END\n");
 	return OK;
 }
