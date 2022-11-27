@@ -117,7 +117,7 @@ error_codes_t gen_while(AST_node_t* while_n, generator_context_t* gen_context){
 
 	error_codes_t res;
 	
-	// generate expression varaibles definition checks
+	// generate expression variables definition checks
 	if((res = gen_expr_vars_def_checks(expr_n, gen_context)) != OK) return res;
 
 	// get unique label ?while_start, ?while_body_start, ?while_end,
@@ -132,13 +132,6 @@ error_codes_t gen_while(AST_node_t* while_n, generator_context_t* gen_context){
 	G("CALL &to_bool");
 	G("POPS GF@_tmp_res");
 	G("JUMPIFEQ %s GF@_tmp_res bool@false", while_end);
-
-	/*
-	// generate code to jump to ?while_body_start if expression result is true and ?while_end if it is false
-	if((res = gen_true_false_jump(while_body_start, while_end)) != OK) return res;
-	
-	G("LABEL %s", while_body_start);
-	*/
 
 	// generate while body
 	if((res = gen_body(body_n, gen_context)) != OK) return res;
@@ -178,13 +171,6 @@ error_codes_t gen_if(AST_node_t* if_n, generator_context_t* gen_context){
 	G("CALL &to_bool");
 	G("POPS GF@_tmp_res");
 	G("JUMPIFEQ %s GF@_tmp_res bool@false", if_branch_false);
-	
-	/*
-	// generate code to jump to branch_true if expression result is true and branch_false if it is false
-	if((res = gen_true_false_jump(if_branch_true, if_branch_false)) != OK) return res;
-
-	G("LABEL %s", if_branch_true);
-	*/
 
 	// generate body of branch_true_body_n
 	if((res = gen_body(branch_true_body_n, gen_context)) != OK) return res;
@@ -619,7 +605,7 @@ error_codes_t gen_func_def(AST_node_t* func_def_n, generator_context_t* gen_cont
 //OK
 error_codes_t gen_missing_return(){
 	G("# MISSING RETURN START");
-	G("\tEXIT int@4"); // reached end of non void function, that has not returned anything
+	G("\tEXIT int@4"); // reached end of non void function, that has not returned anything // TODO: int@8 vs int@4
 	G("# MISSING RETURN END\n");
 	return OK;
 }
@@ -650,6 +636,9 @@ error_codes_t gen_return(AST_node_t* return_n, generator_context_t* gen_context)
 		// get expression node
 		AST_node_t* expr_n = return_n->children_arr[0];
 		
+		// generate expression variables definition checks
+		if((res = gen_expr_vars_def_checks(expr_n, gen_context)) != OK) return res;
+
 		// generate expression, expression result will be top element of data stack
         if((res = gen_expr(expr_n, gen_context)) != OK) return res;
 
