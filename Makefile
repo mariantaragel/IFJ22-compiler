@@ -1,3 +1,9 @@
+# File: 	Makefile
+# Autor:	David Klajbl	(xklajb00@stud.fit.vutbr.cz)
+#			Marián Tarageľ 	(xtarag01@stud.fit.vutbr.cz)
+#			Martin Horvát	(xhorva17@stud.fit.vutbr.cz)
+# Date:		2022-11-26
+
 CFLAGS= -std=c11 -Wall -Wextra -pedantic -g
 LFLAGS= -lm
 CC=gcc
@@ -28,7 +34,7 @@ run:
 
 FILES_TO_ZIP = abstract_syntax_tree.* dynamic_string.* error.* expgen.* generator_builtin.* generator_tools.* generator.* main.c parser.* precedence_parser.* precedence_rules.* precedence_table.* precedence_stack.* scanner.* semantic_analyzer.* symtable.* token_array.* token.*
 
-zip: 
+zip: clean
 	zip xklajb00.zip $(FILES_TO_ZIP) Makefile dokumentace.pdf rozdeleni
 
 parser_test: parser_test.o parser.o scanner.o dynamic_string.o token.o error.o abstract_syntax_tree.o token_array.o precedence_parser.o precedence_stack.o precedence_rules.o precedence_table.o

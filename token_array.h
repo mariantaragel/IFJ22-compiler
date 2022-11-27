@@ -1,3 +1,11 @@
+/**
+ * @file token_array.h
+ * @author David Klajbl (xklajb00@stud.fit.vutbr.cz)
+ * @brief Token array interface.
+ * @date 2022-11-26
+ * 
+ */
+
 #ifndef TOKEN_ARRAY_H
 #define TOKEN_ARRAY_H
 

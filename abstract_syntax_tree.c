@@ -1,3 +1,11 @@
+/**
+ * @file abstract_syntax_tree.c
+ * @author David Klajbl (xklajb00@stud.fit.vutbr.cz)
+ * @brief Implementation of abstract syntax tree operations (declared in abstract_syntax_tree.h).
+ * @date 2022-11-26
+ * 
+ */
+
 #include "abstract_syntax_tree.h"
 #include "token_array.h"
 #include <stdio.h>
@@ -173,6 +181,7 @@ void _AST_print_node(AST_node_t* node, FILE* fp){
 }
 
 void _AST_print(AST_node_t* root, size_t depth, FILE* fp){
+	// print indentation
 	if(depth > 0){
 		fprintf(fp, "\n");
 		for(size_t i = 0; i < depth-1; ++i){
@@ -186,6 +195,7 @@ void _AST_print(AST_node_t* root, size_t depth, FILE* fp){
 
 	_AST_print_node(root, fp);
 
+	// print all of nodes children
 	for(size_t i = 0; i < root->children_count; ++i){
 		_AST_print(root->children_arr[i], (depth+1), fp);
 	}

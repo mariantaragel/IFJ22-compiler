@@ -1,16 +1,11 @@
-/****
- ** labelgen.h
- ** Řešení IFJ-PROJEKT, 11.11.2022
- ** Autor: xhorva17
- ** Přeloženo:
- **/
-
 /**
- * @file labelgen.h
- * @author xhorva17
- * @brief Code generation interface.
- * @date 2022-11-11
+ * @file generator_tools.h
+ * @author Martin Horvát (xhorva17@stud.fit.vutbr.cz), David Klajbl (xklajb00@stud.fit.vutbr.cz)
+ * @brief Code generation tools iterface.
+ * @date 2022-11-26
+ * 
  */
+
 
 #ifndef GENERATOR_TOOLS_H
 #define GENERATOR_TOOLS_H

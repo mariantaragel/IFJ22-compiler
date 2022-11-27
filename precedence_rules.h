@@ -1,3 +1,11 @@
+/**
+ * @file precedence_rules.h
+ * @author David Klajbl (xklajb00@stud.fit.vutbr.cz)
+ * @brief Interface to precedence rules table and rule matching.
+ * @date 2022-11-26
+ * 
+ */
+
 #ifndef PRECEDENCE_RULES_H
 #define PRECEDENCE_RULES_H
 

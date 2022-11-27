@@ -1,3 +1,12 @@
+/**
+ * @file percedence_parser.h
+ * @author David Klajbl (xklajb00@stud.fit.vutbr.cz)
+ * @brief Precedence expression parser interface.
+ * @date 2022-11-26
+ * 
+ */
+
+
 #ifndef PRECEDENCE_PARSER_H
 #define PRECEDENCE_PARSER_H
 

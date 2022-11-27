@@ -1,3 +1,11 @@
+/**
+ * @file precedence_stack.h
+ * @author David Klajbl (xklajb00@stud.fit.vutbr.cz)
+ * @brief Precedence stack interface.
+ * @date 2022-11-26
+ * 
+ */
+
 #ifndef PRECEDENCE_STACK_H
 #define PRECEDENCE_STACK_H
 

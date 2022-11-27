@@ -1,3 +1,11 @@
+/**
+ * @file symtable.h
+ * @author David Klajbl (xklajb00@stud.fit.vutbr.cz)
+ * @brief Symbol table interface.
+ * @date 2022-11-26
+ * 
+ */
+
 #ifndef SYMTABLE_H
 #define SYMTABLE_H
 
@@ -19,11 +27,12 @@ typedef int datatype_t;
  *
  */
 typedef struct{
-	bool used;
-	
-	bool defined;
 
-	datatype_t return_type;
+	bool used;				// indicates whether function was used or not
+	
+	bool defined;			// indicates whether function was defined or not
+
+	datatype_t return_type;	// return type of function
 	
 } symbol_info_t;
 

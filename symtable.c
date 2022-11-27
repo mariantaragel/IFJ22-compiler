@@ -1,3 +1,11 @@
+/**
+ * @file symtable.c
+ * @author David Klajbl (xklajb00@stud.fit.vutbr.cz)
+ * @brief Symbol table implementation (declared in symtable.h).
+ * @date 2022-11-26
+ * 
+ */
+
 #include <stdlib.h>  // malloc, free, NULL, size_t
 #include <string.h>  // strcmp, memcpy, strlen
 #include <stdbool.h> // bool
@@ -60,13 +68,14 @@ symtable_item_t *symtable_item_create(symbol_name_t name){
 	}
 	memcpy(name_copy, name, name_len);
 
-	// initialize new item // TODO: initialize symbol info
+	// initialize new item
 	new_item->name = name_copy;
+
+	// initialize symbol info of new item
 	new_item->symbol_info.used = false;
 	new_item->symbol_info.defined = false;
 	new_item->symbol_info.return_type = -1;
 	
-
     return new_item;
 }
 
@@ -316,94 +325,3 @@ symbol_info_t * symtable_lookup_insert(symtable_t * t, symbol_name_t name, bool 
         return &(new_item->symbol_info);
     }
 }
-
-
-
-
-
-
-
-
-/*
-
-#define MINIMUM_ARR_SIZE 32
-
-// Minimum average length (length = symtable_size / symtable_bucket_count ) of symtable lists.
-#define AVG_LEN_MIN 1
-
-// Finds and removes record with specified "name" from hash table "t".
-// If successfull, function returns true, otherwise false is returned.
-// If average length of symtable "t" falls under AVG_LEN_MIN, function tries to resize table array to half its size.
-bool symtable_erase(symtable_t * t, symbol_name_t name){
-    // check for NULL pointers
-	if(t == NULL || name == NULL) return false;
-
-	// calculate symtable index
-	const size_t symtable_index = symtable_hash_function(name) % t->arr_size;
-
-	// get item at symtable_index
-	symtable_item_t *cur_item = t->arr_ptr[symtable_index];
-	symtable_item_t *prev_item = NULL;
-
-	// variable used to hold strcmp result ititialized to non zero value
-	int cmp_ret = 1;
-
-	// iterate trough item list until searched name is found
-	while(cur_item != NULL && (cmp_ret = strcmp(cur_item->name, name)) < 0){
-		prev_item = cur_item;
-		cur_item = cur_item->next;
-	}
-
-	if(cmp_ret == 0){ // if matching name found, then remove element
-		// unlink cur_item from list
-		if(prev_item == NULL)
-			t->arr_ptr[symtable_index] = cur_item->next;
-		else
-			prev_item->next = cur_item->next;
-		
-		// free cur_item
-		symtable_item_free(cur_item);
-
-		// decrement size
-		--(t->symbol_count);
-
-		// if average items of symtable array lists is less then AVG_LEN_MIN, resize symtable to half the size
-		if(t->symbol_count / t->arr_size < AVG_LEN_MIN && t->arr_size != MINIMUM_ARR_SIZE)
-			symtable_resize(t, (t->arr_size/2));
-
-		// return success
-		return true;
-	}
-	else{
-		return false;
-	}
-}
-
-// Iterates trough all hash table "t" records and calls function "f" over each record.
-void symtable_for_each(const symtable_t * t, void (*f)(symbol_t *symbol)){
-    // check for NULL pointers
-	if(t == NULL || f == NULL) return;
-
-    // pointer to current item
-	symtable_item_t *cur_item = NULL;
-
-    // itereate trough all hash table items
-    for(size_t index = 0; index < t->arr_size; ++index){
-        // iterate trough item list
-        for(cur_item = t->arr_ptr[index]; cur_item != NULL; cur_item = cur_item->next){
-            f(&(cur_item->symbol));
-        }
-    }
-}
-
-// Returns size of hash table array of symtable "t".
-size_t symtable_bucket_count(const symtable_t * t){
-    return ((t) ? t->arr_size : 0);
-}
-
-// Returns number of items in hash table "t".
-size_t symtable_size(const symtable_t * t){
-    return ((t) ? t->symbol_count : 0);
-}
-
-*/

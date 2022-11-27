@@ -1,3 +1,11 @@
+/**
+ * @file semantic_analyzer.c
+ * @author David Klajbl (xklajb00@stud.fit.vutbr.cz)
+ * @brief Implementation of semantic analyzer.
+ * @date 2022-11-26
+ * 
+ */
+
 #include "semantic_analyzer.h"
 #include "abstract_syntax_tree.h"
 #include "error.h"

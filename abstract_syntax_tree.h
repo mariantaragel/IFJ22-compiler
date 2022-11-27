@@ -1,3 +1,12 @@
+/**
+ * @file abstract_syntax_tree.h
+ * @author David Klajbl (xklajb00@stud.fit.vutbr.cz)
+ * @brief Declaration of abstract syntax tree node type (AST_node_t) and operations on abstract syntax tree.
+ * @date 2022-11-26
+ * 
+ */
+
+
 #ifndef ABSTRACT_SYNTAX_TREE_H
 #define ABSTRACT_SYNTAX_TREE_H
 
@@ -19,7 +28,7 @@ typedef int datatype_t;
  * 
  * Ch_count = children count of specific node type. If count is X, it means that node can have 0-X children.
  * Ch = node types of children of specific node type. If list of children is in { }, it means that the order of children doesnt matter.
- * Data = type of data of specific node type.
+ * Data = type of data stored in node.
  * 
  */
 typedef enum {

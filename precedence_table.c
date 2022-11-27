@@ -1,3 +1,12 @@
+/**
+ * @file precedence_table.c
+ * @author David Klajbl (xklajb00@stud.fit.vutbr.cz)
+ * @brief Implementation of precedence table, prec. table get operation function 
+ * and function to convert token type to prec. table index.
+ * @date 2022-11-26
+ * 
+ */
+
 #include "precedence_table.h"
 #include <stdlib.h>
 

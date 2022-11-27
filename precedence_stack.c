@@ -1,3 +1,11 @@
+/**
+ * @file precedence_stack.c
+ * @author David Klajbl (xklajb00@stud.fit.vutbr.cz)
+ * @brief Implementation of precedence stack.
+ * @date 2022-11-26
+ * 
+ */
+
 #include <stdbool.h> // bool
 #include <stdlib.h>  // NULL, size_t
 

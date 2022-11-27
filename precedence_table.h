@@ -1,3 +1,11 @@
+/**
+ * @file precedence_table.h
+ * @author David Klajbl (xklajb00@stud.fit.vutbr.cz)
+ * @brief Precedence table interface.
+ * @date 2022-11-26
+ * 
+ */
+
 #ifndef PRECEDENCE_TABLE_H
 #define PRECEDENCE_TABLE_H
 

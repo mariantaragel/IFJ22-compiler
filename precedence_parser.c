@@ -1,3 +1,11 @@
+/**
+ * @file percedence_parser.c
+ * @author David Klajbl (xklajb00@stud.fit.vutbr.cz)
+ * @brief Implementation of precedence parser.
+ * @date 2022-11-26
+ * 
+ */
+
 #include "precedence_parser.h"
 #include "precedence_table.h"
 #include "precedence_rules.h"

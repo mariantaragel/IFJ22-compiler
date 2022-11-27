@@ -1,6 +1,14 @@
+/**
+ * @file precedence_rules.c
+ * @author David Klajbl (xklajb00@stud.fit.vutbr.cz)
+ * @brief Precedence rules table and rule matching implementation.
+ * @date 2022-11-26
+ * 
+ */
+
+#include <stdbool.h>
 #include "precedence_rules.h"
 #include "token.h"
-#include "stdbool.h"
 
 /**
  * @brief Precedence rule structure type.
@@ -41,6 +49,7 @@ const prec_rule_t precedence_rules[PRECEDENCE_RULE_COUNT] = {
 };
 
 
+// returns true if rule element x is the same as element y
 bool match_rule_elem(prec_rule_elem_t x, prec_rule_elem_t y){
 	if(x.category == y.category && x.token_type == y.token_type)
 		return true;

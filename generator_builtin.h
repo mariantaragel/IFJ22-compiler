@@ -1,6 +1,16 @@
+/**
+ * @file generator_builtin.h
+ * @author David Klajbl (xklajb00@stud.fit.vutbr.cz)
+ * @brief Definitions of macros containing source code of built-in functions and helper functions of generated IFJcode22 program.
+ * @date 2022-11-26
+ * 
+ */
+
 #ifndef GENERATOR_BUILTIN_H
 #define GENERATOR_BUILTIN_H
 
+// function readi() : ?int
+// reads integer from stdin
 #define BUILTIN_READI "\
 LABEL readi												\n\
 CREATEFRAME												\n\
@@ -19,6 +29,8 @@ POPFRAME												\n\
 RETURN													\n\
 "
 
+// function readf() : ?float
+// reads float from stdin
 #define BUILTIN_READF "\
 LABEL readf												\n\
 CREATEFRAME												\n\
@@ -37,6 +49,8 @@ POPFRAME												\n\
 RETURN													\n\
 "
 
+// function reads() : ?string
+// reads string from stdin
 #define BUILTIN_READS "\
 LABEL reads												\n\
 CREATEFRAME												\n\
@@ -55,6 +69,8 @@ POPFRAME												\n\
 RETURN													\n\
 "
 
+// function write ( term_1 , term_2 , ..., term_n ) : void
+// prints values of term_1 to term_n to stdout
 #define BUILTIN_WRITE "\
 LABEL write												\n\
 CREATEFRAME												\n\
@@ -375,6 +391,7 @@ LABEL chr														\n\
 RETURN															\n\
 "
 
+// helper function to interpret expression result as true or false
 #define HELPER_TO_BOOL_ "\
 LABEL &to_bool											\n\
 	POPS GF@_tmp										\n\

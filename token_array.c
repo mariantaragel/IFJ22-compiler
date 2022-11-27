@@ -1,3 +1,11 @@
+/**
+ * @file token_array.c
+ * @author David Klajbl (xklajb00@stud.fit.vutbr.cz)
+ * @brief Token array implementation (declared in token_array.h).
+ * @date 2022-11-26
+ * 
+ */
+
 #include <stdlib.h> // NULL
 #include <stdint.h> // SIZE_MAX
 #include <stdio.h>
@@ -187,6 +195,7 @@ void token_array_reverse(token_array_t* token_array){
 	}
 }
 
+// print token as expression element
 void _print_expr_token(token_t* t, FILE* fp) {
 	if(t->type == VAR_ID) {
 		fprintf(fp,"%s",t->aval);

@@ -1,3 +1,12 @@
+/**
+ * @file generator.c
+ * @author David Klajbl (xklajb00@stud.fit.vutbr.cz)
+ * @brief Implementation of code generator.
+ * @date 2022-11-26
+ * 
+ */
+
+
 #include "abstract_syntax_tree.h"
 #include "error.h"
 #include "generator_tools.h"
