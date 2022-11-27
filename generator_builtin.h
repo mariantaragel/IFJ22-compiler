@@ -413,6 +413,7 @@ LABEL &to_bool											\n\
 	LABEL ?&to_bool?next3								\n\
 	JUMPIFNEQ ?&to_bool?next4 GF@_tmp_type string@string\n\
 		JUMPIFEQ ?&to_bool?false GF@_tmp string@		\n\
+		JUMPIFEQ ?&to_bool?false GF@_tmp string@0		\n\
 		JUMP ?&to_bool?true								\n\
 														\n\
 	LABEL ?&to_bool?next4								\n\
