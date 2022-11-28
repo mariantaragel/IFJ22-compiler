@@ -48,3 +48,4 @@
 <exp> -> lit <exp_rest>
 
 lit = str_lit | int_lit | flt_lit | null
+operator = *, /, +, -, ., <, >, <=, >=, ===, !==
