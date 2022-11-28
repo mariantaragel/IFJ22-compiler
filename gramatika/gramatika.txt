@@ -9,17 +9,6 @@
 <stmt_list_bracket_end> -> <stmt> <stmt_list_bracket_end>
 <stmt_list_bracket_end> -> <stmt_list_bracket_start> <stmt_list_bracket_end>
 <stmt_list_bracket_start> -> { <stmt_list_bracket_end>
-<stmt> -> if <if_stmt>
-<stmt> ->  while <while_stmt>
-<stmt> -> return <exp> ;
-<stmt> -> func_id <func_call> ;
-
-<stmt> -> ;
-<stmt> -> operator <exp> ;
-<stmt> -> ( <exp> ;
-<stmt> -> ) <exp> ;
-<stmt> -> lit <exp> ;
-<stmt> -> var_id <exp/ass_exp/ass_func> ;
 <exp/ass_exp/ass_func> -> = <ass_exp/ass_func>
 <exp/ass_exp/ass_func> -> <exp>
 <ass_exp/ass_func> -> func_id <func_call>
@@ -28,7 +17,6 @@
 <exp> -> ) <exp_rest>
 <exp> -> operator <exp_rest>
 <exp> -> lit <exp_rest>
-
 <if_stmt> -> ( <exp> ) { <stmt_list_bracket_end> else { <stmt_list_bracket_end>
 <while_stmt> -> ( <exp> ) { <stmt_list_bracket_end>
 <func_call> -> ( <arg_list>
@@ -51,6 +39,13 @@
 <type> -> ?float
 <type> -> string
 <type> -> ?string
+<stmt> -> if <if_stmt>
+<stmt> ->  while <while_stmt>
+<stmt> -> return <exp> ;
+<stmt> -> func_id <func_call> ;
+<stmt> -> ;
+<stmt> -> <exp>
+<stmt> -> var_id <exp/ass_exp/ass_func> ;
 
 lit  = str_lit | int_lit | flt_lit | null
 
