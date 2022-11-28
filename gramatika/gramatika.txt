@@ -9,14 +9,6 @@
 <stmt_list_bracket_end> -> <stmt> <stmt_list_bracket_end>
 <stmt_list_bracket_end> -> <stmt_list_bracket_start> <stmt_list_bracket_end>
 <stmt_list_bracket_start> -> { <stmt_list_bracket_end>
-<exp/ass_exp/ass_func> -> = <ass_exp/ass_func>
-<exp/ass_exp/ass_func> -> <exp>
-<ass_exp/ass_func> -> func_id <func_call>
-<ass_exp/ass_func> -> <exp>
-<exp> -> ( <exp_rest>
-<exp> -> ) <exp_rest>
-<exp> -> operator <exp_rest>
-<exp> -> lit <exp_rest>
 <if_stmt> -> ( <exp> ) { <stmt_list_bracket_end> else { <stmt_list_bracket_end>
 <while_stmt> -> ( <exp> ) { <stmt_list_bracket_end>
 <func_call> -> ( <arg_list>
@@ -46,15 +38,13 @@
 <stmt> -> ;
 <stmt> -> <exp>
 <stmt> -> var_id <exp/ass_exp/ass_func> ;
+<exp/ass_exp/ass_func> -> = <ass_exp/ass_func>
+<exp/ass_exp/ass_func> -> <exp>
+<ass_exp/ass_func> -> func_id <func_call>
+<ass_exp/ass_func> -> <exp>
+<exp> -> ( <exp_rest>
+<exp> -> ) <exp_rest>
+<exp> -> operator <exp_rest>
+<exp> -> lit <exp_rest>
 
-lit  = str_lit | int_lit | flt_lit | null
-
-			if (token == "$var_id" && next_token == "=")
-				if(next_next_token == "func_id")
-					<stmt> -> <func_call_assignment> ;
-						<func_call_assignment> -> $var_id = <func_call> ;
-				else
-					<stmt> -> <exp_assignment> ;
-						<exp_assignment> -> $var_id = <exp> ;
-			else
-				<stmt> -> <exp> ; 
+lit = str_lit | int_lit | flt_lit | null
