@@ -14,18 +14,20 @@
 <stmt> -> return <exp> ;
 <stmt> -> func_id <func_call> ;
 
+<stmt> -> ;
 <stmt> -> operator <exp> ;
 <stmt> -> ( <exp> ;
 <stmt> -> ) <exp> ;
-<stmt> -> var_id <exp/ass_exp/ass_func>
+<stmt> -> lit <exp> ;
+<stmt> -> var_id <exp/ass_exp/ass_func> ;
 <exp/ass_exp/ass_func> -> = <ass_exp/ass_func>
-<exp/ass_exp/ass_func> -> operator <exp> ;
-<exp/ass_exp/ass_func> -> ( <exp> ;
-<exp/ass_exp/ass_func> -> ) <exp> ;
+<exp/ass_exp/ass_func> -> <exp>
 <ass_exp/ass_func> -> func_id <func_call>
-<ass_exp/ass_func> -> operator <exp> ;
-<ass_exp/ass_func> -> ( <exp> ;
-<ass_exp/ass_func> -> ) <exp> ;
+<ass_exp/ass_func> -> <exp>
+<exp> -> ( <exp_rest>
+<exp> -> ) <exp_rest>
+<exp> -> operator <exp_rest>
+<exp> -> lit <exp_rest>
 
 <if_stmt> -> ( <exp> ) { <stmt_list_bracket_end> else { <stmt_list_bracket_end>
 <while_stmt> -> ( <exp> ) { <stmt_list_bracket_end>
@@ -35,10 +37,7 @@
 <arg_next> -> )
 <arg_next> -> , <arg> <arg_next>
 <arg> -> $var_id
-<arg> -> str_lit
-<arg> -> int_lit
-<arg> -> flt_lit
-<arg> -> null
+<arg> -> lit
 <func_def> -> function func_id ( <param_list> : <return_type> { <stmt_list_bracket_end>
 <param_list> -> )
 <param_list> -> <type> $var_id <param_next>
@@ -52,6 +51,8 @@
 <type> -> ?float
 <type> -> string
 <type> -> ?string
+
+lit  = str_lit | int_lit | flt_lit | null
 
 			if (token == "$var_id" && next_token == "=")
 				if(next_next_token == "func_id")
