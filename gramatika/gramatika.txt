@@ -1,49 +1,64 @@
 <program> -> <php_start> <program_body> 
 <php_start> -> '<?php' func_id '(' 'strict_types' '=' integer_literal ')' ';'
 <php_end> -> '?>' EOF | EOF
+<program_body> -> <func_def> <program_body>
+<program_body> -> <stmt> <program_body>
+<program_body> -> <stmt_list_bracket_start> <program_body>
+<program_body> -> <php_end>
+<stmt_list_bracket_end> -> }
+<stmt_list_bracket_end> -> <stmt> <stmt_list_bracket_end>
+<stmt_list_bracket_end> -> <stmt_list_bracket_start> <stmt_list_bracket_end>
+<stmt_list_bracket_start> -> { <stmt_list_bracket_end>
+<stmt> -> if <if_stmt>
+<stmt> ->  while <while_stmt>
+<stmt> -> return <exp> ;
+<stmt> -> func_id <func_call> ;
 
-<program_body> -> <func_def> <program_body> | <stmt> <program_body> | <stmt_list_bracket_start> <program_body> | <php_end>
+<stmt> -> operator <exp> ;
+<stmt> -> ( <exp> ;
+<stmt> -> ) <exp> ;
+<stmt> -> var_id <exp/ass_exp/ass_func>
+<exp/ass_exp/ass_func> -> = <ass_exp/ass_func>
+<exp/ass_exp/ass_func> -> operator <exp> ;
+<exp/ass_exp/ass_func> -> ( <exp> ;
+<exp/ass_exp/ass_func> -> ) <exp> ;
+<ass_exp/ass_func> -> func_id <func_call>
+<ass_exp/ass_func> -> operator <exp> ;
+<ass_exp/ass_func> -> ( <exp> ;
+<ass_exp/ass_func> -> ) <exp> ;
 
-    <stmt_list_bracket_end> -> } | <stmt> <stmt_list_bracket_end> | <stmt_list_bracket_start> <stmt_list_bracket_end>
+<if_stmt> -> ( <exp> ) { <stmt_list_bracket_end> else { <stmt_list_bracket_end>
+<while_stmt> -> ( <exp> ) { <stmt_list_bracket_end>
+<func_call> -> ( <arg_list>
+<arg_list> -> )
+<arg_list> -> <arg> <arg_next>
+<arg_next> -> )
+<arg_next> -> , <arg> <arg_next>
+<arg> -> $var_id
+<arg> -> str_lit
+<arg> -> int_lit
+<arg> -> flt_lit
+<arg> -> null
+<func_def> -> function func_id ( <param_list> : <return_type> { <stmt_list_bracket_end>
+<param_list> -> )
+<param_list> -> <type> $var_id <param_next>
+<param_next> -> )
+<param_next> -> , <type> $var_id <param_next>
+<return_type> -> void
+<return_type> -> <type> 
+<type> -> int
+<type> -> ?int
+<type> -> float
+<type> -> ?float
+<type> -> string
+<type> -> ?string
 
-    <stmt_list_bracket_start> -> { <stmt_list_bracket_end>
-
-		<stmt> -> if <if_stmt>
-			<if_stmt> -> <if_stmt> -> ( <exp> ) { <stmt_list_bracket_end> else { <stmt_list_bracket_end>
-		
-		<stmt> ->  while <while_stmt>
-			<while_stmt> -> ( <exp> ) { <stmt_list_bracket_end>
-		
-		<stmt> -> return <exp> ;
-
-		<stmt> -> func_id <func_call> ;
-			<func_call> -> ( <arg_list>
-				<arg_list> -> ) | <arg> <arg_next>
-				<arg_next> -> ) | , <arg> <arg_next>
-					<arg> -> $var_id | string_literal | integer_literal | float_literal | null
-
-==============================
-		Řešení 2:
-			// pokud ani jedno pravidlo vycházející z <stmt> nebylo namatchováno, bude se postupovat podle této sémantické akce
 			if (token == "$var_id" && next_token == "=")
 				if(next_next_token == "func_id")
 					<stmt> -> <func_call_assignment> ;
 						<func_call_assignment> -> $var_id = <func_call> ;
 				else
 					<stmt> -> <exp_assignment> ;
-						<exp_assignment> -> $var_id = <exp> ; // zde top-down analýza předá řízení bottom-up analýze
+						<exp_assignment> -> $var_id = <exp> ;
 			else
-				<stmt> -> <exp> ; // zde top-down analýza předá řízení bottom-up analýze
-==============================
-			
-	<func_def> -> function func_id ( <param_list> : <return_type> { <stmt_list_bracket_end>
-
-		<param_list> -> ) | <type> $var_id <param_next>
-		<param_next> -> ) | , <type> $var_id <param_next>
-
-		<return_type> -> void | <type> 
-
-			<type> -> int | ?int | float | ?float | string | ?string
-
-
-
+				<stmt> -> <exp> ; 
