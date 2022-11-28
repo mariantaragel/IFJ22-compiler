@@ -20,17 +20,11 @@
 <arg> -> lit
 <func_def> -> function func_id ( <param_list> : <return_type> { <stmt_list_bracket_end>
 <param_list> -> )
-<param_list> -> <type> $var_id <param_next>
+<param_list> -> non_void_type $var_id <param_next>
 <param_next> -> )
-<param_next> -> , <type> $var_id <param_next>
-<return_type> -> void
-<return_type> -> <type> 
-<type> -> int
-<type> -> ?int
-<type> -> float
-<type> -> ?float
-<type> -> string
-<type> -> ?string
+<param_next> -> , non_void_type $var_id <param_next>
+<return_type> -> void_type
+<return_type> -> non_void_type
 <stmt> -> if <if_stmt>
 <stmt> ->  while <while_stmt>
 <stmt> -> return <exp> ;
@@ -49,3 +43,4 @@
 
 lit = str_lit | int_lit | flt_lit | null
 operator = *, /, +, -, ., <, >, <=, >=, ===, !==
+non_void_type = int, ?int, float, ?float, string, ?string
