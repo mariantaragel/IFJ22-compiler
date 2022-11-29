@@ -9,24 +9,17 @@
 <stmt_list_bracket_end> -> <stmt> <stmt_list_bracket_end>
 <stmt_list_bracket_end> -> <stmt_list_bracket_start> <stmt_list_bracket_end>
 <stmt_list_bracket_start> -> { <stmt_list_bracket_end>
+<func_def> -> function func_id ( <param_list> : <return_type> { <stmt_list_bracket_end>
+<param_list> -> )
+<param_list> -> non_void_type $var_id <param_next>
+<param_next> -> )
+<param_next> -> , non_void_type $var_id <param_next>
+<return_type> -> void_type
+<return_type> -> non_void_type
 <stmt> -> if <if_stmt>
 <stmt> ->  while <while_stmt>
 <stmt> -> return <exp> ;
 <stmt> -> func_id <func_call> ;
-
-<stmt> -> operator <exp> ;
-<stmt> -> ( <exp> ;
-<stmt> -> ) <exp> ;
-<stmt> -> var_id <exp/ass_exp/ass_func>
-<exp/ass_exp/ass_func> -> = <ass_exp/ass_func>
-<exp/ass_exp/ass_func> -> operator <exp> ;
-<exp/ass_exp/ass_func> -> ( <exp> ;
-<exp/ass_exp/ass_func> -> ) <exp> ;
-<ass_exp/ass_func> -> func_id <func_call>
-<ass_exp/ass_func> -> operator <exp> ;
-<ass_exp/ass_func> -> ( <exp> ;
-<ass_exp/ass_func> -> ) <exp> ;
-
 <if_stmt> -> ( <exp> ) { <stmt_list_bracket_end> else { <stmt_list_bracket_end>
 <while_stmt> -> ( <exp> ) { <stmt_list_bracket_end>
 <func_call> -> ( <arg_list>
@@ -35,30 +28,18 @@
 <arg_next> -> )
 <arg_next> -> , <arg> <arg_next>
 <arg> -> $var_id
-<arg> -> str_lit
-<arg> -> int_lit
-<arg> -> flt_lit
-<arg> -> null
-<func_def> -> function func_id ( <param_list> : <return_type> { <stmt_list_bracket_end>
-<param_list> -> )
-<param_list> -> <type> $var_id <param_next>
-<param_next> -> )
-<param_next> -> , <type> $var_id <param_next>
-<return_type> -> void
-<return_type> -> <type> 
-<type> -> int
-<type> -> ?int
-<type> -> float
-<type> -> ?float
-<type> -> string
-<type> -> ?string
+<arg> -> lit
+<stmt> -> <exp>
+<stmt> -> var_id <exp/ass_exp/ass_func> ;
+<exp/ass_exp/ass_func> -> = <ass_exp/ass_func>
+<exp/ass_exp/ass_func> -> <exp>
+<ass_exp/ass_func> -> func_id <func_call>
+<ass_exp/ass_func> -> <exp>
+<exp> -> ( <exp_rest>
+<exp> -> ) <exp_rest>
+<exp> -> operator <exp_rest>
+<exp> -> lit <exp_rest>
 
-			if (token == "$var_id" && next_token == "=")
-				if(next_next_token == "func_id")
-					<stmt> -> <func_call_assignment> ;
-						<func_call_assignment> -> $var_id = <func_call> ;
-				else
-					<stmt> -> <exp_assignment> ;
-						<exp_assignment> -> $var_id = <exp> ;
-			else
-				<stmt> -> <exp> ; 
+lit = str_lit | int_lit | flt_lit | null
+operator = *, /, +, -, ., <, >, <=, >=, ===, !==
+non_void_type = int, ?int, float, ?float, string, ?string

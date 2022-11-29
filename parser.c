@@ -425,7 +425,7 @@ void stmt(token_t *token, AST_node_t *parent)
         break;
     
     case SCOLON:
-        return;
+        RETURN_ERROR(SYNTAX_ERROR);
         break;
 
     default: ;

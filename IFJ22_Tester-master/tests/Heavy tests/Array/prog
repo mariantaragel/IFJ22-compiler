@@ -59,6 +59,22 @@ function set(string $in, int $id, string $s) : string {
     return $before . $s . $after;
 }
 
+function length(string $in) : int {
+    $i = 0;
+    $pos = 0;
+    $p1 = $pos + 1;
+    $ch = substring($in, $pos, $p1);
+    while($ch !== null) {
+        $pos = $pos + 1;
+        $p1 = $pos + 1;
+        $ch = substring($in, $pos, $p1);
+        if ($ch === ";") {
+            $i = $i + 1;
+        } else {}
+    }
+    return $i;
+}
+
 $arr = "";
 $in = reads();
 while($in !== "END") {
