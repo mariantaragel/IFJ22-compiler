@@ -322,7 +322,7 @@ MOVE GF@_rhs int@0
 TYPE GF@_trhs GF@_rhs
 JUMP ?lte_op?skip_rhs_nil_conversion
 LABEL ?lte_op?skip_rhs_to_int_conversion
-JUMPIFNEQ ?lte_op?skip_rhs_to_string_conversion GF@_trhs string@string
+JUMPIFNEQ ?lte_op?skip_rhs_to_string_conversion GF@_tlhs string@string
 MOVE GF@_rhs string@
 TYPE GF@_trhs GF@_rhs
 JUMP ?lte_op?skip_rhs_nil_conversion
@@ -390,7 +390,7 @@ MOVE GF@_rhs int@0
 TYPE GF@_trhs GF@_rhs
 JUMP ?gte_op?skip_rhs_nil_conversion
 LABEL ?gte_op?skip_rhs_to_int_conversion
-JUMPIFNEQ ?gte_op?skip_rhs_to_string_conversion GF@_trhs string@string
+JUMPIFNEQ ?gte_op?skip_rhs_to_string_conversion GF@_tlhs string@string
 MOVE GF@_rhs string@
 TYPE GF@_trhs GF@_rhs
 JUMP ?gte_op?skip_rhs_nil_conversion
@@ -428,7 +428,7 @@ LABEL program_start
 
 
 
-PUSHS int@2
 PUSHS nil@nil
-CALL &gte_op
+PUSHS string@
+CALL &lte_op
 BREAK

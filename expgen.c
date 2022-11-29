@@ -20,6 +20,7 @@
 #include "scanner.h"
 #include "error.h"
 #include "precedence_parser.h"
+// #include "generator.c" // Testing only.
 
 /* Global variables */
 const char * lhs = "GF@_lhs";
@@ -61,7 +62,7 @@ token_array_t * get_exp(char* expression);
 //     gen_operation_functions();
 //     G("LABEL program_start");
 //     token_array_t * tarr;
-//     tarr = get_exp("null >= 2");
+//     tarr = get_exp("\"\" <= null");
 // 	printf("\n\n\n");
     
 //     generator_context_t * gc = generator_context_create();
@@ -476,7 +477,7 @@ void gen_ltegte_operation(token_type_t operation) {
     G("TYPE %s %s", trhs, rhs);
     G("JUMP %s", skip_rhs_nil_conversion);
     G("LABEL %s", skip_rhs_to_int_conversion);
-    G("JUMPIFNEQ %s %s string@string", skip_rhs_to_string_conversion, trhs);
+    G("JUMPIFNEQ %s %s string@string", skip_rhs_to_string_conversion, tlhs);
     G("MOVE %s string@", rhs);
     G("TYPE %s %s", trhs, rhs);
     G("JUMP %s", skip_rhs_nil_conversion);

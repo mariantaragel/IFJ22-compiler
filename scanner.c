@@ -24,6 +24,8 @@
 #include "token.h"
 #include "error.h"
 
+// #define DS_WRITE_GUARD(ds, c) if(ds_write(ds, c)) {error = INTERNAL_ERROR; return 1;}
+// #define SCANNER_GETCHAR(c) (c = fgetc(stdin));
 
 // int main() {
 
@@ -73,8 +75,8 @@ token_t * get_token() {
 					continue;
 				} while( (c = fgetc(stdin)) != EOF && c != '\n');
 			} else if (c == '*') {
-				bool in_comment =  true;
-				while(in_comment && c != EOF) {
+				bool in_comment = true;
+				while(in_comment) {
 					c = fgetc(stdin);
 					if(c == EOF) { // Unterminated comment.
 						ds_dstr(ds);
@@ -82,20 +84,23 @@ token_t * get_token() {
 						return t;
 					}
 					if(c == '*') {
-						if((c = fgetc(stdin)) == '/') {
+						c = fgetc(stdin);
+						if(c == '/') {
 							in_comment = false;
-							c = fgetc(stdin);
-						} else if (c == EOF) {
+						} else if (c == EOF) { // Unterminated comment.
 							ds_dstr(ds);
 							error = LEXICAL_ERROR;
 							return t;
 						}
 					}
 				}
+				c = ' '; // Condition
+				continue;
 			} else {
 				ungetc(c, stdin); // Return to stream due to false read..
 				c = '/'; // Set char to original.
 			}
+			// continue;
 		} // End comment skip.
 	} while ( c != EOF && isspace(c) != 0);
 
@@ -225,6 +230,8 @@ void fi_handler(dynamic_string_t * ds, token_t * t, int * c) {
 				return; // Error is set in float_write.
 			}
 
+			/* Check if value is correct. */
+
 			char * end_ptr;
 			double value = strtod(ds->str, &end_ptr); // Try to convert value.
 
@@ -305,6 +312,10 @@ void nte_handler(dynamic_string_t * ds, token_t * t, int * c) {
 	*c = fgetc(stdin);
 	if( *c == '>') {
 		t->type = EPILOG; // '?>'
+		*c = fgetc(stdin);
+		if(*c != EOF) {
+			error = LEXICAL_ERROR;
+		}
 		return;
 	} else { // Return character to stream if unsuccesful.
 		ungetc(*c, stdin);
@@ -342,12 +353,13 @@ void lp_handler(dynamic_string_t * ds, token_t * t, int * c) {
 	if(*c == '=') { // '<='
 		t->type = LTE;
 	} else if (*c == '?') { // '<?' try create '<?php'
-		while((*c = fgetc(stdin)) != EOF && isspace(*c) == 0) {
+		while((*c = fgetc(stdin)) != EOF && (*c == 'p' || *c == 'h')) { // Get prolog
 			if(ds_write(ds, *c)) {
 				error = INTERNAL_ERROR;
 				return;
 			}
 		}
+		ungetc(*c, stdin);
 		if(strcmp(ds->str, prolog) == 0) { // '<?php'
 			t->type = PROLOG;
 			return;
@@ -497,54 +509,93 @@ int hex_write(dynamic_string_t * ds, int * c) {
 
 int float_write(dynamic_string_t * ds, int * c) {
 	if(*c == '.') {
-		// *c = fgetc(stdin);
-		// if(!isdigit(*c) || *c != 'E' || *c != 'e') {
-		// 	error = LEXICAL_ERROR;
-		// 	return 1;
-		// }
-		do { // Read string till end.
-			if(ds_write(ds, *c)) {
-				error = INTERNAL_ERROR;
-				return 1;
+		ds_write(ds, *c);
+		*c = fgetc(stdin);
+		if(isdigit(*c)) {
+			do {
+				if(ds_write(ds, *c)) {
+					error = INTERNAL_ERROR;
+					return 1;
+				}
+			} while ( (*c = fgetc(stdin)) != EOF && (isdigit(*c)));
+			if(*c == 'e' || *c == 'E') {
+				if(ds_write(ds, *c)) { // Write char.
+					error = INTERNAL_ERROR;
+					return 1;
+				}
+				*c = fgetc(stdin);
+				if(*c == '-' || *c == '+') {
+					if(ds_write(ds, *c)) {
+						error = INTERNAL_ERROR;
+						return 1;
+					}
+					*c = fgetc(stdin);
+					if(isdigit(*c)) {
+						do {
+							if(ds_write(ds, *c)) {
+								error = INTERNAL_ERROR;
+								return 1;
+							}
+						} while ( (*c = fgetc(stdin)) != EOF && (isdigit(*c)));
+						ungetc(*c, stdin);
+						return 0;
+					} else {
+						error = LEXICAL_ERROR;
+						return 1;
+					}
+				} else if (isdigit(*c)) {
+					do {
+						if(ds_write(ds, *c)) {
+							error = INTERNAL_ERROR;
+							return 1;
+						}
+					} while ( (*c = fgetc(stdin)) != EOF && (isdigit(*c)));
+					ungetc(*c, stdin);
+					return 0;
+				} else {
+					error = LEXICAL_ERROR;
+					return 1;
+				}
+			} else {
+				ungetc(*c, stdin);
+				return 0;
 			}
-		} while( (*c = fgetc(stdin)) != EOF && (isdigit(*c)));
-		if(*c ==  'e' || *c == 'E') { // Exponent
+		} else {
+			error = LEXICAL_ERROR;
+			return 1;
+		}
+	} else if (*c == 'e' || *c == 'E') {
+		if(ds_write(ds, *c)) { // Write char.
+			error = INTERNAL_ERROR;
+			return 1;
+		}
+		*c = fgetc(stdin);
+		if(*c == '-' || *c == '+') {
 			if(ds_write(ds, *c)) {
 				error = INTERNAL_ERROR;
 				return 1;
 			}
 			*c = fgetc(stdin);
-			if(isdigit(*c) || *c == '-' || *c == '+') {
-				do { // Read string till end.
-					if(ds_write(ds, *c)) {
-					error = INTERNAL_ERROR;
-					return 1;
-					}
-				} while( (*c = fgetc(stdin)) != EOF && (isdigit(*c)));
-				ungetc(*c, stdin);
-				return 0;
-			} else { // Not a digit or +/-
-				error = LEXICAL_ERROR;
-				return 1;
-			}
-		} else {
-			ungetc(*c, stdin);
-			return 0;
-		}
-
-	} else if (*c == 'e' || *c == 'E') {
-		if(ds_write(ds, *c)) {
-				error = INTERNAL_ERROR;
-				return 1;
-			}
-		*c = fgetc(stdin);
-		if(isdigit(*c) || *c == '-' || *c == '+') {
-			do { // Read string till end.
+			if(isdigit(*c)) {
+				do {
 					if(ds_write(ds, *c)) {
 						error = INTERNAL_ERROR;
 						return 1;
 					}
-			} while( (*c = fgetc(stdin)) != EOF && (isdigit(*c)));// read digits to end and return
+				} while ( (*c = fgetc(stdin)) != EOF && (isdigit(*c)));
+				ungetc(*c, stdin);
+				return 0;
+			} else {
+				error = LEXICAL_ERROR;
+				return 1;
+			}
+		} else if (isdigit(*c)) {
+			do {
+					if(ds_write(ds, *c)) {
+						error = INTERNAL_ERROR;
+						return 1;
+					}
+			} while ( (*c = fgetc(stdin)) != EOF && (isdigit(*c)));
 			ungetc(*c, stdin);
 			return 0;
 		} else {
