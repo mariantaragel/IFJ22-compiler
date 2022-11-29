@@ -26,6 +26,8 @@ typedef struct{
     symtable_t* local_symtable;
 }semantic_context_t;
 
+error_codes_t sem_check_nested_func_call_defs(AST_node_t* cur_n, semantic_context_t* sem_context);
+
 error_codes_t sem_var_name(char* var_name, bool add_to_used_var_list, semantic_context_t* sem_context);
 error_codes_t sem_var_n(AST_node_t* ass_var_n, bool add_to_used_var_list, semantic_context_t* sem_context);
 error_codes_t sem_expr_n(AST_node_t* expr_n, semantic_context_t* sem_context);
@@ -123,10 +125,10 @@ error_codes_t insert_all_built_in_functions_to_symtable(semantic_context_t* sem_
 	// insert all built in functions to symtable and set them as defined
 	symbol_info_t* func_info;
 	for(size_t i = 0; i < built_in_func_count; ++i){
-		if((func_info = symtable_lookup_insert(sem_context->global_symtable, built_in_func_names[i], NULL))== NULL){
+		if((func_info = symtable_lookup_insert(sem_context->global_symtable, built_in_func_names[i], NULL)) == NULL){
 			return INTERNAL_ERROR;
 		}
-		func_info->defined = true;
+		func_info->all_nested_calls_defined = true;
 	}
 	
 	return OK;
@@ -136,13 +138,8 @@ error_codes_t sem_prog_n(AST_node_t* prog_n, semantic_context_t* sem_context){
 	// context is global, thus make global_symtable active
     sem_context->active_symtable = sem_context->global_symtable;
 
-	// insert node containing used functions at beginning of program, and add it to semantic context
-    if((sem_context->used_func_list_n = AST_create_insert_child(prog_n, 0, USED_FUNC_LIST_N)) == NULL){
-        return INTERNAL_ERROR;
-    }
-
 	// insert node containing used variables inside main body at beginning of program, and add it to semantic context
-    if((sem_context->used_vars_list_n = AST_create_insert_child(prog_n, 1, USED_VARS_LIST_N)) == NULL){
+    if((sem_context->used_vars_list_n = AST_create_insert_child(prog_n, 0, USED_VARS_LIST_N)) == NULL){
         return INTERNAL_ERROR;
     }
 
@@ -151,7 +148,7 @@ error_codes_t sem_prog_n(AST_node_t* prog_n, semantic_context_t* sem_context){
 	if((res = insert_all_built_in_functions_to_symtable(sem_context)) != OK) return res;
 
 	AST_node_t* cur_node;
-    for(size_t i = 2; i < prog_n->children_count; ++i){
+    for(size_t i = 1; i < prog_n->children_count; ++i){
 		cur_node = prog_n->children_arr[i];
 		switch(cur_node->type){
 			case WHILE_N: 
@@ -339,21 +336,11 @@ error_codes_t sem_func_args(AST_node_t* func_call_n, semantic_context_t* sem_con
 }
 
 error_codes_t sem_func_call_n(AST_node_t* func_call_n, semantic_context_t* sem_context){
-	char* func_name = func_call_n->data.str;
-	symbol_info_t* func_info = symtable_lookup_insert(sem_context->global_symtable, func_name, NULL);
-    if(func_info == NULL) return INTERNAL_ERROR;
+	error_codes_t res;
 
-	if(func_info->used == false){
-		AST_node_t* used_func_n = AST_create_insert_child(sem_context->used_func_list_n, 0, ID_N);
-		if(used_func_n == NULL) return INTERNAL_ERROR;
-
-		used_func_n->data.str = create_string_copy(func_name);
-		if(used_func_n->data.str == NULL) return INTERNAL_ERROR;
-
-		func_info->used = true;
+	if(sem_context->parent_func_symbol_info == NULL){ // calling function in main program body
+		if((res = sem_check_nested_func_call_defs(func_call_n, sem_context)) != OK) return res;
 	}
-
-	error_codes_t res = OK;
 
 	// semantics for arguments
 	if((res = sem_func_args(func_call_n, sem_context)) != OK) return res;
@@ -397,23 +384,11 @@ error_codes_t sem_enter_func_def_context(AST_node_t* func_def_n, semantic_contex
     symbol_info_t* func_info = symtable_lookup_insert(sem_context->global_symtable, func_def_n->data.str, &name_found);
     if(func_info == NULL) return INTERNAL_ERROR;
 
-    if(func_info->defined == true){
-        // attempted function redefinition
+	if(name_found == true){
+		// attempted function redefinition
         return SEM_ERROR_3;
-    }
-
-	if(func_info->used == false){
-		// function was not found in symtable
-		AST_node_t* used_func_id_n = AST_create_add_child(sem_context->used_func_list_n, ID_N);
-		if(used_func_id_n == NULL) return INTERNAL_ERROR;
-
-		used_func_id_n->data.str = create_string_copy(func_def_n->data.str);
-		if(used_func_id_n->data.str == NULL) return INTERNAL_ERROR;
-    }
-
-	// set function definition and usage flags
-	func_info->defined = true;
-	func_info->used = true;
+	}
+	func_info->func_body_n = func_def_n->children_arr[2];
 
 	// create new local function USED_VARS_LIST_N
 	AST_node_t* new_used_vars_list_n = AST_create_insert_child(func_def_n, 2, USED_VARS_LIST_N);
@@ -508,4 +483,37 @@ error_codes_t sem_return_n(AST_node_t* return_n, semantic_context_t* sem_context
 
     // check semantics of expression
     return sem_expr_n(expr_n, sem_context);
+}
+
+error_codes_t sem_check_nested_func_call_defs(AST_node_t* cur_n, semantic_context_t* sem_context){
+	error_codes_t res;
+
+	if(cur_n->type == FUNC_CALL_N){
+		char* func_name = cur_n->data.str;
+		symbol_info_t* func_info = symtable_lookup(sem_context->global_symtable, func_name);
+		if(func_info == NULL){
+			return SEM_ERROR_3; // undefined function
+		}
+		else{
+			if(func_info->checking_nested_calls_defs == true){
+				return OK;
+			}
+			else if(func_info->all_nested_calls_defined == false){
+				func_info->checking_nested_calls_defs = true;
+
+				AST_node_t* body_of_called_func = func_info->func_body_n;
+				if((res = sem_check_nested_func_call_defs(body_of_called_func, sem_context)) != OK) return res;
+				func_info->all_nested_calls_defined = true;
+
+				func_info->checking_nested_calls_defs = false;
+			}
+		}
+	}
+	else{
+		for(size_t i = 0; i < cur_n->children_count; ++i){
+			if((res = sem_check_nested_func_call_defs(cur_n->children_arr[i], sem_context)) != OK) return res;
+		}
+	}
+
+	return OK;
 }
