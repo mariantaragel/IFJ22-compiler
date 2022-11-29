@@ -29,7 +29,6 @@
 <arg_next> -> , <arg> <arg_next>
 <arg> -> $var_id
 <arg> -> lit
-<stmt> -> ;
 <stmt> -> <exp>
 <stmt> -> var_id <exp/ass_exp/ass_func> ;
 <exp/ass_exp/ass_func> -> = <ass_exp/ass_func>
