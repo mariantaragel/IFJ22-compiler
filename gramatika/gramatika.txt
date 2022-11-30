@@ -1,6 +1,7 @@
 <program> -> <php_start> <program_body> 
 <php_start> -> '<?php' func_id '(' 'strict_types' '=' integer_literal ')' ';'
-<php_end> -> '?>' EOF | EOF
+<php_end> -> '?>' EOF
+<php_end> -> EOF
 <program_body> -> <func_def> <program_body>
 <program_body> -> <stmt> <program_body>
 <program_body> -> <stmt_list_bracket_start> <program_body>
