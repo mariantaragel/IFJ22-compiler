@@ -36,7 +36,6 @@ error_codes_t gen_func_params(AST_node_t* params_n, char* func_name);
 error_codes_t gen_func_def(AST_node_t* func_def_n, generator_context_t* gen_context);
 error_codes_t gen_missing_return();
 error_codes_t gen_return(AST_node_t* return_n, generator_context_t* gen_context);
-error_codes_t gen_func_def_flags(AST_node_t* used_func_list_n);
 void gen_var_defs(AST_node_t* used_vars_list_n, generator_context_t* gen_context);
 error_codes_t gen_prog(AST_node_t* prog_n, generator_context_t* gen_context);
 generator_context_t* generator_context_create();
@@ -44,9 +43,6 @@ void generator_context_free(generator_context_t* gen_context);
 
 // OK
 error_codes_t gen_var_def_check(char* var_name, generator_context_t* gen_context){
-	G("# CHECK VAR [%s] INIT START", var_name);
-	inc_ind();
-
 	// get unique label ?var_name?var_init_ok
 	char* var_init_ok_label = gen_label("?", var_name, "?var_init_ok", true);
 	if(var_init_ok_label == NULL) return INTERNAL_ERROR;
@@ -64,17 +60,12 @@ error_codes_t gen_var_def_check(char* var_name, generator_context_t* gen_context
 	G("LABEL %s", var_init_ok_label);
 
 	free(var_init_ok_label);
-
-	dec_ind();
-	G("# CHECK VAR [%s] INIT END\n", var_name);
+	
 	return OK;
 }
 
 // OK
 error_codes_t gen_expr_vars_def_checks(AST_node_t* expr_n, generator_context_t* gen_context){
-	G("# CHECK EXPR VARS INIT START");
-	inc_ind();
-
 	error_codes_t res;
 
 	token_array_t* expr = expr_n->data.expression;
@@ -88,21 +79,14 @@ error_codes_t gen_expr_vars_def_checks(AST_node_t* expr_n, generator_context_t* 
 		}
 	}
 
-	dec_ind();
-	G("# CHECK EXPR VARS INIT END\n");
 	return OK;
 }
 
 error_codes_t gen_expr(AST_node_t* expr_n, generator_context_t* gen_context){
-	G("# EXPRESSION START");
-	inc_ind();
-
 	// generate code to evaluate expression, including type checks
 	// expression result should be at the top of data stack
 	gen_expression(expr_n->data.expression, gen_context);
 
-	dec_ind();
-	G("# EXPRESSION END\n");
 	return OK;
 }
 
@@ -116,8 +100,14 @@ error_codes_t gen_while(AST_node_t* while_n, generator_context_t* gen_context){
 
 	error_codes_t res;
 	
+	G("# CHECK WHILE COND VARS DEFS START");
+	inc_ind();
+
 	// generate expression variables definition checks
 	if((res = gen_expr_vars_def_checks(expr_n, gen_context)) != OK) return res;
+
+	dec_ind();
+	G("# CHECK WHILE COND VARS DEFS END\n");
 
 	// get unique label ?while_start, ?while_body_start, ?while_end,
 	char *while_start, *while_body_start, *while_end;
@@ -157,8 +147,14 @@ error_codes_t gen_if(AST_node_t* if_n, generator_context_t* gen_context){
 
 	error_codes_t res;
 
+	G("# CHECK IF COND VARS DEFS START");
+	inc_ind();
+
 	// generate expression varaibles definition checks
 	if((res = gen_expr_vars_def_checks(expr_n, gen_context)) != OK) return res;
+
+	dec_ind();
+	G("# CHECK IF COND VARS DEFS END\n");
 
 	// generate expression, expression result will be top element of data stack
 	if((res = gen_expr(expr_n, gen_context)) != OK) return res;
@@ -202,8 +198,15 @@ error_codes_t gen_ass_expr(AST_node_t* ass_expr_n, generator_context_t* gen_cont
 
 	char* var_name = var_n->data.str;
 
+	G("# CHECK EXPR VARS DEFS START");
+	inc_ind();
+
 	// generate expression varaibles definition checks
 	if((res = gen_expr_vars_def_checks(expr_n, gen_context)) != OK) return res;
+
+	dec_ind();
+	G("# CHECK EXPR VARS DEFS END\n");
+	
 
 	// generate expression, expression result will be top element of data stack
 	if((res = gen_expr(expr_n, gen_context)) != OK) return res;
@@ -290,9 +293,6 @@ error_codes_t gen_func_args_push(AST_node_t* func_call_n, generator_context_t* g
 
 // OK
 error_codes_t gen_func_call(AST_node_t* func_call_n, generator_context_t* gen_context){
-	G("# CALL FUNC [%s] START", func_call_n->data.str);
-	inc_ind();
-
 	error_codes_t res;
 
 	char* func_name = func_call_n->data.str;
@@ -306,8 +306,6 @@ error_codes_t gen_func_call(AST_node_t* func_call_n, generator_context_t* gen_co
 	// call function
 	G("CALL %s", func_name);
 
-	dec_ind();
-	G("# CALL FUNC [%s] END\n", func_call_n->data.str);
 	return OK;
 }
 
@@ -365,8 +363,15 @@ error_codes_t gen_standalone_expr(AST_node_t* expr_n, generator_context_t* gen_c
 
 	error_codes_t res;
 
+	G("# CHECK EXPR VARS DEFS START");
+	inc_ind();
+
 	// generate expression variables definition checks
 	if((res = gen_expr_vars_def_checks(expr_n, gen_context)) != OK) return res;
+
+	dec_ind();
+	G("# CHECK EXPR VARS DEFS END\n");
+	
 
 	// generate expression, expression result will be top element of data stack
 	if((res = gen_expr(expr_n, gen_context)) != OK) return res;
