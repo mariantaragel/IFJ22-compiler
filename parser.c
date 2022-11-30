@@ -2,7 +2,7 @@
  * @name parser.c
  * @brief Implementation of top-down parser
  * @authors Marián Tarageľ
- * @date 23.11.2022
+ * @date 30.11.2022
  */
 
 #include "parser.h"
@@ -21,6 +21,11 @@
 
 #define TRUE 1
 #define FALSE 0
+
+int is_token_type_correct(int num_of_types, token_t *token, ...);
+void expression(token_t **token, int is_in_if_or_while, token_array_t *array);
+void add_aval_to_node(token_t *token, AST_node_t *node);
+void semantic_action(token_t *token, token_t *next_token, AST_node_t *parent);
 
 AST_node_t *program()
 {
@@ -111,6 +116,7 @@ void php_start(token_t *token)
 
 void program_body(token_t *token, AST_node_t *parent)
 {   
+    // matching to func def
     func_def(token, parent);
     if (error == OK) {
         token = get_token();
@@ -119,10 +125,13 @@ void program_body(token_t *token, AST_node_t *parent)
         t_dstr(token);
         return;
     }
+
+    // check for other errors
     if (error == LEXICAL_ERROR || error == INTERNAL_ERROR) {
         RETURN_IF_ERROR;
     }
     
+    // func def was not matched, error is set back to OK and now matching stmt
     error = OK;
     stmt(token, parent);
     if (error == OK) {
@@ -132,10 +141,13 @@ void program_body(token_t *token, AST_node_t *parent)
         t_dstr(token);
         return;
     }
+
+    // check for other errors
     if (error == LEXICAL_ERROR || error == INTERNAL_ERROR) {
         RETURN_IF_ERROR;
     }
 
+    // stmt was not matched, error is set back to OK and now matching stmt_list_bracket_start
     error = OK;
     stmt_list_bracket_start(token, parent);
     if (error == OK) {
@@ -145,10 +157,13 @@ void program_body(token_t *token, AST_node_t *parent)
         t_dstr(token);
         return;
     }
+
+    // check for other errors
     if (error == LEXICAL_ERROR || error == INTERNAL_ERROR) {
         RETURN_IF_ERROR;
     }
 
+    // checking end of program
     error = OK;
     php_end(token);
     return;
@@ -433,70 +448,93 @@ void stmt(token_t *token, AST_node_t *parent)
                         DIV, ADD, SUB, CONCAT, LT, GT, LTE, GTE, EQ, NEQ, LB, RB, NULL_LIT)) {
             RETURN_ERROR(SYNTAX_ERROR);
         }
+        
         token_t *next_token = get_token();
         RETURN_IF_ERROR;
-        if (token->type == VAR_ID && next_token->type == ASSIGN) {
-            t_dstr(next_token);
-            token_t *next_next_token = get_token();
-            RETURN_IF_ERROR;
-            if (next_next_token->type == FUNC_ID) {
-                func_call_assignment(token, parent, next_next_token);
-                t_dstr(next_next_token);
-                RETURN_IF_ERROR;
+        
+        semantic_action(token, next_token, parent);
+        RETURN_IF_ERROR;
+        
+        break;
+    }
+}
 
-                token = get_token();
-                RETURN_IF_ERROR;
-                if (token->type != SCOLON) {
-                    t_dstr(token);
-                    RETURN_ERROR(SYNTAX_ERROR);
-                }
-                t_dstr(token);
-            }
-            else {
-                exp_assignment(token, parent, next_next_token);
-                RETURN_IF_ERROR;
-            }
-        }
-        else {
-            token_array_t *array = token_array_create();
-            RETURN_INTERNAL_ERROR(array)
-            token_t *dup_token = t_dup(token);
-            RETURN_INTERNAL_ERROR(dup_token)
-            if (is_token_type_correct(18, dup_token, VAR_ID, STR_LIT, INT_LIT, FLT_LIT, MUL,
-                            DIV, ADD, SUB, CONCAT, LT, GT, LTE, GTE, EQ, NEQ, LB, RB, NULL_LIT)) {
-                if (token_array_push_token(array, dup_token)) {
-                    t_dstr(token);
-                    RETURN_ERROR(INTERNAL_ERROR);
-                }
-            }
-            else {
-                token_array_free(array);
-                t_dstr(dup_token);
-                t_dstr(next_token);
-                RETURN_ERROR(SYNTAX_ERROR);
-            }
-            AST_node_t *n_expr = AST_create_add_child(parent, EXPR_N);
-            RETURN_INTERNAL_ERROR(n_expr);
-
-            token = next_token;
-            dup_token = t_dup(token);
-            RETURN_INTERNAL_ERROR(dup_token)
-            expression(&dup_token, FALSE, array);
+/**
+ * @brief Special semantic action to match rule based on two tokens 
+ */
+void semantic_action(token_t *token, token_t *next_token, AST_node_t *parent)
+{
+    // Not LL(1) grammar we will need two tokens
+    if (token->type == VAR_ID && next_token->type == ASSIGN) {
+        t_dstr(next_token);
+        token_t *next_next_token = get_token();
+        RETURN_IF_ERROR;
+        
+        if (next_next_token->type == FUNC_ID) { // var_id = func_call(); rule was matched
+            func_call_assignment(token, parent, next_next_token);
+            t_dstr(next_next_token);
             RETURN_IF_ERROR;
-            token = dup_token;
-            token_array_t *postfix = parse_expression(array);
-            RETURN_IF_ERROR;
-            n_expr->data.expression = postfix;
 
+            token = get_token();
+            RETURN_IF_ERROR;
             if (token->type != SCOLON) {
                 t_dstr(token);
                 RETURN_ERROR(SYNTAX_ERROR);
             }
-            t_dstr(next_token);
             t_dstr(token);
         }
+        else { // var_id = expression; rule was matched
+            exp_assignment(token, parent, next_next_token);
+            RETURN_IF_ERROR;
+        }
+    }
+    else { // expression; rule was matched
+        token_array_t *array = token_array_create();
+        RETURN_INTERNAL_ERROR(array)
+        token_t *dup_token = t_dup(token);
+        RETURN_INTERNAL_ERROR(dup_token)
         
-        break;
+        // push first preread token
+        if (is_token_type_correct(18, dup_token, VAR_ID, STR_LIT, INT_LIT, FLT_LIT, MUL,
+                        DIV, ADD, SUB, CONCAT, LT, GT, LTE, GTE, EQ, NEQ, LB, RB, NULL_LIT)) {
+            if (token_array_push_token(array, dup_token)) {
+                t_dstr(token);
+                RETURN_ERROR(INTERNAL_ERROR);
+            }
+        }
+        else {
+            token_array_free(array);
+            t_dstr(dup_token);
+            t_dstr(next_token);
+            RETURN_ERROR(SYNTAX_ERROR);
+        }
+        
+        AST_node_t *n_expr = AST_create_add_child(parent, EXPR_N);
+        RETURN_INTERNAL_ERROR(n_expr);
+
+        // next token was already readed so, we do not need to call get_token()
+        token = next_token;
+        dup_token = t_dup(token);
+        RETURN_INTERNAL_ERROR(dup_token)
+
+        expression(&dup_token, FALSE, array);
+        RETURN_IF_ERROR;
+        
+        // next token will be in dup_token, because expression function will read tokens until they can be in expression
+        token = dup_token;
+
+        // call precedence parser
+        token_array_t *postfix = parse_expression(array);
+        RETURN_IF_ERROR;
+        n_expr->data.expression = postfix;
+
+        if (token->type != SCOLON) {
+            t_dstr(token);
+            RETURN_ERROR(SYNTAX_ERROR);
+        }
+        
+        t_dstr(next_token);
+        t_dstr(token);
     }
 }
 
@@ -761,6 +799,7 @@ int is_token_type_correct(int num_of_types, token_t *token, ...)
  */
 void expression(token_t **token, int is_in_if_or_while, token_array_t *array)
 {
+    // check if token type can be in expression
     while (is_token_type_correct(18, *token, VAR_ID, STR_LIT, INT_LIT, FLT_LIT, MUL,
                             DIV, ADD, SUB, CONCAT, LT, GT, LTE, GTE, EQ, NEQ, LB, RB, NULL_LIT)) {
         if (token_array_push_token(array, *token)) {
@@ -771,10 +810,13 @@ void expression(token_t **token, int is_in_if_or_while, token_array_t *array)
         RETURN_IF_ERROR;
     }
     
+    // check only in if or while, bacesue next token after expression is ')', which can also be part of expression
     if (is_in_if_or_while) {
         if (array->token_count == 0UL) {
             RETURN_ERROR(SYNTAX_ERROR);
         }
+
+        // token on top of token array should be ')'
         token_t *prev_token = token_array_pop_token(array);
         if (prev_token->type != RB || array->token_count == 0UL) {
             t_dstr(prev_token);
