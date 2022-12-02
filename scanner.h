@@ -25,8 +25,8 @@
 #define digit 48: case 49: case 50: case 51: case 52: case 53: case 54: case 55: case 56: case 57:
 
 /**
- * @brief Scanner generates a token upon request from parser.
- * @returns Pointer to initialized token, NULL on failure.
+ * @brief Reads a lexeme from standard input and intializes it as a token.
+ * @returns Initialized token, NULL on failure.
  */
 token_t * get_token();
 
@@ -91,10 +91,19 @@ void neq_handler(token_t * t, int * c); // NEQ
  */
 void aeq_handler(token_t * t, int * c); // ASSIGN, EQ
 
+/**
+ * 
+*/
 int oct_write(dynamic_string_t * ds, int * c);
 
+/**
+ * 
+*/
 int hex_write(dynamic_string_t * ds, int * c);
 
+/**
+ * 
+*/
 int float_write(dynamic_string_t * ds, int * c);
 
 

@@ -110,10 +110,6 @@ typedef enum {
 	NULL_LIT_N,
 
 	/** Ch_count: X | Ch: ID_N
-	* 	Data: char* str (function name) */
-	USED_FUNC_LIST_N,
-
-	/** Ch_count: X | Ch: ID_N
 	* 	Data: char* str (variable id name) */
 	USED_VARS_LIST_N
 }AST_node_type_t;

@@ -1,1 +1,1 @@
-<?phpdeclare(strict_types=1);/*Tightly spaced*//*comments* /*/
+04534.1543210e+55aaa

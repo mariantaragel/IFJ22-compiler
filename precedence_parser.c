@@ -14,23 +14,25 @@
 #include "token.h"
 #include "error.h"
 
-error_codes_t reduce(pstack_t *pstack){
-	// token arrays of precedence reduction rule elements of handle at the top of precedence stack
-	token_array_t *ta1, *ta2, *ta3;
-	ta1 = ta2 = ta3 = NULL;
+error_codes_t get_handle(pstack_t *pstack, 
+						token_array_t **ta1, token_array_t **ta2, token_array_t **ta3,
+						prec_rule_elem_t *e1, prec_rule_elem_t *e2, prec_rule_elem_t *e3){
+	
+	// init handle token arrays
+	*ta1 = *ta2 = *ta3 = NULL;
 
-	// precedence rule elements representing handle at the top of precedence stack
-	prec_rule_elem_t e1, e2, e3;
-	e1 = e2 = e3 = PREC_RULE_ELEM_NAN;
+	// init handle precedence rule elements
+	*e1 = *e2 = *e3 = PREC_RULE_ELEM_NAN;
 
 	// get handle from precedence stack (handle is popped from stack in reversed)
 	bool too_many_prec_rule_elements = false;
+
 	if(pstack_is_top_handle_start(pstack) == false){
-		ta3 = pstack_pop(pstack, &e3);
+		*ta3 = pstack_pop(pstack, e3);
 		if(pstack_is_top_handle_start(pstack) == false){
-			ta2 = pstack_pop(pstack, &e2);
+			*ta2 = pstack_pop(pstack, e2);
 			if(pstack_is_top_handle_start(pstack) == false){
-				ta1 = pstack_pop(pstack, &e1);
+				*ta1 = pstack_pop(pstack, e1);
 				if(pstack_is_top_handle_start(pstack) == false){
 					// start of handle was not found after popping 3 elements from precedence stack (maximum rule elements == 3)
 					too_many_prec_rule_elements = true;
@@ -40,35 +42,49 @@ error_codes_t reduce(pstack_t *pstack){
 				// shift precedence rule elements to start at e1
 				//   e1   e2   e3        e1   e2   e3 
 				// |NULL| e2 | e3 | -> | e2 | e3 |NULL|
-				e1 = e2; e2 = e3; e3 = PREC_RULE_ELEM_NAN;
+				*e1 = *e2; *e2 = *e3; *e3 = PREC_RULE_ELEM_NAN;
 
 				// shift token arrays to start at ta1
-				ta1 = ta2; ta2 = ta3; ta3 = NULL;
+				*ta1 = *ta2; *ta2 = *ta3; *ta3 = NULL;
 			}
 		}
 		else{
 			// shift precedence rule elements to start at e1
 			//   e1   e2   e3        e1   e2   e3
 			// |NULL|NULL| e3 | -> | e3 |NULL|NULL|
-			e1 = e3; e3 = PREC_RULE_ELEM_NAN;
+			*e1 = *e3; *e3 = PREC_RULE_ELEM_NAN;
 
 			// shift token arrays to start at ta1
-			ta1 = ta3; ta3 = NULL;
+			*ta1 = *ta3; *ta3 = NULL;
 		}
 	}
 
 	// if start of handle was not found, there were too many rule elements (maximum == 3), than expression has invalid syntax
 	if(too_many_prec_rule_elements == true){
-		token_array_free(ta1);
-		token_array_free(ta2);
-		token_array_free(ta3);
+		token_array_free(*ta1);
+		token_array_free(*ta2);
+		token_array_free(*ta3);
 		return SYNTAX_ERROR;
 	}
+	else{
+		return OK;
+	}
+}
+
+// reduce handle on top of precedence stack
+error_codes_t reduce(pstack_t *pstack){
+	// token arrays of precedence reduction rule elements of handle at the top of precedence stack
+	token_array_t *ta1, *ta2, *ta3;
+
+	// precedence rule elements representing handle at the top of precedence stack
+	prec_rule_elem_t e1, e2, e3;
+
+	error_codes_t res = OK;
+
+	if((res = get_handle(pstack, &ta1, &ta2, &ta3, &e1, &e2, &e3)) != OK) return res;
 
 	// remove handle start of top terminal
 	pstack_set_top_terminal_handle_start(pstack, false);
-
-	error_codes_t res = OK;
 
 	// get precedence rule action based on precedence rule elements
 	prec_rule_action_t rule_action = match_precedence_rule(e1, e2, e3);

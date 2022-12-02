@@ -72,9 +72,10 @@ symtable_item_t *symtable_item_create(symbol_name_t name){
 	new_item->name = name_copy;
 
 	// initialize symbol info of new item
-	new_item->symbol_info.used = false;
-	new_item->symbol_info.defined = false;
 	new_item->symbol_info.return_type = -1;
+	new_item->symbol_info.func_body_n = NULL;
+	new_item->symbol_info.checking_nested_calls_defs = false;
+	new_item->symbol_info.all_nested_calls_defined = false;
 	
     return new_item;
 }
