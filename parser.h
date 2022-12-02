@@ -168,8 +168,4 @@ void func_call_assignment(token_t *token, AST_node_t *parent, token_t *func_id_t
  */
 void exp_assignment(token_t *token, AST_node_t *parent, token_t *exp_token);
 
-int is_token_type_correct(int num_of_types, token_t *token, ...);
-void expression(token_t **token, int is_in_if_or_while, token_array_t *array);
-void add_aval_to_node(token_t *token, AST_node_t *node);
-
 #endif

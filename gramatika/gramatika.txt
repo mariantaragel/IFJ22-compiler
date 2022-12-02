@@ -1,6 +1,7 @@
 <program> -> <php_start> <program_body> 
-<php_start> -> '<?php' func_id '(' 'strict_types' '=' integer_literal ')' ';'
-<php_end> -> '?>' EOF | EOF
+<php_start> -> <?php func_id ( strict_types = int_lit ) ;
+<php_end> -> ?> EOF
+<php_end> -> EOF
 <program_body> -> <func_def> <program_body>
 <program_body> -> <stmt> <program_body>
 <program_body> -> <stmt_list_bracket_start> <program_body>
@@ -14,7 +15,7 @@
 <param_list> -> non_void_type $var_id <param_next>
 <param_next> -> )
 <param_next> -> , non_void_type $var_id <param_next>
-<return_type> -> void_type
+<return_type> -> void
 <return_type> -> non_void_type
 <stmt> -> if <if_stmt>
 <stmt> ->  while <while_stmt>
@@ -43,3 +44,4 @@
 lit = str_lit | int_lit | flt_lit | null
 operator = *, /, +, -, ., <, >, <=, >=, ===, !==
 non_void_type = int, ?int, float, ?float, string, ?string
+others = strict_types, :, else, ;

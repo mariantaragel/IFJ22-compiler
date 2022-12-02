@@ -149,7 +149,6 @@ void _AST_print_node(AST_node_t* node, FILE* fp){
 		case FLT_LIT_N:			node_name = "FLT_LIT_N"; break;
 		case NULL_LIT_N:		node_name = "NULL_LIT_N"; break;
 		case USED_VARS_LIST_N:	node_name = "USED_VARS_LIST_N"; break;
-		case USED_FUNC_LIST_N:	node_name = "USED_FUNC_LIST_N"; break;
 		case MISSING_RETURN_N:	node_name = "MISSING_RETURN_N"; break;
 		default: 				node_name = "UNKNOWN";
 	}

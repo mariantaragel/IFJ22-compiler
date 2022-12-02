@@ -11,6 +11,7 @@
 
 #include <stdlib.h>  // size_t
 #include <stdbool.h> // bool
+#include "abstract_syntax_tree.h"
 
 #ifndef DATATYPE_T
 #define DATATYPE_T
@@ -27,10 +28,11 @@ typedef int datatype_t;
  *
  */
 typedef struct{
+	bool checking_nested_calls_defs;
 
-	bool used;				// indicates whether function was used or not
+	bool all_nested_calls_defined;
 	
-	bool defined;			// indicates whether function was defined or not
+	AST_node_t* func_body_n;
 
 	datatype_t return_type;	// return type of function
 	
