@@ -2,13 +2,12 @@
  ** scanner.c
  ** Řešení IFJ-PROJEKT, 01.10.2022
  ** Autor: xhorva17
- ** Přeloženo:
  **/
 
 /**
  * @file scanner.c
  * @author xhorva17
- * @brief Scanner function implementations.
+ * @brief Implementation of lexical analyzer.
  * @date 2022-10-01
  */
 
@@ -23,9 +22,6 @@
 #include "dynamic_string.h"
 #include "token.h"
 #include "error.h"
-
-// #define DS_WRITE_GUARD(ds, c) if(ds_write(ds, c)) {error = INTERNAL_ERROR; return 1;}
-// #define SCANNER_GETCHAR(c) (c = fgetc(stdin));
 
 // int main() {
 
@@ -57,18 +53,17 @@ token_t * get_token() {
 		error = INTERNAL_ERROR;
 		return NULL;
 	}
-	token_t * t = t_init(); // Initialize returned token.
+	token_t * t = t_init(); // Initialize token for return.
 	if(t == NULL) {
 		error = INTERNAL_ERROR;
 		return NULL;
 	}
 
-	int c = 0; // Read character.
-	do {
-	/* Skip leading whitespace. */
+	int c = 0; // Character for read/write.
+	
+	do { // Skip leading whitespace and comments.
 		c = fgetc(stdin);
-		/* Skip comment. */
-		if(c == '/') {
+		if(c == '/') { // Skip if comment.
 			c = fgetc(stdin);
 			if(c == '/') {
 				do { 
@@ -94,13 +89,12 @@ token_t * get_token() {
 						}
 					}
 				}
-				c = ' '; // Condition
+				c = ' '; // Force loop condition as true.
 				continue;
 			} else {
-				ungetc(c, stdin); // Return to stream due to false read..
+				ungetc(c, stdin); // Return to false read.
 				c = '/'; // Set char to original.
 			}
-			// continue;
 		} // End comment skip.
 	} while ( c != EOF && isspace(c) != 0);
 
@@ -111,7 +105,7 @@ token_t * get_token() {
 	}
 	
 	switch(c) {
-		/* ATTRIBUTED TOKENS, KEYWORDS AND TYPES*/
+		/* ATTRIBUTED TOKENS, KEYWORDS AND TYPES */
 		case letter case '_': vik_handler(ds, t, &c); break; // FUNC_ID, FLT_T, STR_T, INT_T, VOID_T, NULL_LIT, ELSE, FUNCTION, IF, RETURN, WHILE
 		case '$': vik_handler(ds, t, &c); break; // VAR_ID
 		case digit fi_handler(ds, t, &c); break; // INT_LIT, FLT_LIT
@@ -150,7 +144,7 @@ void vik_handler(dynamic_string_t * ds, token_t * t, int * c) {
 			error = INTERNAL_ERROR;
 			return;
 		}
-	} while( (*c = fgetc(stdin)) != EOF && (isalnum(*c) != 0 || *c == '_') && isspace(*c) == 0); // watchout for file.
+	} while( (*c = fgetc(stdin)) != EOF && (isalnum(*c) != 0 || *c == '_') && isspace(*c) == 0); // Watchout for file end.
 	ungetc(*c, stdin);
 
 	for(int i = 0; i < reserved_words_count; i++) {
@@ -193,7 +187,7 @@ void vik_handler(dynamic_string_t * ds, token_t * t, int * c) {
 }
 
 void fi_handler(dynamic_string_t * ds, token_t * t, int * c) {
-	do {
+	do { // Write rest of digits.
 		if(ds_write(ds, *c)) {
 			error = INTERNAL_ERROR;
 			return;
@@ -207,7 +201,6 @@ void fi_handler(dynamic_string_t * ds, token_t * t, int * c) {
 		/* Check if value is ok. */
 
 		char * end_ptr;
-		// unsigned value = strtoumax(ds->str, &end_ptr, 10); // Try to conver value.
 		strtoumax(ds->str, &end_ptr, 10);
 		
 		if(*end_ptr != '\0') { // Incorrect read.
@@ -239,16 +232,11 @@ void fi_handler(dynamic_string_t * ds, token_t * t, int * c) {
 				error = LEXICAL_ERROR;
 				return;
 			}
-			if(errno == ERANGE) { // Out of range conversion error.
-				error = LEXICAL_ERROR;
-				return;
-			}
 			t->type = FLT_LIT;
 
-			char dummy[30];
+			char dummy[50];
 			sprintf(dummy, "%a", value); // Write into dummy.
 
-			// Conversion neccesarry.
 			/* String option */
 			if(t_attach(t, dummy)) {
 				error = INTERNAL_ERROR;
@@ -257,7 +245,6 @@ void fi_handler(dynamic_string_t * ds, token_t * t, int * c) {
 
 }
 
-/* TODO: Finish interpolation. */
 void s_handler(dynamic_string_t * ds, token_t * t, int * c) {
 	
 	while( (*c = fgetc(stdin)) != EOF && *c != '"') { // Write string to buffer.

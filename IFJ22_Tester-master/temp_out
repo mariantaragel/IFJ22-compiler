@@ -14,95 +14,69 @@
 # FUNC DEF FLAGS START
     DEFVAR GF@?write?defined
     MOVE GF@?write?defined bool@true
-    DEFVAR GF@?ord?defined
-    MOVE GF@?ord?defined bool@true
-    DEFVAR GF@?substring?defined
-    MOVE GF@?substring?defined bool@true
-    DEFVAR GF@?chr?defined
-    MOVE GF@?chr?defined bool@true
-    DEFVAR GF@?ssubstr?defined
-    MOVE GF@?ssubstr?defined bool@false
     DEFVAR GF@?strlen?defined
     MOVE GF@?strlen?defined bool@true
-    DEFVAR GF@?reads?defined
-    MOVE GF@?reads?defined bool@true
-    DEFVAR GF@?setData?defined
-    MOVE GF@?setData?defined bool@false
+    DEFVAR GF@?substring?defined
+    MOVE GF@?substring?defined bool@true
+    DEFVAR GF@?append?defined
+    MOVE GF@?append?defined bool@false
+    DEFVAR GF@?get?defined
+    MOVE GF@?get?defined bool@false
+    DEFVAR GF@?set?defined
+    MOVE GF@?set?defined bool@false
+    DEFVAR GF@?length?defined
+    MOVE GF@?length?defined bool@false
+    DEFVAR GF@?pow?defined
+    MOVE GF@?pow?defined bool@false
+    DEFVAR GF@?sierpinski?defined
+    MOVE GF@?sierpinski?defined bool@false
 # FUNC DEF FLAGS END
 
 # DEFINE USED VARS START
-    DEFVAR GF@$data
-    DEFVAR GF@$ptr
-    DEFVAR GF@$program
-    DEFVAR GF@$program_length
-    DEFVAR GF@$pc
-    DEFVAR GF@$pcPlusOne
-    DEFVAR GF@$c
-    DEFVAR GF@$ptrPlusOne
-    DEFVAR GF@$oldByte
-    DEFVAR GF@$newByte
-    DEFVAR GF@$out
-    DEFVAR GF@$nesting
+    DEFVAR GF@$tri
+    DEFVAR GF@$i
+    DEFVAR GF@$len
+    DEFVAR GF@$res
 # DEFINE USED VARS END
 
-# EXPR ASS START
-    # CHECK EXPR VARS INIT START
-    # CHECK EXPR VARS INIT END
+# FUNC [append] DEF FLAG SET START
+    MOVE GF@?append?defined bool@true
+# FUNC [append] DEF FLAG SET END
 
-    # EXPRESSION START
-        PUSHS string@
-    # EXPRESSION END
+# FUNC [get] DEF FLAG SET START
+    MOVE GF@?get?defined bool@true
+# FUNC [get] DEF FLAG SET END
 
-    POPS GF@$data
-# EXPR ASS END
+# FUNC [set] DEF FLAG SET START
+    MOVE GF@?set?defined bool@true
+# FUNC [set] DEF FLAG SET END
 
-# EXPR ASS START
-    # CHECK EXPR VARS INIT START
-    # CHECK EXPR VARS INIT END
+# FUNC [length] DEF FLAG SET START
+    MOVE GF@?length?defined bool@true
+# FUNC [length] DEF FLAG SET END
 
-    # EXPRESSION START
-        PUSHS int@0
-    # EXPRESSION END
+# FUNC [pow] DEF FLAG SET START
+    MOVE GF@?pow?defined bool@true
+# FUNC [pow] DEF FLAG SET END
 
-    POPS GF@$ptr
-# EXPR ASS END
+# FUNC [sierpinski] DEF FLAG SET START
+    MOVE GF@?sierpinski?defined bool@true
+# FUNC [sierpinski] DEF FLAG SET END
 
 # FUNC ASS START
-    # CALL FUNC [reads] START
-        JUMPIFEQ ?reads?func_def_ok_1 GF@?reads?defined bool@true
+    # CALL FUNC [sierpinski] START
+        JUMPIFEQ ?sierpinski?func_def_ok_1 GF@?sierpinski?defined bool@true
         EXIT int@3
-        LABEL ?reads?func_def_ok_1
+        LABEL ?sierpinski?func_def_ok_1
         # CHECK FUNC ARG INIT START
         # CHECK FUNC ARG INIT END
 
-        PUSHS int@0
-        CALL reads
-    # CALL FUNC [reads] END
-
-    POPS GF@$program
-# FUNC ASS END
-
-# FUNC ASS START
-    # CALL FUNC [strlen] START
-        JUMPIFEQ ?strlen?func_def_ok_2 GF@?strlen?defined bool@true
-        EXIT int@3
-        LABEL ?strlen?func_def_ok_2
-        # CHECK FUNC ARG INIT START
-            # CHECK VAR [$program] INIT START
-                TYPE GF@_tmp GF@$program
-                JUMPIFNEQ ?$program?var_init_ok_3 GF@_tmp string@
-                EXIT int@5
-                LABEL ?$program?var_init_ok_3
-            # CHECK VAR [$program] INIT END
-
-        # CHECK FUNC ARG INIT END
-
-        PUSHS GF@$program
+        PUSHS int@4
         PUSHS int@1
-        CALL strlen
-    # CALL FUNC [strlen] END
+        CALL sierpinski
+    # CALL FUNC [sierpinski] END
 
-    POPS GF@$program_length
+    POPS GF@$tri
 # FUNC ASS END
 
 # EXPR ASS START
@@ -113,1627 +87,172 @@
         PUSHS int@0
     # EXPRESSION END
 
-    POPS GF@$pc
+    POPS GF@$i
 # EXPR ASS END
 
-# FUNC [setData] DEF FLAG SET START
-    MOVE GF@?setData?defined bool@true
-# FUNC [setData] DEF FLAG SET END
+# FUNC ASS START
+    # CALL FUNC [length] START
+        JUMPIFEQ ?length?func_def_ok_2 GF@?length?defined bool@true
+        EXIT int@3
+        LABEL ?length?func_def_ok_2
+        # CHECK FUNC ARG INIT START
+            # CHECK VAR [$tri] INIT START
+                TYPE GF@_tmp GF@$tri
+                JUMPIFNEQ ?$tri?var_init_ok_3 GF@_tmp string@
+                EXIT int@5
+                LABEL ?$tri?var_init_ok_3
+            # CHECK VAR [$tri] INIT END
 
-# FUNC [ssubstr] DEF FLAG SET START
-    MOVE GF@?ssubstr?defined bool@true
-# FUNC [ssubstr] DEF FLAG SET END
+        # CHECK FUNC ARG INIT END
+
+        PUSHS GF@$tri
+        PUSHS int@1
+        CALL length
+    # CALL FUNC [length] END
+
+    POPS GF@$len
+# FUNC ASS END
 
 # WHILE START
     # CHECK EXPR VARS INIT START
-        # CHECK VAR [$program_length] INIT START
-            TYPE GF@_tmp GF@$program_length
-            JUMPIFNEQ ?$program_length?var_init_ok_4 GF@_tmp string@
+        # CHECK VAR [$len] INIT START
+            TYPE GF@_tmp GF@$len
+            JUMPIFNEQ ?$len?var_init_ok_4 GF@_tmp string@
             EXIT int@5
-            LABEL ?$program_length?var_init_ok_4
-        # CHECK VAR [$program_length] INIT END
+            LABEL ?$len?var_init_ok_4
+        # CHECK VAR [$len] INIT END
 
-        # CHECK VAR [$pc] INIT START
-            TYPE GF@_tmp GF@$pc
-            JUMPIFNEQ ?$pc?var_init_ok_5 GF@_tmp string@
+        # CHECK VAR [$i] INIT START
+            TYPE GF@_tmp GF@$i
+            JUMPIFNEQ ?$i?var_init_ok_5 GF@_tmp string@
             EXIT int@5
-            LABEL ?$pc?var_init_ok_5
-        # CHECK VAR [$pc] INIT END
+            LABEL ?$i?var_init_ok_5
+        # CHECK VAR [$i] INIT END
 
     # CHECK EXPR VARS INIT END
 
     LABEL ?while_start_1
     # EXPRESSION START
-        PUSHS GF@$program_length
-        PUSHS GF@$pc
+        PUSHS GF@$len
+        PUSHS GF@$i
         CALL &lt_op
     # EXPRESSION END
 
     CALL &to_bool
     POPS GF@_tmp_res
     JUMPIFEQ ?while_end_1 GF@_tmp_res bool@false
-    # EXPR ASS START
-        # CHECK EXPR VARS INIT START
-            # CHECK VAR [$pc] INIT START
-                TYPE GF@_tmp GF@$pc
-                JUMPIFNEQ ?$pc?var_init_ok_6 GF@_tmp string@
-                EXIT int@5
-                LABEL ?$pc?var_init_ok_6
-            # CHECK VAR [$pc] INIT END
-
-        # CHECK EXPR VARS INIT END
-
-        # EXPRESSION START
-            PUSHS int@1
-            PUSHS GF@$pc
-            CALL &add_op
-        # EXPRESSION END
-
-        POPS GF@$pcPlusOne
-    # EXPR ASS END
-
     # FUNC ASS START
-        # CALL FUNC [ssubstr] START
-            JUMPIFEQ ?ssubstr?func_def_ok_7 GF@?ssubstr?defined bool@true
+        # CALL FUNC [get] START
+            JUMPIFEQ ?get?func_def_ok_6 GF@?get?defined bool@true
             EXIT int@3
-            LABEL ?ssubstr?func_def_ok_7
+            LABEL ?get?func_def_ok_6
             # CHECK FUNC ARG INIT START
-                # CHECK VAR [$program] INIT START
-                    TYPE GF@_tmp GF@$program
-                    JUMPIFNEQ ?$program?var_init_ok_8 GF@_tmp string@
+                # CHECK VAR [$tri] INIT START
+                    TYPE GF@_tmp GF@$tri
+                    JUMPIFNEQ ?$tri?var_init_ok_7 GF@_tmp string@
                     EXIT int@5
-                    LABEL ?$program?var_init_ok_8
-                # CHECK VAR [$program] INIT END
+                    LABEL ?$tri?var_init_ok_7
+                # CHECK VAR [$tri] INIT END
 
-                # CHECK VAR [$pc] INIT START
-                    TYPE GF@_tmp GF@$pc
-                    JUMPIFNEQ ?$pc?var_init_ok_9 GF@_tmp string@
+                # CHECK VAR [$i] INIT START
+                    TYPE GF@_tmp GF@$i
+                    JUMPIFNEQ ?$i?var_init_ok_8 GF@_tmp string@
                     EXIT int@5
-                    LABEL ?$pc?var_init_ok_9
-                # CHECK VAR [$pc] INIT END
-
-                # CHECK VAR [$pcPlusOne] INIT START
-                    TYPE GF@_tmp GF@$pcPlusOne
-                    JUMPIFNEQ ?$pcPlusOne?var_init_ok_10 GF@_tmp string@
-                    EXIT int@5
-                    LABEL ?$pcPlusOne?var_init_ok_10
-                # CHECK VAR [$pcPlusOne] INIT END
+                    LABEL ?$i?var_init_ok_8
+                # CHECK VAR [$i] INIT END
 
             # CHECK FUNC ARG INIT END
 
-            PUSHS GF@$pcPlusOne
-            PUSHS GF@$pc
-            PUSHS GF@$program
-            PUSHS int@3
-            CALL ssubstr
-        # CALL FUNC [ssubstr] END
+            PUSHS GF@$i
+            PUSHS GF@$tri
+            PUSHS int@2
+            CALL get
+        # CALL FUNC [get] END
 
-        POPS GF@$c
+        POPS GF@$res
     # FUNC ASS END
 
-    # IF START
-        # CHECK EXPR VARS INIT START
-            # CHECK VAR [$c] INIT START
-                TYPE GF@_tmp GF@$c
-                JUMPIFNEQ ?$c?var_init_ok_11 GF@_tmp string@
-                EXIT int@5
-                LABEL ?$c?var_init_ok_11
-            # CHECK VAR [$c] INIT END
+    # STANDALONE FUNC CALL START
+        # CALL FUNC [write] START
+            JUMPIFEQ ?write?func_def_ok_9 GF@?write?defined bool@true
+            EXIT int@3
+            LABEL ?write?func_def_ok_9
+            # CHECK FUNC ARG INIT START
+                # CHECK VAR [$res] INIT START
+                    TYPE GF@_tmp GF@$res
+                    JUMPIFNEQ ?$res?var_init_ok_10 GF@_tmp string@
+                    EXIT int@5
+                    LABEL ?$res?var_init_ok_10
+                # CHECK VAR [$res] INIT END
 
-        # CHECK EXPR VARS INIT END
+            # CHECK FUNC ARG INIT END
 
-        # EXPRESSION START
-            PUSHS GF@$c
-        # EXPRESSION END
+            PUSHS GF@$res
+            PUSHS int@1
+            CALL write
+        # CALL FUNC [write] END
 
-        CALL &to_bool
         POPS GF@_tmp_res
-        JUMPIFEQ ?if_branch_false_1 GF@_tmp_res bool@false
-        JUMP ?if_end_1
-        LABEL ?if_branch_false_1
-        # FUNC ASS START
-            # CALL FUNC [chr] START
-                JUMPIFEQ ?chr?func_def_ok_12 GF@?chr?defined bool@true
-                EXIT int@3
-                LABEL ?chr?func_def_ok_12
-                # CHECK FUNC ARG INIT START
-                # CHECK FUNC ARG INIT END
+    # STANDALONE FUNC CALL END
 
-                PUSHS int@0
-                PUSHS int@1
-                CALL chr
-            # CALL FUNC [chr] END
+    # STANDALONE FUNC CALL START
+        # CALL FUNC [write] START
+            JUMPIFEQ ?write?func_def_ok_11 GF@?write?defined bool@true
+            EXIT int@3
+            LABEL ?write?func_def_ok_11
+            # CHECK FUNC ARG INIT START
+            # CHECK FUNC ARG INIT END
 
-            POPS GF@$c
-        # FUNC ASS END
+            PUSHS string@\010
+            PUSHS int@1
+            CALL write
+        # CALL FUNC [write] END
 
-        LABEL ?if_end_1
-    # IF END
-
-    # IF START
-        # CHECK EXPR VARS INIT START
-            # CHECK VAR [$c] INIT START
-                TYPE GF@_tmp GF@$c
-                JUMPIFNEQ ?$c?var_init_ok_13 GF@_tmp string@
-                EXIT int@5
-                LABEL ?$c?var_init_ok_13
-            # CHECK VAR [$c] INIT END
-
-        # CHECK EXPR VARS INIT END
-
-        # EXPRESSION START
-            PUSHS string@+
-            PUSHS GF@$c
-            CALL &eq_op
-        # EXPRESSION END
-
-        CALL &to_bool
         POPS GF@_tmp_res
-        JUMPIFEQ ?if_branch_false_2 GF@_tmp_res bool@false
-        # EXPR ASS START
-            # CHECK EXPR VARS INIT START
-                # CHECK VAR [$ptr] INIT START
-                    TYPE GF@_tmp GF@$ptr
-                    JUMPIFNEQ ?$ptr?var_init_ok_14 GF@_tmp string@
-                    EXIT int@5
-                    LABEL ?$ptr?var_init_ok_14
-                # CHECK VAR [$ptr] INIT END
-
-            # CHECK EXPR VARS INIT END
-
-            # EXPRESSION START
-                PUSHS int@1
-                PUSHS GF@$ptr
-                CALL &add_op
-            # EXPRESSION END
-
-            POPS GF@$ptrPlusOne
-        # EXPR ASS END
-
-        # FUNC ASS START
-            # CALL FUNC [ssubstr] START
-                JUMPIFEQ ?ssubstr?func_def_ok_15 GF@?ssubstr?defined bool@true
-                EXIT int@3
-                LABEL ?ssubstr?func_def_ok_15
-                # CHECK FUNC ARG INIT START
-                    # CHECK VAR [$data] INIT START
-                        TYPE GF@_tmp GF@$data
-                        JUMPIFNEQ ?$data?var_init_ok_16 GF@_tmp string@
-                        EXIT int@5
-                        LABEL ?$data?var_init_ok_16
-                    # CHECK VAR [$data] INIT END
-
-                    # CHECK VAR [$ptr] INIT START
-                        TYPE GF@_tmp GF@$ptr
-                        JUMPIFNEQ ?$ptr?var_init_ok_17 GF@_tmp string@
-                        EXIT int@5
-                        LABEL ?$ptr?var_init_ok_17
-                    # CHECK VAR [$ptr] INIT END
-
-                    # CHECK VAR [$ptrPlusOne] INIT START
-                        TYPE GF@_tmp GF@$ptrPlusOne
-                        JUMPIFNEQ ?$ptrPlusOne?var_init_ok_18 GF@_tmp string@
-                        EXIT int@5
-                        LABEL ?$ptrPlusOne?var_init_ok_18
-                    # CHECK VAR [$ptrPlusOne] INIT END
-
-                # CHECK FUNC ARG INIT END
-
-                PUSHS GF@$ptrPlusOne
-                PUSHS GF@$ptr
-                PUSHS GF@$data
-                PUSHS int@3
-                CALL ssubstr
-            # CALL FUNC [ssubstr] END
-
-            POPS GF@$oldByte
-        # FUNC ASS END
-
-        # FUNC ASS START
-            # CALL FUNC [ord] START
-                JUMPIFEQ ?ord?func_def_ok_19 GF@?ord?defined bool@true
-                EXIT int@3
-                LABEL ?ord?func_def_ok_19
-                # CHECK FUNC ARG INIT START
-                    # CHECK VAR [$oldByte] INIT START
-                        TYPE GF@_tmp GF@$oldByte
-                        JUMPIFNEQ ?$oldByte?var_init_ok_20 GF@_tmp string@
-                        EXIT int@5
-                        LABEL ?$oldByte?var_init_ok_20
-                    # CHECK VAR [$oldByte] INIT END
-
-                # CHECK FUNC ARG INIT END
-
-                PUSHS GF@$oldByte
-                PUSHS int@1
-                CALL ord
-            # CALL FUNC [ord] END
-
-            POPS GF@$newByte
-        # FUNC ASS END
-
-        # EXPR ASS START
-            # CHECK EXPR VARS INIT START
-                # CHECK VAR [$newByte] INIT START
-                    TYPE GF@_tmp GF@$newByte
-                    JUMPIFNEQ ?$newByte?var_init_ok_21 GF@_tmp string@
-                    EXIT int@5
-                    LABEL ?$newByte?var_init_ok_21
-                # CHECK VAR [$newByte] INIT END
-
-            # CHECK EXPR VARS INIT END
-
-            # EXPRESSION START
-                PUSHS int@1
-                PUSHS GF@$newByte
-                CALL &add_op
-            # EXPRESSION END
-
-            POPS GF@$newByte
-        # EXPR ASS END
-
-        # IF START
-            # CHECK EXPR VARS INIT START
-                # CHECK VAR [$newByte] INIT START
-                    TYPE GF@_tmp GF@$newByte
-                    JUMPIFNEQ ?$newByte?var_init_ok_22 GF@_tmp string@
-                    EXIT int@5
-                    LABEL ?$newByte?var_init_ok_22
-                # CHECK VAR [$newByte] INIT END
-
-            # CHECK EXPR VARS INIT END
-
-            # EXPRESSION START
-                PUSHS int@255
-                PUSHS GF@$newByte
-                CALL &gt_op
-            # EXPRESSION END
-
-            CALL &to_bool
-            POPS GF@_tmp_res
-            JUMPIFEQ ?if_branch_false_3 GF@_tmp_res bool@false
-            # EXPR ASS START
-                # CHECK EXPR VARS INIT START
-                # CHECK EXPR VARS INIT END
-
-                # EXPRESSION START
-                    PUSHS int@0
-                # EXPRESSION END
-
-                POPS GF@$newByte
-            # EXPR ASS END
-
-            JUMP ?if_end_3
-            LABEL ?if_branch_false_3
-            LABEL ?if_end_3
-        # IF END
-
-        # IF START
-            # CHECK EXPR VARS INIT START
-                # CHECK VAR [$newByte] INIT START
-                    TYPE GF@_tmp GF@$newByte
-                    JUMPIFNEQ ?$newByte?var_init_ok_23 GF@_tmp string@
-                    EXIT int@5
-                    LABEL ?$newByte?var_init_ok_23
-                # CHECK VAR [$newByte] INIT END
-
-            # CHECK EXPR VARS INIT END
-
-            # EXPRESSION START
-                PUSHS int@0
-                PUSHS GF@$newByte
-                CALL &lt_op
-            # EXPRESSION END
-
-            CALL &to_bool
-            POPS GF@_tmp_res
-            JUMPIFEQ ?if_branch_false_4 GF@_tmp_res bool@false
-            # EXPR ASS START
-                # CHECK EXPR VARS INIT START
-                # CHECK EXPR VARS INIT END
-
-                # EXPRESSION START
-                    PUSHS int@255
-                # EXPRESSION END
-
-                POPS GF@$newByte
-            # EXPR ASS END
-
-            JUMP ?if_end_4
-            LABEL ?if_branch_false_4
-            LABEL ?if_end_4
-        # IF END
-
-        # FUNC ASS START
-            # CALL FUNC [setData] START
-                JUMPIFEQ ?setData?func_def_ok_24 GF@?setData?defined bool@true
-                EXIT int@3
-                LABEL ?setData?func_def_ok_24
-                # CHECK FUNC ARG INIT START
-                    # CHECK VAR [$data] INIT START
-                        TYPE GF@_tmp GF@$data
-                        JUMPIFNEQ ?$data?var_init_ok_25 GF@_tmp string@
-                        EXIT int@5
-                        LABEL ?$data?var_init_ok_25
-                    # CHECK VAR [$data] INIT END
-
-                    # CHECK VAR [$ptr] INIT START
-                        TYPE GF@_tmp GF@$ptr
-                        JUMPIFNEQ ?$ptr?var_init_ok_26 GF@_tmp string@
-                        EXIT int@5
-                        LABEL ?$ptr?var_init_ok_26
-                    # CHECK VAR [$ptr] INIT END
-
-                    # CHECK VAR [$newByte] INIT START
-                        TYPE GF@_tmp GF@$newByte
-                        JUMPIFNEQ ?$newByte?var_init_ok_27 GF@_tmp string@
-                        EXIT int@5
-                        LABEL ?$newByte?var_init_ok_27
-                    # CHECK VAR [$newByte] INIT END
-
-                # CHECK FUNC ARG INIT END
-
-                PUSHS GF@$newByte
-                PUSHS GF@$ptr
-                PUSHS GF@$data
-                PUSHS int@3
-                CALL setData
-            # CALL FUNC [setData] END
-
-            POPS GF@$data
-        # FUNC ASS END
-
-        JUMP ?if_end_2
-        LABEL ?if_branch_false_2
-        # IF START
-            # CHECK EXPR VARS INIT START
-                # CHECK VAR [$c] INIT START
-                    TYPE GF@_tmp GF@$c
-                    JUMPIFNEQ ?$c?var_init_ok_28 GF@_tmp string@
-                    EXIT int@5
-                    LABEL ?$c?var_init_ok_28
-                # CHECK VAR [$c] INIT END
-
-            # CHECK EXPR VARS INIT END
-
-            # EXPRESSION START
-                PUSHS string@-
-                PUSHS GF@$c
-                CALL &eq_op
-            # EXPRESSION END
-
-            CALL &to_bool
-            POPS GF@_tmp_res
-            JUMPIFEQ ?if_branch_false_5 GF@_tmp_res bool@false
-            # EXPR ASS START
-                # CHECK EXPR VARS INIT START
-                    # CHECK VAR [$ptr] INIT START
-                        TYPE GF@_tmp GF@$ptr
-                        JUMPIFNEQ ?$ptr?var_init_ok_29 GF@_tmp string@
-                        EXIT int@5
-                        LABEL ?$ptr?var_init_ok_29
-                    # CHECK VAR [$ptr] INIT END
-
-                # CHECK EXPR VARS INIT END
-
-                # EXPRESSION START
-                    PUSHS int@1
-                    PUSHS GF@$ptr
-                    CALL &add_op
-                # EXPRESSION END
-
-                POPS GF@$ptrPlusOne
-            # EXPR ASS END
-
-            # FUNC ASS START
-                # CALL FUNC [ssubstr] START
-                    JUMPIFEQ ?ssubstr?func_def_ok_30 GF@?ssubstr?defined bool@true
-                    EXIT int@3
-                    LABEL ?ssubstr?func_def_ok_30
-                    # CHECK FUNC ARG INIT START
-                        # CHECK VAR [$data] INIT START
-                            TYPE GF@_tmp GF@$data
-                            JUMPIFNEQ ?$data?var_init_ok_31 GF@_tmp string@
-                            EXIT int@5
-                            LABEL ?$data?var_init_ok_31
-                        # CHECK VAR [$data] INIT END
-
-                        # CHECK VAR [$ptr] INIT START
-                            TYPE GF@_tmp GF@$ptr
-                            JUMPIFNEQ ?$ptr?var_init_ok_32 GF@_tmp string@
-                            EXIT int@5
-                            LABEL ?$ptr?var_init_ok_32
-                        # CHECK VAR [$ptr] INIT END
-
-                        # CHECK VAR [$ptrPlusOne] INIT START
-                            TYPE GF@_tmp GF@$ptrPlusOne
-                            JUMPIFNEQ ?$ptrPlusOne?var_init_ok_33 GF@_tmp string@
-                            EXIT int@5
-                            LABEL ?$ptrPlusOne?var_init_ok_33
-                        # CHECK VAR [$ptrPlusOne] INIT END
-
-                    # CHECK FUNC ARG INIT END
-
-                    PUSHS GF@$ptrPlusOne
-                    PUSHS GF@$ptr
-                    PUSHS GF@$data
-                    PUSHS int@3
-                    CALL ssubstr
-                # CALL FUNC [ssubstr] END
-
-                POPS GF@$oldByte
-            # FUNC ASS END
-
-            # FUNC ASS START
-                # CALL FUNC [ord] START
-                    JUMPIFEQ ?ord?func_def_ok_34 GF@?ord?defined bool@true
-                    EXIT int@3
-                    LABEL ?ord?func_def_ok_34
-                    # CHECK FUNC ARG INIT START
-                        # CHECK VAR [$oldByte] INIT START
-                            TYPE GF@_tmp GF@$oldByte
-                            JUMPIFNEQ ?$oldByte?var_init_ok_35 GF@_tmp string@
-                            EXIT int@5
-                            LABEL ?$oldByte?var_init_ok_35
-                        # CHECK VAR [$oldByte] INIT END
-
-                    # CHECK FUNC ARG INIT END
-
-                    PUSHS GF@$oldByte
-                    PUSHS int@1
-                    CALL ord
-                # CALL FUNC [ord] END
-
-                POPS GF@$newByte
-            # FUNC ASS END
-
-            # EXPR ASS START
-                # CHECK EXPR VARS INIT START
-                    # CHECK VAR [$newByte] INIT START
-                        TYPE GF@_tmp GF@$newByte
-                        JUMPIFNEQ ?$newByte?var_init_ok_36 GF@_tmp string@
-                        EXIT int@5
-                        LABEL ?$newByte?var_init_ok_36
-                    # CHECK VAR [$newByte] INIT END
-
-                # CHECK EXPR VARS INIT END
-
-                # EXPRESSION START
-                    PUSHS int@1
-                    PUSHS GF@$newByte
-                    CALL &sub_op
-                # EXPRESSION END
-
-                POPS GF@$newByte
-            # EXPR ASS END
-
-            # IF START
-                # CHECK EXPR VARS INIT START
-                    # CHECK VAR [$newByte] INIT START
-                        TYPE GF@_tmp GF@$newByte
-                        JUMPIFNEQ ?$newByte?var_init_ok_37 GF@_tmp string@
-                        EXIT int@5
-                        LABEL ?$newByte?var_init_ok_37
-                    # CHECK VAR [$newByte] INIT END
-
-                # CHECK EXPR VARS INIT END
-
-                # EXPRESSION START
-                    PUSHS int@255
-                    PUSHS GF@$newByte
-                    CALL &gt_op
-                # EXPRESSION END
-
-                CALL &to_bool
-                POPS GF@_tmp_res
-                JUMPIFEQ ?if_branch_false_6 GF@_tmp_res bool@false
-                # EXPR ASS START
-                    # CHECK EXPR VARS INIT START
-                    # CHECK EXPR VARS INIT END
-
-                    # EXPRESSION START
-                        PUSHS int@0
-                    # EXPRESSION END
-
-                    POPS GF@$newByte
-                # EXPR ASS END
-
-                JUMP ?if_end_6
-                LABEL ?if_branch_false_6
-                LABEL ?if_end_6
-            # IF END
-
-            # IF START
-                # CHECK EXPR VARS INIT START
-                    # CHECK VAR [$newByte] INIT START
-                        TYPE GF@_tmp GF@$newByte
-                        JUMPIFNEQ ?$newByte?var_init_ok_38 GF@_tmp string@
-                        EXIT int@5
-                        LABEL ?$newByte?var_init_ok_38
-                    # CHECK VAR [$newByte] INIT END
-
-                # CHECK EXPR VARS INIT END
-
-                # EXPRESSION START
-                    PUSHS int@0
-                    PUSHS GF@$newByte
-                    CALL &lt_op
-                # EXPRESSION END
-
-                CALL &to_bool
-                POPS GF@_tmp_res
-                JUMPIFEQ ?if_branch_false_7 GF@_tmp_res bool@false
-                # EXPR ASS START
-                    # CHECK EXPR VARS INIT START
-                    # CHECK EXPR VARS INIT END
-
-                    # EXPRESSION START
-                        PUSHS int@255
-                    # EXPRESSION END
-
-                    POPS GF@$newByte
-                # EXPR ASS END
-
-                JUMP ?if_end_7
-                LABEL ?if_branch_false_7
-                LABEL ?if_end_7
-            # IF END
-
-            # FUNC ASS START
-                # CALL FUNC [setData] START
-                    JUMPIFEQ ?setData?func_def_ok_39 GF@?setData?defined bool@true
-                    EXIT int@3
-                    LABEL ?setData?func_def_ok_39
-                    # CHECK FUNC ARG INIT START
-                        # CHECK VAR [$data] INIT START
-                            TYPE GF@_tmp GF@$data
-                            JUMPIFNEQ ?$data?var_init_ok_40 GF@_tmp string@
-                            EXIT int@5
-                            LABEL ?$data?var_init_ok_40
-                        # CHECK VAR [$data] INIT END
-
-                        # CHECK VAR [$ptr] INIT START
-                            TYPE GF@_tmp GF@$ptr
-                            JUMPIFNEQ ?$ptr?var_init_ok_41 GF@_tmp string@
-                            EXIT int@5
-                            LABEL ?$ptr?var_init_ok_41
-                        # CHECK VAR [$ptr] INIT END
-
-                        # CHECK VAR [$newByte] INIT START
-                            TYPE GF@_tmp GF@$newByte
-                            JUMPIFNEQ ?$newByte?var_init_ok_42 GF@_tmp string@
-                            EXIT int@5
-                            LABEL ?$newByte?var_init_ok_42
-                        # CHECK VAR [$newByte] INIT END
-
-                    # CHECK FUNC ARG INIT END
-
-                    PUSHS GF@$newByte
-                    PUSHS GF@$ptr
-                    PUSHS GF@$data
-                    PUSHS int@3
-                    CALL setData
-                # CALL FUNC [setData] END
-
-                POPS GF@$data
-            # FUNC ASS END
-
-            JUMP ?if_end_5
-            LABEL ?if_branch_false_5
-            # IF START
-                # CHECK EXPR VARS INIT START
-                    # CHECK VAR [$c] INIT START
-                        TYPE GF@_tmp GF@$c
-                        JUMPIFNEQ ?$c?var_init_ok_43 GF@_tmp string@
-                        EXIT int@5
-                        LABEL ?$c?var_init_ok_43
-                    # CHECK VAR [$c] INIT END
-
-                # CHECK EXPR VARS INIT END
-
-                # EXPRESSION START
-                    PUSHS string@>
-                    PUSHS GF@$c
-                    CALL &eq_op
-                # EXPRESSION END
-
-                CALL &to_bool
-                POPS GF@_tmp_res
-                JUMPIFEQ ?if_branch_false_8 GF@_tmp_res bool@false
-                # EXPR ASS START
-                    # CHECK EXPR VARS INIT START
-                        # CHECK VAR [$ptr] INIT START
-                            TYPE GF@_tmp GF@$ptr
-                            JUMPIFNEQ ?$ptr?var_init_ok_44 GF@_tmp string@
-                            EXIT int@5
-                            LABEL ?$ptr?var_init_ok_44
-                        # CHECK VAR [$ptr] INIT END
-
-                    # CHECK EXPR VARS INIT END
-
-                    # EXPRESSION START
-                        PUSHS int@1
-                        PUSHS GF@$ptr
-                        CALL &add_op
-                    # EXPRESSION END
-
-                    POPS GF@$ptr
-                # EXPR ASS END
-
-                JUMP ?if_end_8
-                LABEL ?if_branch_false_8
-                # IF START
-                    # CHECK EXPR VARS INIT START
-                        # CHECK VAR [$c] INIT START
-                            TYPE GF@_tmp GF@$c
-                            JUMPIFNEQ ?$c?var_init_ok_45 GF@_tmp string@
-                            EXIT int@5
-                            LABEL ?$c?var_init_ok_45
-                        # CHECK VAR [$c] INIT END
-
-                    # CHECK EXPR VARS INIT END
-
-                    # EXPRESSION START
-                        PUSHS string@<
-                        PUSHS GF@$c
-                        CALL &eq_op
-                    # EXPRESSION END
-
-                    CALL &to_bool
-                    POPS GF@_tmp_res
-                    JUMPIFEQ ?if_branch_false_9 GF@_tmp_res bool@false
-                    # EXPR ASS START
-                        # CHECK EXPR VARS INIT START
-                            # CHECK VAR [$ptr] INIT START
-                                TYPE GF@_tmp GF@$ptr
-                                JUMPIFNEQ ?$ptr?var_init_ok_46 GF@_tmp string@
-                                EXIT int@5
-                                LABEL ?$ptr?var_init_ok_46
-                            # CHECK VAR [$ptr] INIT END
-
-                        # CHECK EXPR VARS INIT END
-
-                        # EXPRESSION START
-                            PUSHS int@1
-                            PUSHS GF@$ptr
-                            CALL &sub_op
-                        # EXPRESSION END
-
-                        POPS GF@$ptr
-                    # EXPR ASS END
-
-                    JUMP ?if_end_9
-                    LABEL ?if_branch_false_9
-                    # IF START
-                        # CHECK EXPR VARS INIT START
-                            # CHECK VAR [$c] INIT START
-                                TYPE GF@_tmp GF@$c
-                                JUMPIFNEQ ?$c?var_init_ok_47 GF@_tmp string@
-                                EXIT int@5
-                                LABEL ?$c?var_init_ok_47
-                            # CHECK VAR [$c] INIT END
-
-                        # CHECK EXPR VARS INIT END
-
-                        # EXPRESSION START
-                            PUSHS string@.
-                            PUSHS GF@$c
-                            CALL &eq_op
-                        # EXPRESSION END
-
-                        CALL &to_bool
-                        POPS GF@_tmp_res
-                        JUMPIFEQ ?if_branch_false_10 GF@_tmp_res bool@false
-                        # EXPR ASS START
-                            # CHECK EXPR VARS INIT START
-                                # CHECK VAR [$ptr] INIT START
-                                    TYPE GF@_tmp GF@$ptr
-                                    JUMPIFNEQ ?$ptr?var_init_ok_48 GF@_tmp string@
-                                    EXIT int@5
-                                    LABEL ?$ptr?var_init_ok_48
-                                # CHECK VAR [$ptr] INIT END
-
-                            # CHECK EXPR VARS INIT END
-
-                            # EXPRESSION START
-                                PUSHS int@1
-                                PUSHS GF@$ptr
-                                CALL &add_op
-                            # EXPRESSION END
-
-                            POPS GF@$ptrPlusOne
-                        # EXPR ASS END
-
-                        # FUNC ASS START
-                            # CALL FUNC [ssubstr] START
-                                JUMPIFEQ ?ssubstr?func_def_ok_49 GF@?ssubstr?defined bool@true
-                                EXIT int@3
-                                LABEL ?ssubstr?func_def_ok_49
-                                # CHECK FUNC ARG INIT START
-                                    # CHECK VAR [$data] INIT START
-                                        TYPE GF@_tmp GF@$data
-                                        JUMPIFNEQ ?$data?var_init_ok_50 GF@_tmp string@
-                                        EXIT int@5
-                                        LABEL ?$data?var_init_ok_50
-                                    # CHECK VAR [$data] INIT END
-
-                                    # CHECK VAR [$ptr] INIT START
-                                        TYPE GF@_tmp GF@$ptr
-                                        JUMPIFNEQ ?$ptr?var_init_ok_51 GF@_tmp string@
-                                        EXIT int@5
-                                        LABEL ?$ptr?var_init_ok_51
-                                    # CHECK VAR [$ptr] INIT END
-
-                                    # CHECK VAR [$ptrPlusOne] INIT START
-                                        TYPE GF@_tmp GF@$ptrPlusOne
-                                        JUMPIFNEQ ?$ptrPlusOne?var_init_ok_52 GF@_tmp string@
-                                        EXIT int@5
-                                        LABEL ?$ptrPlusOne?var_init_ok_52
-                                    # CHECK VAR [$ptrPlusOne] INIT END
-
-                                # CHECK FUNC ARG INIT END
-
-                                PUSHS GF@$ptrPlusOne
-                                PUSHS GF@$ptr
-                                PUSHS GF@$data
-                                PUSHS int@3
-                                CALL ssubstr
-                            # CALL FUNC [ssubstr] END
-
-                            POPS GF@$out
-                        # FUNC ASS END
-
-                        # STANDALONE FUNC CALL START
-                            # CALL FUNC [write] START
-                                JUMPIFEQ ?write?func_def_ok_53 GF@?write?defined bool@true
-                                EXIT int@3
-                                LABEL ?write?func_def_ok_53
-                                # CHECK FUNC ARG INIT START
-                                    # CHECK VAR [$out] INIT START
-                                        TYPE GF@_tmp GF@$out
-                                        JUMPIFNEQ ?$out?var_init_ok_54 GF@_tmp string@
-                                        EXIT int@5
-                                        LABEL ?$out?var_init_ok_54
-                                    # CHECK VAR [$out] INIT END
-
-                                # CHECK FUNC ARG INIT END
-
-                                PUSHS GF@$out
-                                PUSHS int@1
-                                CALL write
-                            # CALL FUNC [write] END
-
-                            POPS GF@_tmp_res
-                        # STANDALONE FUNC CALL END
-
-                        JUMP ?if_end_10
-                        LABEL ?if_branch_false_10
-                        # IF START
-                            # CHECK EXPR VARS INIT START
-                                # CHECK VAR [$c] INIT START
-                                    TYPE GF@_tmp GF@$c
-                                    JUMPIFNEQ ?$c?var_init_ok_55 GF@_tmp string@
-                                    EXIT int@5
-                                    LABEL ?$c?var_init_ok_55
-                                # CHECK VAR [$c] INIT END
-
-                            # CHECK EXPR VARS INIT END
-
-                            # EXPRESSION START
-                                PUSHS string@[
-                                PUSHS GF@$c
-                                CALL &eq_op
-                            # EXPRESSION END
-
-                            CALL &to_bool
-                            POPS GF@_tmp_res
-                            JUMPIFEQ ?if_branch_false_11 GF@_tmp_res bool@false
-                            # EXPR ASS START
-                                # CHECK EXPR VARS INIT START
-                                    # CHECK VAR [$ptr] INIT START
-                                        TYPE GF@_tmp GF@$ptr
-                                        JUMPIFNEQ ?$ptr?var_init_ok_56 GF@_tmp string@
-                                        EXIT int@5
-                                        LABEL ?$ptr?var_init_ok_56
-                                    # CHECK VAR [$ptr] INIT END
-
-                                # CHECK EXPR VARS INIT END
-
-                                # EXPRESSION START
-                                    PUSHS int@1
-                                    PUSHS GF@$ptr
-                                    CALL &add_op
-                                # EXPRESSION END
-
-                                POPS GF@$ptrPlusOne
-                            # EXPR ASS END
-
-                            # FUNC ASS START
-                                # CALL FUNC [ssubstr] START
-                                    JUMPIFEQ ?ssubstr?func_def_ok_57 GF@?ssubstr?defined bool@true
-                                    EXIT int@3
-                                    LABEL ?ssubstr?func_def_ok_57
-                                    # CHECK FUNC ARG INIT START
-                                        # CHECK VAR [$data] INIT START
-                                            TYPE GF@_tmp GF@$data
-                                            JUMPIFNEQ ?$data?var_init_ok_58 GF@_tmp string@
-                                            EXIT int@5
-                                            LABEL ?$data?var_init_ok_58
-                                        # CHECK VAR [$data] INIT END
-
-                                        # CHECK VAR [$ptr] INIT START
-                                            TYPE GF@_tmp GF@$ptr
-                                            JUMPIFNEQ ?$ptr?var_init_ok_59 GF@_tmp string@
-                                            EXIT int@5
-                                            LABEL ?$ptr?var_init_ok_59
-                                        # CHECK VAR [$ptr] INIT END
-
-                                        # CHECK VAR [$ptrPlusOne] INIT START
-                                            TYPE GF@_tmp GF@$ptrPlusOne
-                                            JUMPIFNEQ ?$ptrPlusOne?var_init_ok_60 GF@_tmp string@
-                                            EXIT int@5
-                                            LABEL ?$ptrPlusOne?var_init_ok_60
-                                        # CHECK VAR [$ptrPlusOne] INIT END
-
-                                    # CHECK FUNC ARG INIT END
-
-                                    PUSHS GF@$ptrPlusOne
-                                    PUSHS GF@$ptr
-                                    PUSHS GF@$data
-                                    PUSHS int@3
-                                    CALL ssubstr
-                                # CALL FUNC [ssubstr] END
-
-                                POPS GF@$oldByte
-                            # FUNC ASS END
-
-                            # FUNC ASS START
-                                # CALL FUNC [ord] START
-                                    JUMPIFEQ ?ord?func_def_ok_61 GF@?ord?defined bool@true
-                                    EXIT int@3
-                                    LABEL ?ord?func_def_ok_61
-                                    # CHECK FUNC ARG INIT START
-                                        # CHECK VAR [$oldByte] INIT START
-                                            TYPE GF@_tmp GF@$oldByte
-                                            JUMPIFNEQ ?$oldByte?var_init_ok_62 GF@_tmp string@
-                                            EXIT int@5
-                                            LABEL ?$oldByte?var_init_ok_62
-                                        # CHECK VAR [$oldByte] INIT END
-
-                                    # CHECK FUNC ARG INIT END
-
-                                    PUSHS GF@$oldByte
-                                    PUSHS int@1
-                                    CALL ord
-                                # CALL FUNC [ord] END
-
-                                POPS GF@$newByte
-                            # FUNC ASS END
-
-                            # IF START
-                                # CHECK EXPR VARS INIT START
-                                    # CHECK VAR [$newByte] INIT START
-                                        TYPE GF@_tmp GF@$newByte
-                                        JUMPIFNEQ ?$newByte?var_init_ok_63 GF@_tmp string@
-                                        EXIT int@5
-                                        LABEL ?$newByte?var_init_ok_63
-                                    # CHECK VAR [$newByte] INIT END
-
-                                # CHECK EXPR VARS INIT END
-
-                                # EXPRESSION START
-                                    PUSHS int@0
-                                    PUSHS GF@$newByte
-                                    CALL &eq_op
-                                # EXPRESSION END
-
-                                CALL &to_bool
-                                POPS GF@_tmp_res
-                                JUMPIFEQ ?if_branch_false_12 GF@_tmp_res bool@false
-                                # EXPR ASS START
-                                    # CHECK EXPR VARS INIT START
-                                        # CHECK VAR [$pc] INIT START
-                                            TYPE GF@_tmp GF@$pc
-                                            JUMPIFNEQ ?$pc?var_init_ok_64 GF@_tmp string@
-                                            EXIT int@5
-                                            LABEL ?$pc?var_init_ok_64
-                                        # CHECK VAR [$pc] INIT END
-
-                                    # CHECK EXPR VARS INIT END
-
-                                    # EXPRESSION START
-                                        PUSHS int@1
-                                        PUSHS GF@$pc
-                                        CALL &add_op
-                                    # EXPRESSION END
-
-                                    POPS GF@$pc
-                                # EXPR ASS END
-
-                                # EXPR ASS START
-                                    # CHECK EXPR VARS INIT START
-                                    # CHECK EXPR VARS INIT END
-
-                                    # EXPRESSION START
-                                        PUSHS int@1
-                                    # EXPRESSION END
-
-                                    POPS GF@$nesting
-                                # EXPR ASS END
-
-                                # WHILE START
-                                    # CHECK EXPR VARS INIT START
-                                        # CHECK VAR [$nesting] INIT START
-                                            TYPE GF@_tmp GF@$nesting
-                                            JUMPIFNEQ ?$nesting?var_init_ok_65 GF@_tmp string@
-                                            EXIT int@5
-                                            LABEL ?$nesting?var_init_ok_65
-                                        # CHECK VAR [$nesting] INIT END
-
-                                    # CHECK EXPR VARS INIT END
-
-                                    LABEL ?while_start_2
-                                    # EXPRESSION START
-                                        PUSHS int@0
-                                        PUSHS GF@$nesting
-                                        CALL &gt_op
-                                    # EXPRESSION END
-
-                                    CALL &to_bool
-                                    POPS GF@_tmp_res
-                                    JUMPIFEQ ?while_end_2 GF@_tmp_res bool@false
-                                    # EXPR ASS START
-                                        # CHECK EXPR VARS INIT START
-                                            # CHECK VAR [$pc] INIT START
-                                                TYPE GF@_tmp GF@$pc
-                                                JUMPIFNEQ ?$pc?var_init_ok_66 GF@_tmp string@
-                                                EXIT int@5
-                                                LABEL ?$pc?var_init_ok_66
-                                            # CHECK VAR [$pc] INIT END
-
-                                        # CHECK EXPR VARS INIT END
-
-                                        # EXPRESSION START
-                                            PUSHS int@1
-                                            PUSHS GF@$pc
-                                            CALL &add_op
-                                        # EXPRESSION END
-
-                                        POPS GF@$pcPlusOne
-                                    # EXPR ASS END
-
-                                    # FUNC ASS START
-                                        # CALL FUNC [ssubstr] START
-                                            JUMPIFEQ ?ssubstr?func_def_ok_67 GF@?ssubstr?defined bool@true
-                                            EXIT int@3
-                                            LABEL ?ssubstr?func_def_ok_67
-                                            # CHECK FUNC ARG INIT START
-                                                # CHECK VAR [$program] INIT START
-                                                    TYPE GF@_tmp GF@$program
-                                                    JUMPIFNEQ ?$program?var_init_ok_68 GF@_tmp string@
-                                                    EXIT int@5
-                                                    LABEL ?$program?var_init_ok_68
-                                                # CHECK VAR [$program] INIT END
-
-                                                # CHECK VAR [$pc] INIT START
-                                                    TYPE GF@_tmp GF@$pc
-                                                    JUMPIFNEQ ?$pc?var_init_ok_69 GF@_tmp string@
-                                                    EXIT int@5
-                                                    LABEL ?$pc?var_init_ok_69
-                                                # CHECK VAR [$pc] INIT END
-
-                                                # CHECK VAR [$pcPlusOne] INIT START
-                                                    TYPE GF@_tmp GF@$pcPlusOne
-                                                    JUMPIFNEQ ?$pcPlusOne?var_init_ok_70 GF@_tmp string@
-                                                    EXIT int@5
-                                                    LABEL ?$pcPlusOne?var_init_ok_70
-                                                # CHECK VAR [$pcPlusOne] INIT END
-
-                                            # CHECK FUNC ARG INIT END
-
-                                            PUSHS GF@$pcPlusOne
-                                            PUSHS GF@$pc
-                                            PUSHS GF@$program
-                                            PUSHS int@3
-                                            CALL ssubstr
-                                        # CALL FUNC [ssubstr] END
-
-                                        POPS GF@$c
-                                    # FUNC ASS END
-
-                                    # IF START
-                                        # CHECK EXPR VARS INIT START
-                                            # CHECK VAR [$c] INIT START
-                                                TYPE GF@_tmp GF@$c
-                                                JUMPIFNEQ ?$c?var_init_ok_71 GF@_tmp string@
-                                                EXIT int@5
-                                                LABEL ?$c?var_init_ok_71
-                                            # CHECK VAR [$c] INIT END
-
-                                        # CHECK EXPR VARS INIT END
-
-                                        # EXPRESSION START
-                                            PUSHS GF@$c
-                                        # EXPRESSION END
-
-                                        CALL &to_bool
-                                        POPS GF@_tmp_res
-                                        JUMPIFEQ ?if_branch_false_13 GF@_tmp_res bool@false
-                                        JUMP ?if_end_13
-                                        LABEL ?if_branch_false_13
-                                        # FUNC ASS START
-                                            # CALL FUNC [chr] START
-                                                JUMPIFEQ ?chr?func_def_ok_72 GF@?chr?defined bool@true
-                                                EXIT int@3
-                                                LABEL ?chr?func_def_ok_72
-                                                # CHECK FUNC ARG INIT START
-                                                # CHECK FUNC ARG INIT END
-
-                                                PUSHS int@0
-                                                PUSHS int@1
-                                                CALL chr
-                                            # CALL FUNC [chr] END
-
-                                            POPS GF@$c
-                                        # FUNC ASS END
-
-                                        LABEL ?if_end_13
-                                    # IF END
-
-                                    # IF START
-                                        # CHECK EXPR VARS INIT START
-                                            # CHECK VAR [$c] INIT START
-                                                TYPE GF@_tmp GF@$c
-                                                JUMPIFNEQ ?$c?var_init_ok_73 GF@_tmp string@
-                                                EXIT int@5
-                                                LABEL ?$c?var_init_ok_73
-                                            # CHECK VAR [$c] INIT END
-
-                                        # CHECK EXPR VARS INIT END
-
-                                        # EXPRESSION START
-                                            PUSHS string@[
-                                            PUSHS GF@$c
-                                            CALL &eq_op
-                                        # EXPRESSION END
-
-                                        CALL &to_bool
-                                        POPS GF@_tmp_res
-                                        JUMPIFEQ ?if_branch_false_14 GF@_tmp_res bool@false
-                                        # EXPR ASS START
-                                            # CHECK EXPR VARS INIT START
-                                                # CHECK VAR [$nesting] INIT START
-                                                    TYPE GF@_tmp GF@$nesting
-                                                    JUMPIFNEQ ?$nesting?var_init_ok_74 GF@_tmp string@
-                                                    EXIT int@5
-                                                    LABEL ?$nesting?var_init_ok_74
-                                                # CHECK VAR [$nesting] INIT END
-
-                                            # CHECK EXPR VARS INIT END
-
-                                            # EXPRESSION START
-                                                PUSHS int@1
-                                                PUSHS GF@$nesting
-                                                CALL &add_op
-                                            # EXPRESSION END
-
-                                            POPS GF@$nesting
-                                        # EXPR ASS END
-
-                                        JUMP ?if_end_14
-                                        LABEL ?if_branch_false_14
-                                        # IF START
-                                            # CHECK EXPR VARS INIT START
-                                                # CHECK VAR [$c] INIT START
-                                                    TYPE GF@_tmp GF@$c
-                                                    JUMPIFNEQ ?$c?var_init_ok_75 GF@_tmp string@
-                                                    EXIT int@5
-                                                    LABEL ?$c?var_init_ok_75
-                                                # CHECK VAR [$c] INIT END
-
-                                            # CHECK EXPR VARS INIT END
-
-                                            # EXPRESSION START
-                                                PUSHS string@]
-                                                PUSHS GF@$c
-                                                CALL &eq_op
-                                            # EXPRESSION END
-
-                                            CALL &to_bool
-                                            POPS GF@_tmp_res
-                                            JUMPIFEQ ?if_branch_false_15 GF@_tmp_res bool@false
-                                            # EXPR ASS START
-                                                # CHECK EXPR VARS INIT START
-                                                    # CHECK VAR [$nesting] INIT START
-                                                        TYPE GF@_tmp GF@$nesting
-                                                        JUMPIFNEQ ?$nesting?var_init_ok_76 GF@_tmp string@
-                                                        EXIT int@5
-                                                        LABEL ?$nesting?var_init_ok_76
-                                                    # CHECK VAR [$nesting] INIT END
-
-                                                # CHECK EXPR VARS INIT END
-
-                                                # EXPRESSION START
-                                                    PUSHS int@1
-                                                    PUSHS GF@$nesting
-                                                    CALL &sub_op
-                                                # EXPRESSION END
-
-                                                POPS GF@$nesting
-                                            # EXPR ASS END
-
-                                            JUMP ?if_end_15
-                                            LABEL ?if_branch_false_15
-                                            LABEL ?if_end_15
-                                        # IF END
-
-                                        LABEL ?if_end_14
-                                    # IF END
-
-                                    # EXPR ASS START
-                                        # CHECK EXPR VARS INIT START
-                                            # CHECK VAR [$pc] INIT START
-                                                TYPE GF@_tmp GF@$pc
-                                                JUMPIFNEQ ?$pc?var_init_ok_77 GF@_tmp string@
-                                                EXIT int@5
-                                                LABEL ?$pc?var_init_ok_77
-                                            # CHECK VAR [$pc] INIT END
-
-                                        # CHECK EXPR VARS INIT END
-
-                                        # EXPRESSION START
-                                            PUSHS int@1
-                                            PUSHS GF@$pc
-                                            CALL &add_op
-                                        # EXPRESSION END
-
-                                        POPS GF@$pc
-                                    # EXPR ASS END
-
-                                    JUMP ?while_start_2
-                                    LABEL ?while_end_2
-                                # WHILE END
-
-                                JUMP ?if_end_12
-                                LABEL ?if_branch_false_12
-                                LABEL ?if_end_12
-                            # IF END
-
-                            JUMP ?if_end_11
-                            LABEL ?if_branch_false_11
-                            # IF START
-                                # CHECK EXPR VARS INIT START
-                                    # CHECK VAR [$c] INIT START
-                                        TYPE GF@_tmp GF@$c
-                                        JUMPIFNEQ ?$c?var_init_ok_78 GF@_tmp string@
-                                        EXIT int@5
-                                        LABEL ?$c?var_init_ok_78
-                                    # CHECK VAR [$c] INIT END
-
-                                # CHECK EXPR VARS INIT END
-
-                                # EXPRESSION START
-                                    PUSHS string@]
-                                    PUSHS GF@$c
-                                    CALL &eq_op
-                                # EXPRESSION END
-
-                                CALL &to_bool
-                                POPS GF@_tmp_res
-                                JUMPIFEQ ?if_branch_false_16 GF@_tmp_res bool@false
-                                # EXPR ASS START
-                                    # CHECK EXPR VARS INIT START
-                                        # CHECK VAR [$ptr] INIT START
-                                            TYPE GF@_tmp GF@$ptr
-                                            JUMPIFNEQ ?$ptr?var_init_ok_79 GF@_tmp string@
-                                            EXIT int@5
-                                            LABEL ?$ptr?var_init_ok_79
-                                        # CHECK VAR [$ptr] INIT END
-
-                                    # CHECK EXPR VARS INIT END
-
-                                    # EXPRESSION START
-                                        PUSHS int@1
-                                        PUSHS GF@$ptr
-                                        CALL &add_op
-                                    # EXPRESSION END
-
-                                    POPS GF@$ptrPlusOne
-                                # EXPR ASS END
-
-                                # FUNC ASS START
-                                    # CALL FUNC [ssubstr] START
-                                        JUMPIFEQ ?ssubstr?func_def_ok_80 GF@?ssubstr?defined bool@true
-                                        EXIT int@3
-                                        LABEL ?ssubstr?func_def_ok_80
-                                        # CHECK FUNC ARG INIT START
-                                            # CHECK VAR [$data] INIT START
-                                                TYPE GF@_tmp GF@$data
-                                                JUMPIFNEQ ?$data?var_init_ok_81 GF@_tmp string@
-                                                EXIT int@5
-                                                LABEL ?$data?var_init_ok_81
-                                            # CHECK VAR [$data] INIT END
-
-                                            # CHECK VAR [$ptr] INIT START
-                                                TYPE GF@_tmp GF@$ptr
-                                                JUMPIFNEQ ?$ptr?var_init_ok_82 GF@_tmp string@
-                                                EXIT int@5
-                                                LABEL ?$ptr?var_init_ok_82
-                                            # CHECK VAR [$ptr] INIT END
-
-                                            # CHECK VAR [$ptrPlusOne] INIT START
-                                                TYPE GF@_tmp GF@$ptrPlusOne
-                                                JUMPIFNEQ ?$ptrPlusOne?var_init_ok_83 GF@_tmp string@
-                                                EXIT int@5
-                                                LABEL ?$ptrPlusOne?var_init_ok_83
-                                            # CHECK VAR [$ptrPlusOne] INIT END
-
-                                        # CHECK FUNC ARG INIT END
-
-                                        PUSHS GF@$ptrPlusOne
-                                        PUSHS GF@$ptr
-                                        PUSHS GF@$data
-                                        PUSHS int@3
-                                        CALL ssubstr
-                                    # CALL FUNC [ssubstr] END
-
-                                    POPS GF@$oldByte
-                                # FUNC ASS END
-
-                                # FUNC ASS START
-                                    # CALL FUNC [ord] START
-                                        JUMPIFEQ ?ord?func_def_ok_84 GF@?ord?defined bool@true
-                                        EXIT int@3
-                                        LABEL ?ord?func_def_ok_84
-                                        # CHECK FUNC ARG INIT START
-                                            # CHECK VAR [$oldByte] INIT START
-                                                TYPE GF@_tmp GF@$oldByte
-                                                JUMPIFNEQ ?$oldByte?var_init_ok_85 GF@_tmp string@
-                                                EXIT int@5
-                                                LABEL ?$oldByte?var_init_ok_85
-                                            # CHECK VAR [$oldByte] INIT END
-
-                                        # CHECK FUNC ARG INIT END
-
-                                        PUSHS GF@$oldByte
-                                        PUSHS int@1
-                                        CALL ord
-                                    # CALL FUNC [ord] END
-
-                                    POPS GF@$newByte
-                                # FUNC ASS END
-
-                                # IF START
-                                    # CHECK EXPR VARS INIT START
-                                        # CHECK VAR [$newByte] INIT START
-                                            TYPE GF@_tmp GF@$newByte
-                                            JUMPIFNEQ ?$newByte?var_init_ok_86 GF@_tmp string@
-                                            EXIT int@5
-                                            LABEL ?$newByte?var_init_ok_86
-                                        # CHECK VAR [$newByte] INIT END
-
-                                    # CHECK EXPR VARS INIT END
-
-                                    # EXPRESSION START
-                                        PUSHS int@0
-                                        PUSHS GF@$newByte
-                                        CALL &eq_op
-                                    # EXPRESSION END
-
-                                    CALL &to_bool
-                                    POPS GF@_tmp_res
-                                    JUMPIFEQ ?if_branch_false_17 GF@_tmp_res bool@false
-                                    JUMP ?if_end_17
-                                    LABEL ?if_branch_false_17
-                                    # EXPR ASS START
-                                        # CHECK EXPR VARS INIT START
-                                            # CHECK VAR [$pc] INIT START
-                                                TYPE GF@_tmp GF@$pc
-                                                JUMPIFNEQ ?$pc?var_init_ok_87 GF@_tmp string@
-                                                EXIT int@5
-                                                LABEL ?$pc?var_init_ok_87
-                                            # CHECK VAR [$pc] INIT END
-
-                                        # CHECK EXPR VARS INIT END
-
-                                        # EXPRESSION START
-                                            PUSHS int@1
-                                            PUSHS GF@$pc
-                                            CALL &sub_op
-                                        # EXPRESSION END
-
-                                        POPS GF@$pc
-                                    # EXPR ASS END
-
-                                    # EXPR ASS START
-                                        # CHECK EXPR VARS INIT START
-                                        # CHECK EXPR VARS INIT END
-
-                                        # EXPRESSION START
-                                            PUSHS int@1
-                                        # EXPRESSION END
-
-                                        POPS GF@$nesting
-                                    # EXPR ASS END
-
-                                    # WHILE START
-                                        # CHECK EXPR VARS INIT START
-                                            # CHECK VAR [$nesting] INIT START
-                                                TYPE GF@_tmp GF@$nesting
-                                                JUMPIFNEQ ?$nesting?var_init_ok_88 GF@_tmp string@
-                                                EXIT int@5
-                                                LABEL ?$nesting?var_init_ok_88
-                                            # CHECK VAR [$nesting] INIT END
-
-                                        # CHECK EXPR VARS INIT END
-
-                                        LABEL ?while_start_3
-                                        # EXPRESSION START
-                                            PUSHS int@0
-                                            PUSHS GF@$nesting
-                                            CALL &gt_op
-                                        # EXPRESSION END
-
-                                        CALL &to_bool
-                                        POPS GF@_tmp_res
-                                        JUMPIFEQ ?while_end_3 GF@_tmp_res bool@false
-                                        # EXPR ASS START
-                                            # CHECK EXPR VARS INIT START
-                                                # CHECK VAR [$pc] INIT START
-                                                    TYPE GF@_tmp GF@$pc
-                                                    JUMPIFNEQ ?$pc?var_init_ok_89 GF@_tmp string@
-                                                    EXIT int@5
-                                                    LABEL ?$pc?var_init_ok_89
-                                                # CHECK VAR [$pc] INIT END
-
-                                            # CHECK EXPR VARS INIT END
-
-                                            # EXPRESSION START
-                                                PUSHS int@1
-                                                PUSHS GF@$pc
-                                                CALL &add_op
-                                            # EXPRESSION END
-
-                                            POPS GF@$pcPlusOne
-                                        # EXPR ASS END
-
-                                        # FUNC ASS START
-                                            # CALL FUNC [ssubstr] START
-                                                JUMPIFEQ ?ssubstr?func_def_ok_90 GF@?ssubstr?defined bool@true
-                                                EXIT int@3
-                                                LABEL ?ssubstr?func_def_ok_90
-                                                # CHECK FUNC ARG INIT START
-                                                    # CHECK VAR [$program] INIT START
-                                                        TYPE GF@_tmp GF@$program
-                                                        JUMPIFNEQ ?$program?var_init_ok_91 GF@_tmp string@
-                                                        EXIT int@5
-                                                        LABEL ?$program?var_init_ok_91
-                                                    # CHECK VAR [$program] INIT END
-
-                                                    # CHECK VAR [$pc] INIT START
-                                                        TYPE GF@_tmp GF@$pc
-                                                        JUMPIFNEQ ?$pc?var_init_ok_92 GF@_tmp string@
-                                                        EXIT int@5
-                                                        LABEL ?$pc?var_init_ok_92
-                                                    # CHECK VAR [$pc] INIT END
-
-                                                    # CHECK VAR [$pcPlusOne] INIT START
-                                                        TYPE GF@_tmp GF@$pcPlusOne
-                                                        JUMPIFNEQ ?$pcPlusOne?var_init_ok_93 GF@_tmp string@
-                                                        EXIT int@5
-                                                        LABEL ?$pcPlusOne?var_init_ok_93
-                                                    # CHECK VAR [$pcPlusOne] INIT END
-
-                                                # CHECK FUNC ARG INIT END
-
-                                                PUSHS GF@$pcPlusOne
-                                                PUSHS GF@$pc
-                                                PUSHS GF@$program
-                                                PUSHS int@3
-                                                CALL ssubstr
-                                            # CALL FUNC [ssubstr] END
-
-                                            POPS GF@$c
-                                        # FUNC ASS END
-
-                                        # IF START
-                                            # CHECK EXPR VARS INIT START
-                                                # CHECK VAR [$c] INIT START
-                                                    TYPE GF@_tmp GF@$c
-                                                    JUMPIFNEQ ?$c?var_init_ok_94 GF@_tmp string@
-                                                    EXIT int@5
-                                                    LABEL ?$c?var_init_ok_94
-                                                # CHECK VAR [$c] INIT END
-
-                                            # CHECK EXPR VARS INIT END
-
-                                            # EXPRESSION START
-                                                PUSHS GF@$c
-                                            # EXPRESSION END
-
-                                            CALL &to_bool
-                                            POPS GF@_tmp_res
-                                            JUMPIFEQ ?if_branch_false_18 GF@_tmp_res bool@false
-                                            JUMP ?if_end_18
-                                            LABEL ?if_branch_false_18
-                                            # FUNC ASS START
-                                                # CALL FUNC [chr] START
-                                                    JUMPIFEQ ?chr?func_def_ok_95 GF@?chr?defined bool@true
-                                                    EXIT int@3
-                                                    LABEL ?chr?func_def_ok_95
-                                                    # CHECK FUNC ARG INIT START
-                                                    # CHECK FUNC ARG INIT END
-
-                                                    PUSHS int@0
-                                                    PUSHS int@1
-                                                    CALL chr
-                                                # CALL FUNC [chr] END
-
-                                                POPS GF@$c
-                                            # FUNC ASS END
-
-                                            LABEL ?if_end_18
-                                        # IF END
-
-                                        # IF START
-                                            # CHECK EXPR VARS INIT START
-                                                # CHECK VAR [$c] INIT START
-                                                    TYPE GF@_tmp GF@$c
-                                                    JUMPIFNEQ ?$c?var_init_ok_96 GF@_tmp string@
-                                                    EXIT int@5
-                                                    LABEL ?$c?var_init_ok_96
-                                                # CHECK VAR [$c] INIT END
-
-                                            # CHECK EXPR VARS INIT END
-
-                                            # EXPRESSION START
-                                                PUSHS string@[
-                                                PUSHS GF@$c
-                                                CALL &eq_op
-                                            # EXPRESSION END
-
-                                            CALL &to_bool
-                                            POPS GF@_tmp_res
-                                            JUMPIFEQ ?if_branch_false_19 GF@_tmp_res bool@false
-                                            # EXPR ASS START
-                                                # CHECK EXPR VARS INIT START
-                                                    # CHECK VAR [$nesting] INIT START
-                                                        TYPE GF@_tmp GF@$nesting
-                                                        JUMPIFNEQ ?$nesting?var_init_ok_97 GF@_tmp string@
-                                                        EXIT int@5
-                                                        LABEL ?$nesting?var_init_ok_97
-                                                    # CHECK VAR [$nesting] INIT END
-
-                                                # CHECK EXPR VARS INIT END
-
-                                                # EXPRESSION START
-                                                    PUSHS int@1
-                                                    PUSHS GF@$nesting
-                                                    CALL &sub_op
-                                                # EXPRESSION END
-
-                                                POPS GF@$nesting
-                                            # EXPR ASS END
-
-                                            JUMP ?if_end_19
-                                            LABEL ?if_branch_false_19
-                                            # IF START
-                                                # CHECK EXPR VARS INIT START
-                                                    # CHECK VAR [$c] INIT START
-                                                        TYPE GF@_tmp GF@$c
-                                                        JUMPIFNEQ ?$c?var_init_ok_98 GF@_tmp string@
-                                                        EXIT int@5
-                                                        LABEL ?$c?var_init_ok_98
-                                                    # CHECK VAR [$c] INIT END
-
-                                                # CHECK EXPR VARS INIT END
-
-                                                # EXPRESSION START
-                                                    PUSHS string@]
-                                                    PUSHS GF@$c
-                                                    CALL &eq_op
-                                                # EXPRESSION END
-
-                                                CALL &to_bool
-                                                POPS GF@_tmp_res
-                                                JUMPIFEQ ?if_branch_false_20 GF@_tmp_res bool@false
-                                                # EXPR ASS START
-                                                    # CHECK EXPR VARS INIT START
-                                                        # CHECK VAR [$nesting] INIT START
-                                                            TYPE GF@_tmp GF@$nesting
-                                                            JUMPIFNEQ ?$nesting?var_init_ok_99 GF@_tmp string@
-                                                            EXIT int@5
-                                                            LABEL ?$nesting?var_init_ok_99
-                                                        # CHECK VAR [$nesting] INIT END
-
-                                                    # CHECK EXPR VARS INIT END
-
-                                                    # EXPRESSION START
-                                                        PUSHS int@1
-                                                        PUSHS GF@$nesting
-                                                        CALL &add_op
-                                                    # EXPRESSION END
-
-                                                    POPS GF@$nesting
-                                                # EXPR ASS END
-
-                                                JUMP ?if_end_20
-                                                LABEL ?if_branch_false_20
-                                                LABEL ?if_end_20
-                                            # IF END
-
-                                            LABEL ?if_end_19
-                                        # IF END
-
-                                        # EXPR ASS START
-                                            # CHECK EXPR VARS INIT START
-                                                # CHECK VAR [$pc] INIT START
-                                                    TYPE GF@_tmp GF@$pc
-                                                    JUMPIFNEQ ?$pc?var_init_ok_100 GF@_tmp string@
-                                                    EXIT int@5
-                                                    LABEL ?$pc?var_init_ok_100
-                                                # CHECK VAR [$pc] INIT END
-
-                                            # CHECK EXPR VARS INIT END
-
-                                            # EXPRESSION START
-                                                PUSHS int@1
-                                                PUSHS GF@$pc
-                                                CALL &sub_op
-                                            # EXPRESSION END
-
-                                            POPS GF@$pc
-                                        # EXPR ASS END
-
-                                        JUMP ?while_start_3
-                                        LABEL ?while_end_3
-                                    # WHILE END
-
-                                    LABEL ?if_end_17
-                                # IF END
-
-                                JUMP ?if_end_16
-                                LABEL ?if_branch_false_16
-                                LABEL ?if_end_16
-                            # IF END
-
-                            LABEL ?if_end_11
-                        # IF END
-
-                        LABEL ?if_end_10
-                    # IF END
-
-                    LABEL ?if_end_9
-                # IF END
-
-                LABEL ?if_end_8
-            # IF END
-
-            LABEL ?if_end_5
-        # IF END
-
-        LABEL ?if_end_2
-    # IF END
+    # STANDALONE FUNC CALL END
 
     # EXPR ASS START
         # CHECK EXPR VARS INIT START
-            # CHECK VAR [$pc] INIT START
-                TYPE GF@_tmp GF@$pc
-                JUMPIFNEQ ?$pc?var_init_ok_101 GF@_tmp string@
+            # CHECK VAR [$i] INIT START
+                TYPE GF@_tmp GF@$i
+                JUMPIFNEQ ?$i?var_init_ok_12 GF@_tmp string@
                 EXIT int@5
-                LABEL ?$pc?var_init_ok_101
-            # CHECK VAR [$pc] INIT END
+                LABEL ?$i?var_init_ok_12
+            # CHECK VAR [$i] INIT END
 
         # CHECK EXPR VARS INIT END
 
         # EXPRESSION START
             PUSHS int@1
-            PUSHS GF@$pc
+            PUSHS GF@$i
             CALL &add_op
         # EXPRESSION END
 
-        POPS GF@$pc
+        POPS GF@$i
     # EXPR ASS END
+
+    # FUNC ASS START
+        # CALL FUNC [length] START
+            JUMPIFEQ ?length?func_def_ok_13 GF@?length?defined bool@true
+            EXIT int@3
+            LABEL ?length?func_def_ok_13
+            # CHECK FUNC ARG INIT START
+                # CHECK VAR [$tri] INIT START
+                    TYPE GF@_tmp GF@$tri
+                    JUMPIFNEQ ?$tri?var_init_ok_14 GF@_tmp string@
+                    EXIT int@5
+                    LABEL ?$tri?var_init_ok_14
+                # CHECK VAR [$tri] INIT END
+
+            # CHECK FUNC ARG INIT END
+
+            PUSHS GF@$tri
+            PUSHS int@1
+            CALL length
+        # CALL FUNC [length] END
+
+        POPS GF@$len
+    # FUNC ASS END
 
     JUMP ?while_start_1
     LABEL ?while_end_1
@@ -1742,241 +261,67 @@
 EXIT int@0
 
 # USER FUNCTIONS START
-    # FUNC [setData] DEF START
-        LABEL setData
+    # FUNC [append] DEF START
+        LABEL append
         CREATEFRAME
         PUSHFRAME
         # FUNCTION PARAMS START
             # CHECK ARG COUNT START
                 POPS GF@_tmp
-                JUMPIFEQ ?setData?arg_count_ok GF@_tmp int@3
+                JUMPIFEQ ?append?arg_count_ok GF@_tmp int@2
                 EXIT int@4
-                LABEL ?setData?arg_count_ok
+                LABEL ?append?arg_count_ok
             # CHECK ARG COUNT END
 
             # INIT PARAMS, CHECK PARAM TYPES START
-                DEFVAR LF@$data
-                POPS LF@$data
-                TYPE GF@_tmp_type LF@$data
-                JUMPIFEQ ?setData?$data?param_type_ok GF@_tmp_type string@string
+                DEFVAR LF@$in
+                POPS LF@$in
+                TYPE GF@_tmp_type LF@$in
+                JUMPIFEQ ?append?$in?param_type_ok GF@_tmp_type string@string
                 EXIT int@4
-                LABEL ?setData?$data?param_type_ok
-                DEFVAR LF@$ptr
-                POPS LF@$ptr
-                TYPE GF@_tmp_type LF@$ptr
-                JUMPIFEQ ?setData?$ptr?param_type_ok GF@_tmp_type string@int
+                LABEL ?append?$in?param_type_ok
+                DEFVAR LF@$s
+                POPS LF@$s
+                TYPE GF@_tmp_type LF@$s
+                JUMPIFEQ ?append?$s?param_type_ok GF@_tmp_type string@string
                 EXIT int@4
-                LABEL ?setData?$ptr?param_type_ok
-                DEFVAR LF@$value
-                POPS LF@$value
-                TYPE GF@_tmp_type LF@$value
-                JUMPIFEQ ?setData?$value?param_type_ok GF@_tmp_type string@int
-                EXIT int@4
-                LABEL ?setData?$value?param_type_ok
+                LABEL ?append?$s?param_type_ok
             # INIT PARAMS, CHECK PARAM TYPES END
 
         # FUNCTION PARAMS END
         # DEFINE USED VARS START
-            DEFVAR LF@$dataLen
-            DEFVAR LF@$data1
-            DEFVAR LF@$ptrCont
-            DEFVAR LF@$data2
-            DEFVAR LF@$chr
-            DEFVAR LF@$out
         # DEFINE USED VARS END
-
-        # FUNC ASS START
-            # CALL FUNC [strlen] START
-                JUMPIFEQ ?strlen?func_def_ok_102 GF@?strlen?defined bool@true
-                EXIT int@3
-                LABEL ?strlen?func_def_ok_102
-                # CHECK FUNC ARG INIT START
-                    # CHECK VAR [$data] INIT START
-                        TYPE GF@_tmp LF@$data
-                        JUMPIFNEQ ?$data?var_init_ok_103 GF@_tmp string@
-                        EXIT int@5
-                        LABEL ?$data?var_init_ok_103
-                    # CHECK VAR [$data] INIT END
-
-                # CHECK FUNC ARG INIT END
-
-                PUSHS LF@$data
-                PUSHS int@1
-                CALL strlen
-            # CALL FUNC [strlen] END
-
-            POPS LF@$dataLen
-        # FUNC ASS END
-
-        # FUNC ASS START
-            # CALL FUNC [ssubstr] START
-                JUMPIFEQ ?ssubstr?func_def_ok_104 GF@?ssubstr?defined bool@true
-                EXIT int@3
-                LABEL ?ssubstr?func_def_ok_104
-                # CHECK FUNC ARG INIT START
-                    # CHECK VAR [$data] INIT START
-                        TYPE GF@_tmp LF@$data
-                        JUMPIFNEQ ?$data?var_init_ok_105 GF@_tmp string@
-                        EXIT int@5
-                        LABEL ?$data?var_init_ok_105
-                    # CHECK VAR [$data] INIT END
-
-                    # CHECK VAR [$ptr] INIT START
-                        TYPE GF@_tmp LF@$ptr
-                        JUMPIFNEQ ?$ptr?var_init_ok_106 GF@_tmp string@
-                        EXIT int@5
-                        LABEL ?$ptr?var_init_ok_106
-                    # CHECK VAR [$ptr] INIT END
-
-                # CHECK FUNC ARG INIT END
-
-                PUSHS LF@$ptr
-                PUSHS int@0
-                PUSHS LF@$data
-                PUSHS int@3
-                CALL ssubstr
-            # CALL FUNC [ssubstr] END
-
-            POPS LF@$data1
-        # FUNC ASS END
-
-        # EXPR ASS START
-            # CHECK EXPR VARS INIT START
-                # CHECK VAR [$ptr] INIT START
-                    TYPE GF@_tmp LF@$ptr
-                    JUMPIFNEQ ?$ptr?var_init_ok_107 GF@_tmp string@
-                    EXIT int@5
-                    LABEL ?$ptr?var_init_ok_107
-                # CHECK VAR [$ptr] INIT END
-
-            # CHECK EXPR VARS INIT END
-
-            # EXPRESSION START
-                PUSHS int@1
-                PUSHS LF@$ptr
-                CALL &add_op
-            # EXPRESSION END
-
-            POPS LF@$ptrCont
-        # EXPR ASS END
-
-        # FUNC ASS START
-            # CALL FUNC [ssubstr] START
-                JUMPIFEQ ?ssubstr?func_def_ok_108 GF@?ssubstr?defined bool@true
-                EXIT int@3
-                LABEL ?ssubstr?func_def_ok_108
-                # CHECK FUNC ARG INIT START
-                    # CHECK VAR [$data] INIT START
-                        TYPE GF@_tmp LF@$data
-                        JUMPIFNEQ ?$data?var_init_ok_109 GF@_tmp string@
-                        EXIT int@5
-                        LABEL ?$data?var_init_ok_109
-                    # CHECK VAR [$data] INIT END
-
-                    # CHECK VAR [$ptrCont] INIT START
-                        TYPE GF@_tmp LF@$ptrCont
-                        JUMPIFNEQ ?$ptrCont?var_init_ok_110 GF@_tmp string@
-                        EXIT int@5
-                        LABEL ?$ptrCont?var_init_ok_110
-                    # CHECK VAR [$ptrCont] INIT END
-
-                    # CHECK VAR [$dataLen] INIT START
-                        TYPE GF@_tmp LF@$dataLen
-                        JUMPIFNEQ ?$dataLen?var_init_ok_111 GF@_tmp string@
-                        EXIT int@5
-                        LABEL ?$dataLen?var_init_ok_111
-                    # CHECK VAR [$dataLen] INIT END
-
-                # CHECK FUNC ARG INIT END
-
-                PUSHS LF@$dataLen
-                PUSHS LF@$ptrCont
-                PUSHS LF@$data
-                PUSHS int@3
-                CALL ssubstr
-            # CALL FUNC [ssubstr] END
-
-            POPS LF@$data2
-        # FUNC ASS END
-
-        # FUNC ASS START
-            # CALL FUNC [chr] START
-                JUMPIFEQ ?chr?func_def_ok_112 GF@?chr?defined bool@true
-                EXIT int@3
-                LABEL ?chr?func_def_ok_112
-                # CHECK FUNC ARG INIT START
-                    # CHECK VAR [$value] INIT START
-                        TYPE GF@_tmp LF@$value
-                        JUMPIFNEQ ?$value?var_init_ok_113 GF@_tmp string@
-                        EXIT int@5
-                        LABEL ?$value?var_init_ok_113
-                    # CHECK VAR [$value] INIT END
-
-                # CHECK FUNC ARG INIT END
-
-                PUSHS LF@$value
-                PUSHS int@1
-                CALL chr
-            # CALL FUNC [chr] END
-
-            POPS LF@$chr
-        # FUNC ASS END
-
-        # EXPR ASS START
-            # CHECK EXPR VARS INIT START
-                # CHECK VAR [$data2] INIT START
-                    TYPE GF@_tmp LF@$data2
-                    JUMPIFNEQ ?$data2?var_init_ok_114 GF@_tmp string@
-                    EXIT int@5
-                    LABEL ?$data2?var_init_ok_114
-                # CHECK VAR [$data2] INIT END
-
-                # CHECK VAR [$chr] INIT START
-                    TYPE GF@_tmp LF@$chr
-                    JUMPIFNEQ ?$chr?var_init_ok_115 GF@_tmp string@
-                    EXIT int@5
-                    LABEL ?$chr?var_init_ok_115
-                # CHECK VAR [$chr] INIT END
-
-                # CHECK VAR [$data1] INIT START
-                    TYPE GF@_tmp LF@$data1
-                    JUMPIFNEQ ?$data1?var_init_ok_116 GF@_tmp string@
-                    EXIT int@5
-                    LABEL ?$data1?var_init_ok_116
-                # CHECK VAR [$data1] INIT END
-
-            # CHECK EXPR VARS INIT END
-
-            # EXPRESSION START
-                PUSHS LF@$data2
-                PUSHS LF@$chr
-                PUSHS LF@$data1
-                CALL &concat_op
-                CALL &concat_op
-            # EXPRESSION END
-
-            POPS LF@$out
-        # EXPR ASS END
 
         # RETURN START
             # CHECK EXPR VARS INIT START
-                # CHECK VAR [$out] INIT START
-                    TYPE GF@_tmp LF@$out
-                    JUMPIFNEQ ?$out?var_init_ok_117 GF@_tmp string@
+                # CHECK VAR [$s] INIT START
+                    TYPE GF@_tmp LF@$s
+                    JUMPIFNEQ ?$s?var_init_ok_15 GF@_tmp string@
                     EXIT int@5
-                    LABEL ?$out?var_init_ok_117
-                # CHECK VAR [$out] INIT END
+                    LABEL ?$s?var_init_ok_15
+                # CHECK VAR [$s] INIT END
+
+                # CHECK VAR [$in] INIT START
+                    TYPE GF@_tmp LF@$in
+                    JUMPIFNEQ ?$in?var_init_ok_16 GF@_tmp string@
+                    EXIT int@5
+                    LABEL ?$in?var_init_ok_16
+                # CHECK VAR [$in] INIT END
 
             # CHECK EXPR VARS INIT END
 
             # EXPRESSION START
-                PUSHS LF@$out
+                PUSHS string@;
+                PUSHS LF@$s
+                PUSHS LF@$in
+                CALL &concat_op
+                CALL &concat_op
             # EXPRESSION END
 
             POPS GF@_tmp_res
             PUSHS GF@_tmp_res
             TYPE GF@_tmp_type GF@_tmp_res
-            JUMPIFEQ ?setData?end GF@_tmp_type string@string
+            JUMPIFEQ ?append?end GF@_tmp_type string@string
             EXIT int@4
         # RETURN END
 
@@ -1984,133 +329,1760 @@ EXIT int@0
         	EXIT int@4
         # MISSING RETURN END
 
-        LABEL ?setData?end
+        LABEL ?append?end
         POPFRAME
         RETURN
-    # FUNC [setData] DEF END
+    # FUNC [append] DEF END
 
-    # FUNC [ssubstr] DEF START
-        LABEL ssubstr
+    # FUNC [get] DEF START
+        LABEL get
         CREATEFRAME
         PUSHFRAME
         # FUNCTION PARAMS START
             # CHECK ARG COUNT START
                 POPS GF@_tmp
-                JUMPIFEQ ?ssubstr?arg_count_ok GF@_tmp int@3
+                JUMPIFEQ ?get?arg_count_ok GF@_tmp int@2
                 EXIT int@4
-                LABEL ?ssubstr?arg_count_ok
+                LABEL ?get?arg_count_ok
             # CHECK ARG COUNT END
 
             # INIT PARAMS, CHECK PARAM TYPES START
-                DEFVAR LF@$str
-                POPS LF@$str
-                TYPE GF@_tmp_type LF@$str
-                JUMPIFEQ ?ssubstr?$str?param_type_ok GF@_tmp_type string@string
+                DEFVAR LF@$in
+                POPS LF@$in
+                TYPE GF@_tmp_type LF@$in
+                JUMPIFEQ ?get?$in?param_type_ok GF@_tmp_type string@string
                 EXIT int@4
-                LABEL ?ssubstr?$str?param_type_ok
-                DEFVAR LF@$start
-                POPS LF@$start
-                TYPE GF@_tmp_type LF@$start
-                JUMPIFEQ ?ssubstr?$start?param_type_ok GF@_tmp_type string@int
+                LABEL ?get?$in?param_type_ok
+                DEFVAR LF@$id
+                POPS LF@$id
+                TYPE GF@_tmp_type LF@$id
+                JUMPIFEQ ?get?$id?param_type_ok GF@_tmp_type string@int
                 EXIT int@4
-                LABEL ?ssubstr?$start?param_type_ok
-                DEFVAR LF@$end
-                POPS LF@$end
-                TYPE GF@_tmp_type LF@$end
-                JUMPIFEQ ?ssubstr?$end?param_type_ok GF@_tmp_type string@int
-                EXIT int@4
-                LABEL ?ssubstr?$end?param_type_ok
+                LABEL ?get?$id?param_type_ok
             # INIT PARAMS, CHECK PARAM TYPES END
 
         # FUNCTION PARAMS END
         # DEFINE USED VARS START
-            DEFVAR LF@$out
+            DEFVAR LF@$i
+            DEFVAR LF@$pos
+            DEFVAR LF@$p1
+            DEFVAR LF@$ch
+            DEFVAR LF@$pos_end
+            DEFVAR LF@$ret
         # DEFINE USED VARS END
 
-        # FUNC ASS START
-            # CALL FUNC [substring] START
-                JUMPIFEQ ?substring?func_def_ok_118 GF@?substring?defined bool@true
-                EXIT int@3
-                LABEL ?substring?func_def_ok_118
-                # CHECK FUNC ARG INIT START
-                    # CHECK VAR [$str] INIT START
-                        TYPE GF@_tmp LF@$str
-                        JUMPIFNEQ ?$str?var_init_ok_119 GF@_tmp string@
-                        EXIT int@5
-                        LABEL ?$str?var_init_ok_119
-                    # CHECK VAR [$str] INIT END
-
-                    # CHECK VAR [$start] INIT START
-                        TYPE GF@_tmp LF@$start
-                        JUMPIFNEQ ?$start?var_init_ok_120 GF@_tmp string@
-                        EXIT int@5
-                        LABEL ?$start?var_init_ok_120
-                    # CHECK VAR [$start] INIT END
-
-                    # CHECK VAR [$end] INIT START
-                        TYPE GF@_tmp LF@$end
-                        JUMPIFNEQ ?$end?var_init_ok_121 GF@_tmp string@
-                        EXIT int@5
-                        LABEL ?$end?var_init_ok_121
-                    # CHECK VAR [$end] INIT END
-
-                # CHECK FUNC ARG INIT END
-
-                PUSHS LF@$end
-                PUSHS LF@$start
-                PUSHS LF@$str
-                PUSHS int@3
-                CALL substring
-            # CALL FUNC [substring] END
-
-            POPS LF@$out
-        # FUNC ASS END
-
-        # IF START
+        # EXPR ASS START
             # CHECK EXPR VARS INIT START
-                # CHECK VAR [$out] INIT START
-                    TYPE GF@_tmp LF@$out
-                    JUMPIFNEQ ?$out?var_init_ok_122 GF@_tmp string@
+            # CHECK EXPR VARS INIT END
+
+            # EXPRESSION START
+                PUSHS int@0
+            # EXPRESSION END
+
+            POPS LF@$i
+        # EXPR ASS END
+
+        # EXPR ASS START
+            # CHECK EXPR VARS INIT START
+            # CHECK EXPR VARS INIT END
+
+            # EXPRESSION START
+                PUSHS int@0
+            # EXPRESSION END
+
+            POPS LF@$pos
+        # EXPR ASS END
+
+        # WHILE START
+            # CHECK EXPR VARS INIT START
+                # CHECK VAR [$id] INIT START
+                    TYPE GF@_tmp LF@$id
+                    JUMPIFNEQ ?$id?var_init_ok_17 GF@_tmp string@
                     EXIT int@5
-                    LABEL ?$out?var_init_ok_122
-                # CHECK VAR [$out] INIT END
+                    LABEL ?$id?var_init_ok_17
+                # CHECK VAR [$id] INIT END
+
+                # CHECK VAR [$i] INIT START
+                    TYPE GF@_tmp LF@$i
+                    JUMPIFNEQ ?$i?var_init_ok_18 GF@_tmp string@
+                    EXIT int@5
+                    LABEL ?$i?var_init_ok_18
+                # CHECK VAR [$i] INIT END
+
+            # CHECK EXPR VARS INIT END
+
+            LABEL ?while_start_2
+            # EXPRESSION START
+                PUSHS LF@$id
+                PUSHS LF@$i
+                CALL &lt_op
+            # EXPRESSION END
+
+            CALL &to_bool
+            POPS GF@_tmp_res
+            JUMPIFEQ ?while_end_2 GF@_tmp_res bool@false
+            # EXPR ASS START
+                # CHECK EXPR VARS INIT START
+                    # CHECK VAR [$pos] INIT START
+                        TYPE GF@_tmp LF@$pos
+                        JUMPIFNEQ ?$pos?var_init_ok_19 GF@_tmp string@
+                        EXIT int@5
+                        LABEL ?$pos?var_init_ok_19
+                    # CHECK VAR [$pos] INIT END
+
+                # CHECK EXPR VARS INIT END
+
+                # EXPRESSION START
+                    PUSHS int@1
+                    PUSHS LF@$pos
+                    CALL &add_op
+                # EXPRESSION END
+
+                POPS LF@$p1
+            # EXPR ASS END
+
+            # FUNC ASS START
+                # CALL FUNC [substring] START
+                    JUMPIFEQ ?substring?func_def_ok_20 GF@?substring?defined bool@true
+                    EXIT int@3
+                    LABEL ?substring?func_def_ok_20
+                    # CHECK FUNC ARG INIT START
+                        # CHECK VAR [$in] INIT START
+                            TYPE GF@_tmp LF@$in
+                            JUMPIFNEQ ?$in?var_init_ok_21 GF@_tmp string@
+                            EXIT int@5
+                            LABEL ?$in?var_init_ok_21
+                        # CHECK VAR [$in] INIT END
+
+                        # CHECK VAR [$pos] INIT START
+                            TYPE GF@_tmp LF@$pos
+                            JUMPIFNEQ ?$pos?var_init_ok_22 GF@_tmp string@
+                            EXIT int@5
+                            LABEL ?$pos?var_init_ok_22
+                        # CHECK VAR [$pos] INIT END
+
+                        # CHECK VAR [$p1] INIT START
+                            TYPE GF@_tmp LF@$p1
+                            JUMPIFNEQ ?$p1?var_init_ok_23 GF@_tmp string@
+                            EXIT int@5
+                            LABEL ?$p1?var_init_ok_23
+                        # CHECK VAR [$p1] INIT END
+
+                    # CHECK FUNC ARG INIT END
+
+                    PUSHS LF@$p1
+                    PUSHS LF@$pos
+                    PUSHS LF@$in
+                    PUSHS int@3
+                    CALL substring
+                # CALL FUNC [substring] END
+
+                POPS LF@$ch
+            # FUNC ASS END
+
+            # WHILE START
+                # CHECK EXPR VARS INIT START
+                    # CHECK VAR [$ch] INIT START
+                        TYPE GF@_tmp LF@$ch
+                        JUMPIFNEQ ?$ch?var_init_ok_24 GF@_tmp string@
+                        EXIT int@5
+                        LABEL ?$ch?var_init_ok_24
+                    # CHECK VAR [$ch] INIT END
+
+                # CHECK EXPR VARS INIT END
+
+                LABEL ?while_start_3
+                # EXPRESSION START
+                    PUSHS string@;
+                    PUSHS LF@$ch
+                    CALL &neq_op
+                # EXPRESSION END
+
+                CALL &to_bool
+                POPS GF@_tmp_res
+                JUMPIFEQ ?while_end_3 GF@_tmp_res bool@false
+                # EXPR ASS START
+                    # CHECK EXPR VARS INIT START
+                        # CHECK VAR [$pos] INIT START
+                            TYPE GF@_tmp LF@$pos
+                            JUMPIFNEQ ?$pos?var_init_ok_25 GF@_tmp string@
+                            EXIT int@5
+                            LABEL ?$pos?var_init_ok_25
+                        # CHECK VAR [$pos] INIT END
+
+                    # CHECK EXPR VARS INIT END
+
+                    # EXPRESSION START
+                        PUSHS int@1
+                        PUSHS LF@$pos
+                        CALL &add_op
+                    # EXPRESSION END
+
+                    POPS LF@$pos
+                # EXPR ASS END
+
+                # EXPR ASS START
+                    # CHECK EXPR VARS INIT START
+                        # CHECK VAR [$pos] INIT START
+                            TYPE GF@_tmp LF@$pos
+                            JUMPIFNEQ ?$pos?var_init_ok_26 GF@_tmp string@
+                            EXIT int@5
+                            LABEL ?$pos?var_init_ok_26
+                        # CHECK VAR [$pos] INIT END
+
+                    # CHECK EXPR VARS INIT END
+
+                    # EXPRESSION START
+                        PUSHS int@1
+                        PUSHS LF@$pos
+                        CALL &add_op
+                    # EXPRESSION END
+
+                    POPS LF@$p1
+                # EXPR ASS END
+
+                # FUNC ASS START
+                    # CALL FUNC [substring] START
+                        JUMPIFEQ ?substring?func_def_ok_27 GF@?substring?defined bool@true
+                        EXIT int@3
+                        LABEL ?substring?func_def_ok_27
+                        # CHECK FUNC ARG INIT START
+                            # CHECK VAR [$in] INIT START
+                                TYPE GF@_tmp LF@$in
+                                JUMPIFNEQ ?$in?var_init_ok_28 GF@_tmp string@
+                                EXIT int@5
+                                LABEL ?$in?var_init_ok_28
+                            # CHECK VAR [$in] INIT END
+
+                            # CHECK VAR [$pos] INIT START
+                                TYPE GF@_tmp LF@$pos
+                                JUMPIFNEQ ?$pos?var_init_ok_29 GF@_tmp string@
+                                EXIT int@5
+                                LABEL ?$pos?var_init_ok_29
+                            # CHECK VAR [$pos] INIT END
+
+                            # CHECK VAR [$p1] INIT START
+                                TYPE GF@_tmp LF@$p1
+                                JUMPIFNEQ ?$p1?var_init_ok_30 GF@_tmp string@
+                                EXIT int@5
+                                LABEL ?$p1?var_init_ok_30
+                            # CHECK VAR [$p1] INIT END
+
+                        # CHECK FUNC ARG INIT END
+
+                        PUSHS LF@$p1
+                        PUSHS LF@$pos
+                        PUSHS LF@$in
+                        PUSHS int@3
+                        CALL substring
+                    # CALL FUNC [substring] END
+
+                    POPS LF@$ch
+                # FUNC ASS END
+
+                JUMP ?while_start_3
+                LABEL ?while_end_3
+            # WHILE END
+
+            # EXPR ASS START
+                # CHECK EXPR VARS INIT START
+                    # CHECK VAR [$pos] INIT START
+                        TYPE GF@_tmp LF@$pos
+                        JUMPIFNEQ ?$pos?var_init_ok_31 GF@_tmp string@
+                        EXIT int@5
+                        LABEL ?$pos?var_init_ok_31
+                    # CHECK VAR [$pos] INIT END
+
+                # CHECK EXPR VARS INIT END
+
+                # EXPRESSION START
+                    PUSHS int@1
+                    PUSHS LF@$pos
+                    CALL &add_op
+                # EXPRESSION END
+
+                POPS LF@$pos
+            # EXPR ASS END
+
+            # EXPR ASS START
+                # CHECK EXPR VARS INIT START
+                    # CHECK VAR [$i] INIT START
+                        TYPE GF@_tmp LF@$i
+                        JUMPIFNEQ ?$i?var_init_ok_32 GF@_tmp string@
+                        EXIT int@5
+                        LABEL ?$i?var_init_ok_32
+                    # CHECK VAR [$i] INIT END
+
+                # CHECK EXPR VARS INIT END
+
+                # EXPRESSION START
+                    PUSHS int@1
+                    PUSHS LF@$i
+                    CALL &add_op
+                # EXPRESSION END
+
+                POPS LF@$i
+            # EXPR ASS END
+
+            JUMP ?while_start_2
+            LABEL ?while_end_2
+        # WHILE END
+
+        # EXPR ASS START
+            # CHECK EXPR VARS INIT START
+                # CHECK VAR [$pos] INIT START
+                    TYPE GF@_tmp LF@$pos
+                    JUMPIFNEQ ?$pos?var_init_ok_33 GF@_tmp string@
+                    EXIT int@5
+                    LABEL ?$pos?var_init_ok_33
+                # CHECK VAR [$pos] INIT END
 
             # CHECK EXPR VARS INIT END
 
             # EXPRESSION START
-                PUSHS nil@nil
-                PUSHS LF@$out
+                PUSHS LF@$pos
+            # EXPRESSION END
+
+            POPS LF@$pos_end
+        # EXPR ASS END
+
+        # EXPR ASS START
+            # CHECK EXPR VARS INIT START
+                # CHECK VAR [$pos_end] INIT START
+                    TYPE GF@_tmp LF@$pos_end
+                    JUMPIFNEQ ?$pos_end?var_init_ok_34 GF@_tmp string@
+                    EXIT int@5
+                    LABEL ?$pos_end?var_init_ok_34
+                # CHECK VAR [$pos_end] INIT END
+
+            # CHECK EXPR VARS INIT END
+
+            # EXPRESSION START
+                PUSHS int@1
+                PUSHS LF@$pos_end
+                CALL &add_op
+            # EXPRESSION END
+
+            POPS LF@$p1
+        # EXPR ASS END
+
+        # FUNC ASS START
+            # CALL FUNC [substring] START
+                JUMPIFEQ ?substring?func_def_ok_35 GF@?substring?defined bool@true
+                EXIT int@3
+                LABEL ?substring?func_def_ok_35
+                # CHECK FUNC ARG INIT START
+                    # CHECK VAR [$in] INIT START
+                        TYPE GF@_tmp LF@$in
+                        JUMPIFNEQ ?$in?var_init_ok_36 GF@_tmp string@
+                        EXIT int@5
+                        LABEL ?$in?var_init_ok_36
+                    # CHECK VAR [$in] INIT END
+
+                    # CHECK VAR [$pos_end] INIT START
+                        TYPE GF@_tmp LF@$pos_end
+                        JUMPIFNEQ ?$pos_end?var_init_ok_37 GF@_tmp string@
+                        EXIT int@5
+                        LABEL ?$pos_end?var_init_ok_37
+                    # CHECK VAR [$pos_end] INIT END
+
+                    # CHECK VAR [$p1] INIT START
+                        TYPE GF@_tmp LF@$p1
+                        JUMPIFNEQ ?$p1?var_init_ok_38 GF@_tmp string@
+                        EXIT int@5
+                        LABEL ?$p1?var_init_ok_38
+                    # CHECK VAR [$p1] INIT END
+
+                # CHECK FUNC ARG INIT END
+
+                PUSHS LF@$p1
+                PUSHS LF@$pos_end
+                PUSHS LF@$in
+                PUSHS int@3
+                CALL substring
+            # CALL FUNC [substring] END
+
+            POPS LF@$ch
+        # FUNC ASS END
+
+        # WHILE START
+            # CHECK EXPR VARS INIT START
+                # CHECK VAR [$ch] INIT START
+                    TYPE GF@_tmp LF@$ch
+                    JUMPIFNEQ ?$ch?var_init_ok_39 GF@_tmp string@
+                    EXIT int@5
+                    LABEL ?$ch?var_init_ok_39
+                # CHECK VAR [$ch] INIT END
+
+            # CHECK EXPR VARS INIT END
+
+            LABEL ?while_start_4
+            # EXPRESSION START
+                PUSHS string@;
+                PUSHS LF@$ch
                 CALL &neq_op
             # EXPRESSION END
 
             CALL &to_bool
             POPS GF@_tmp_res
-            JUMPIFEQ ?if_branch_false_21 GF@_tmp_res bool@false
-            # RETURN START
+            JUMPIFEQ ?while_end_4 GF@_tmp_res bool@false
+            # EXPR ASS START
                 # CHECK EXPR VARS INIT START
-                    # CHECK VAR [$out] INIT START
-                        TYPE GF@_tmp LF@$out
-                        JUMPIFNEQ ?$out?var_init_ok_123 GF@_tmp string@
+                    # CHECK VAR [$pos_end] INIT START
+                        TYPE GF@_tmp LF@$pos_end
+                        JUMPIFNEQ ?$pos_end?var_init_ok_40 GF@_tmp string@
                         EXIT int@5
-                        LABEL ?$out?var_init_ok_123
-                    # CHECK VAR [$out] INIT END
+                        LABEL ?$pos_end?var_init_ok_40
+                    # CHECK VAR [$pos_end] INIT END
 
                 # CHECK EXPR VARS INIT END
 
                 # EXPRESSION START
-                    PUSHS LF@$out
+                    PUSHS int@1
+                    PUSHS LF@$pos_end
+                    CALL &add_op
                 # EXPRESSION END
 
-                POPS GF@_tmp_res
-                PUSHS GF@_tmp_res
-                TYPE GF@_tmp_type GF@_tmp_res
-                JUMPIFEQ ?ssubstr?end GF@_tmp_type string@string
-                EXIT int@4
-            # RETURN END
+                POPS LF@$pos_end
+            # EXPR ASS END
 
-            JUMP ?if_end_21
-            LABEL ?if_branch_false_21
-            # RETURN START
+            # EXPR ASS START
+                # CHECK EXPR VARS INIT START
+                    # CHECK VAR [$pos_end] INIT START
+                        TYPE GF@_tmp LF@$pos_end
+                        JUMPIFNEQ ?$pos_end?var_init_ok_41 GF@_tmp string@
+                        EXIT int@5
+                        LABEL ?$pos_end?var_init_ok_41
+                    # CHECK VAR [$pos_end] INIT END
+
+                # CHECK EXPR VARS INIT END
+
+                # EXPRESSION START
+                    PUSHS int@1
+                    PUSHS LF@$pos_end
+                    CALL &add_op
+                # EXPRESSION END
+
+                POPS LF@$p1
+            # EXPR ASS END
+
+            # FUNC ASS START
+                # CALL FUNC [substring] START
+                    JUMPIFEQ ?substring?func_def_ok_42 GF@?substring?defined bool@true
+                    EXIT int@3
+                    LABEL ?substring?func_def_ok_42
+                    # CHECK FUNC ARG INIT START
+                        # CHECK VAR [$in] INIT START
+                            TYPE GF@_tmp LF@$in
+                            JUMPIFNEQ ?$in?var_init_ok_43 GF@_tmp string@
+                            EXIT int@5
+                            LABEL ?$in?var_init_ok_43
+                        # CHECK VAR [$in] INIT END
+
+                        # CHECK VAR [$pos_end] INIT START
+                            TYPE GF@_tmp LF@$pos_end
+                            JUMPIFNEQ ?$pos_end?var_init_ok_44 GF@_tmp string@
+                            EXIT int@5
+                            LABEL ?$pos_end?var_init_ok_44
+                        # CHECK VAR [$pos_end] INIT END
+
+                        # CHECK VAR [$p1] INIT START
+                            TYPE GF@_tmp LF@$p1
+                            JUMPIFNEQ ?$p1?var_init_ok_45 GF@_tmp string@
+                            EXIT int@5
+                            LABEL ?$p1?var_init_ok_45
+                        # CHECK VAR [$p1] INIT END
+
+                    # CHECK FUNC ARG INIT END
+
+                    PUSHS LF@$p1
+                    PUSHS LF@$pos_end
+                    PUSHS LF@$in
+                    PUSHS int@3
+                    CALL substring
+                # CALL FUNC [substring] END
+
+                POPS LF@$ch
+            # FUNC ASS END
+
+            JUMP ?while_start_4
+            LABEL ?while_end_4
+        # WHILE END
+
+        # FUNC ASS START
+            # CALL FUNC [substring] START
+                JUMPIFEQ ?substring?func_def_ok_46 GF@?substring?defined bool@true
+                EXIT int@3
+                LABEL ?substring?func_def_ok_46
+                # CHECK FUNC ARG INIT START
+                    # CHECK VAR [$in] INIT START
+                        TYPE GF@_tmp LF@$in
+                        JUMPIFNEQ ?$in?var_init_ok_47 GF@_tmp string@
+                        EXIT int@5
+                        LABEL ?$in?var_init_ok_47
+                    # CHECK VAR [$in] INIT END
+
+                    # CHECK VAR [$pos] INIT START
+                        TYPE GF@_tmp LF@$pos
+                        JUMPIFNEQ ?$pos?var_init_ok_48 GF@_tmp string@
+                        EXIT int@5
+                        LABEL ?$pos?var_init_ok_48
+                    # CHECK VAR [$pos] INIT END
+
+                    # CHECK VAR [$pos_end] INIT START
+                        TYPE GF@_tmp LF@$pos_end
+                        JUMPIFNEQ ?$pos_end?var_init_ok_49 GF@_tmp string@
+                        EXIT int@5
+                        LABEL ?$pos_end?var_init_ok_49
+                    # CHECK VAR [$pos_end] INIT END
+
+                # CHECK FUNC ARG INIT END
+
+                PUSHS LF@$pos_end
+                PUSHS LF@$pos
+                PUSHS LF@$in
+                PUSHS int@3
+                CALL substring
+            # CALL FUNC [substring] END
+
+            POPS LF@$ret
+        # FUNC ASS END
+
+        # RETURN START
+            # CHECK EXPR VARS INIT START
+                # CHECK VAR [$ret] INIT START
+                    TYPE GF@_tmp LF@$ret
+                    JUMPIFNEQ ?$ret?var_init_ok_50 GF@_tmp string@
+                    EXIT int@5
+                    LABEL ?$ret?var_init_ok_50
+                # CHECK VAR [$ret] INIT END
+
+            # CHECK EXPR VARS INIT END
+
+            # EXPRESSION START
+                PUSHS LF@$ret
+            # EXPRESSION END
+
+            POPS GF@_tmp_res
+            PUSHS GF@_tmp_res
+            TYPE GF@_tmp_type GF@_tmp_res
+            JUMPIFEQ ?get?end GF@_tmp_type string@string
+            JUMPIFEQ ?get?end GF@_tmp_type string@nil
+            EXIT int@4
+        # RETURN END
+
+        # MISSING RETURN START
+        	EXIT int@4
+        # MISSING RETURN END
+
+        LABEL ?get?end
+        POPFRAME
+        RETURN
+    # FUNC [get] DEF END
+
+    # FUNC [set] DEF START
+        LABEL set
+        CREATEFRAME
+        PUSHFRAME
+        # FUNCTION PARAMS START
+            # CHECK ARG COUNT START
+                POPS GF@_tmp
+                JUMPIFEQ ?set?arg_count_ok GF@_tmp int@3
+                EXIT int@4
+                LABEL ?set?arg_count_ok
+            # CHECK ARG COUNT END
+
+            # INIT PARAMS, CHECK PARAM TYPES START
+                DEFVAR LF@$in
+                POPS LF@$in
+                TYPE GF@_tmp_type LF@$in
+                JUMPIFEQ ?set?$in?param_type_ok GF@_tmp_type string@string
+                EXIT int@4
+                LABEL ?set?$in?param_type_ok
+                DEFVAR LF@$id
+                POPS LF@$id
+                TYPE GF@_tmp_type LF@$id
+                JUMPIFEQ ?set?$id?param_type_ok GF@_tmp_type string@int
+                EXIT int@4
+                LABEL ?set?$id?param_type_ok
+                DEFVAR LF@$s
+                POPS LF@$s
+                TYPE GF@_tmp_type LF@$s
+                JUMPIFEQ ?set?$s?param_type_ok GF@_tmp_type string@string
+                EXIT int@4
+                LABEL ?set?$s?param_type_ok
+            # INIT PARAMS, CHECK PARAM TYPES END
+
+        # FUNCTION PARAMS END
+        # DEFINE USED VARS START
+            DEFVAR LF@$i
+            DEFVAR LF@$pos
+            DEFVAR LF@$p1
+            DEFVAR LF@$ch
+            DEFVAR LF@$pos_end
+            DEFVAR LF@$before
+            DEFVAR LF@$slen
+            DEFVAR LF@$after
+        # DEFINE USED VARS END
+
+        # EXPR ASS START
+            # CHECK EXPR VARS INIT START
+            # CHECK EXPR VARS INIT END
+
+            # EXPRESSION START
+                PUSHS int@0
+            # EXPRESSION END
+
+            POPS LF@$i
+        # EXPR ASS END
+
+        # EXPR ASS START
+            # CHECK EXPR VARS INIT START
+            # CHECK EXPR VARS INIT END
+
+            # EXPRESSION START
+                PUSHS int@0
+            # EXPRESSION END
+
+            POPS LF@$pos
+        # EXPR ASS END
+
+        # WHILE START
+            # CHECK EXPR VARS INIT START
+                # CHECK VAR [$id] INIT START
+                    TYPE GF@_tmp LF@$id
+                    JUMPIFNEQ ?$id?var_init_ok_51 GF@_tmp string@
+                    EXIT int@5
+                    LABEL ?$id?var_init_ok_51
+                # CHECK VAR [$id] INIT END
+
+                # CHECK VAR [$i] INIT START
+                    TYPE GF@_tmp LF@$i
+                    JUMPIFNEQ ?$i?var_init_ok_52 GF@_tmp string@
+                    EXIT int@5
+                    LABEL ?$i?var_init_ok_52
+                # CHECK VAR [$i] INIT END
+
+            # CHECK EXPR VARS INIT END
+
+            LABEL ?while_start_5
+            # EXPRESSION START
+                PUSHS LF@$id
+                PUSHS LF@$i
+                CALL &lt_op
+            # EXPRESSION END
+
+            CALL &to_bool
+            POPS GF@_tmp_res
+            JUMPIFEQ ?while_end_5 GF@_tmp_res bool@false
+            # EXPR ASS START
+                # CHECK EXPR VARS INIT START
+                    # CHECK VAR [$pos] INIT START
+                        TYPE GF@_tmp LF@$pos
+                        JUMPIFNEQ ?$pos?var_init_ok_53 GF@_tmp string@
+                        EXIT int@5
+                        LABEL ?$pos?var_init_ok_53
+                    # CHECK VAR [$pos] INIT END
+
+                # CHECK EXPR VARS INIT END
+
+                # EXPRESSION START
+                    PUSHS int@1
+                    PUSHS LF@$pos
+                    CALL &add_op
+                # EXPRESSION END
+
+                POPS LF@$p1
+            # EXPR ASS END
+
+            # FUNC ASS START
+                # CALL FUNC [substring] START
+                    JUMPIFEQ ?substring?func_def_ok_54 GF@?substring?defined bool@true
+                    EXIT int@3
+                    LABEL ?substring?func_def_ok_54
+                    # CHECK FUNC ARG INIT START
+                        # CHECK VAR [$in] INIT START
+                            TYPE GF@_tmp LF@$in
+                            JUMPIFNEQ ?$in?var_init_ok_55 GF@_tmp string@
+                            EXIT int@5
+                            LABEL ?$in?var_init_ok_55
+                        # CHECK VAR [$in] INIT END
+
+                        # CHECK VAR [$pos] INIT START
+                            TYPE GF@_tmp LF@$pos
+                            JUMPIFNEQ ?$pos?var_init_ok_56 GF@_tmp string@
+                            EXIT int@5
+                            LABEL ?$pos?var_init_ok_56
+                        # CHECK VAR [$pos] INIT END
+
+                        # CHECK VAR [$p1] INIT START
+                            TYPE GF@_tmp LF@$p1
+                            JUMPIFNEQ ?$p1?var_init_ok_57 GF@_tmp string@
+                            EXIT int@5
+                            LABEL ?$p1?var_init_ok_57
+                        # CHECK VAR [$p1] INIT END
+
+                    # CHECK FUNC ARG INIT END
+
+                    PUSHS LF@$p1
+                    PUSHS LF@$pos
+                    PUSHS LF@$in
+                    PUSHS int@3
+                    CALL substring
+                # CALL FUNC [substring] END
+
+                POPS LF@$ch
+            # FUNC ASS END
+
+            # WHILE START
+                # CHECK EXPR VARS INIT START
+                    # CHECK VAR [$ch] INIT START
+                        TYPE GF@_tmp LF@$ch
+                        JUMPIFNEQ ?$ch?var_init_ok_58 GF@_tmp string@
+                        EXIT int@5
+                        LABEL ?$ch?var_init_ok_58
+                    # CHECK VAR [$ch] INIT END
+
+                # CHECK EXPR VARS INIT END
+
+                LABEL ?while_start_6
+                # EXPRESSION START
+                    PUSHS string@;
+                    PUSHS LF@$ch
+                    CALL &neq_op
+                # EXPRESSION END
+
+                CALL &to_bool
+                POPS GF@_tmp_res
+                JUMPIFEQ ?while_end_6 GF@_tmp_res bool@false
+                # EXPR ASS START
+                    # CHECK EXPR VARS INIT START
+                        # CHECK VAR [$pos] INIT START
+                            TYPE GF@_tmp LF@$pos
+                            JUMPIFNEQ ?$pos?var_init_ok_59 GF@_tmp string@
+                            EXIT int@5
+                            LABEL ?$pos?var_init_ok_59
+                        # CHECK VAR [$pos] INIT END
+
+                    # CHECK EXPR VARS INIT END
+
+                    # EXPRESSION START
+                        PUSHS int@1
+                        PUSHS LF@$pos
+                        CALL &add_op
+                    # EXPRESSION END
+
+                    POPS LF@$pos
+                # EXPR ASS END
+
+                # EXPR ASS START
+                    # CHECK EXPR VARS INIT START
+                        # CHECK VAR [$pos] INIT START
+                            TYPE GF@_tmp LF@$pos
+                            JUMPIFNEQ ?$pos?var_init_ok_60 GF@_tmp string@
+                            EXIT int@5
+                            LABEL ?$pos?var_init_ok_60
+                        # CHECK VAR [$pos] INIT END
+
+                    # CHECK EXPR VARS INIT END
+
+                    # EXPRESSION START
+                        PUSHS int@1
+                        PUSHS LF@$pos
+                        CALL &add_op
+                    # EXPRESSION END
+
+                    POPS LF@$p1
+                # EXPR ASS END
+
+                # FUNC ASS START
+                    # CALL FUNC [substring] START
+                        JUMPIFEQ ?substring?func_def_ok_61 GF@?substring?defined bool@true
+                        EXIT int@3
+                        LABEL ?substring?func_def_ok_61
+                        # CHECK FUNC ARG INIT START
+                            # CHECK VAR [$in] INIT START
+                                TYPE GF@_tmp LF@$in
+                                JUMPIFNEQ ?$in?var_init_ok_62 GF@_tmp string@
+                                EXIT int@5
+                                LABEL ?$in?var_init_ok_62
+                            # CHECK VAR [$in] INIT END
+
+                            # CHECK VAR [$pos] INIT START
+                                TYPE GF@_tmp LF@$pos
+                                JUMPIFNEQ ?$pos?var_init_ok_63 GF@_tmp string@
+                                EXIT int@5
+                                LABEL ?$pos?var_init_ok_63
+                            # CHECK VAR [$pos] INIT END
+
+                            # CHECK VAR [$p1] INIT START
+                                TYPE GF@_tmp LF@$p1
+                                JUMPIFNEQ ?$p1?var_init_ok_64 GF@_tmp string@
+                                EXIT int@5
+                                LABEL ?$p1?var_init_ok_64
+                            # CHECK VAR [$p1] INIT END
+
+                        # CHECK FUNC ARG INIT END
+
+                        PUSHS LF@$p1
+                        PUSHS LF@$pos
+                        PUSHS LF@$in
+                        PUSHS int@3
+                        CALL substring
+                    # CALL FUNC [substring] END
+
+                    POPS LF@$ch
+                # FUNC ASS END
+
+                JUMP ?while_start_6
+                LABEL ?while_end_6
+            # WHILE END
+
+            # EXPR ASS START
+                # CHECK EXPR VARS INIT START
+                    # CHECK VAR [$pos] INIT START
+                        TYPE GF@_tmp LF@$pos
+                        JUMPIFNEQ ?$pos?var_init_ok_65 GF@_tmp string@
+                        EXIT int@5
+                        LABEL ?$pos?var_init_ok_65
+                    # CHECK VAR [$pos] INIT END
+
+                # CHECK EXPR VARS INIT END
+
+                # EXPRESSION START
+                    PUSHS int@1
+                    PUSHS LF@$pos
+                    CALL &add_op
+                # EXPRESSION END
+
+                POPS LF@$pos
+            # EXPR ASS END
+
+            # EXPR ASS START
+                # CHECK EXPR VARS INIT START
+                    # CHECK VAR [$i] INIT START
+                        TYPE GF@_tmp LF@$i
+                        JUMPIFNEQ ?$i?var_init_ok_66 GF@_tmp string@
+                        EXIT int@5
+                        LABEL ?$i?var_init_ok_66
+                    # CHECK VAR [$i] INIT END
+
+                # CHECK EXPR VARS INIT END
+
+                # EXPRESSION START
+                    PUSHS int@1
+                    PUSHS LF@$i
+                    CALL &add_op
+                # EXPRESSION END
+
+                POPS LF@$i
+            # EXPR ASS END
+
+            JUMP ?while_start_5
+            LABEL ?while_end_5
+        # WHILE END
+
+        # EXPR ASS START
+            # CHECK EXPR VARS INIT START
+                # CHECK VAR [$pos] INIT START
+                    TYPE GF@_tmp LF@$pos
+                    JUMPIFNEQ ?$pos?var_init_ok_67 GF@_tmp string@
+                    EXIT int@5
+                    LABEL ?$pos?var_init_ok_67
+                # CHECK VAR [$pos] INIT END
+
+            # CHECK EXPR VARS INIT END
+
+            # EXPRESSION START
+                PUSHS LF@$pos
+            # EXPRESSION END
+
+            POPS LF@$pos_end
+        # EXPR ASS END
+
+        # EXPR ASS START
+            # CHECK EXPR VARS INIT START
+                # CHECK VAR [$pos_end] INIT START
+                    TYPE GF@_tmp LF@$pos_end
+                    JUMPIFNEQ ?$pos_end?var_init_ok_68 GF@_tmp string@
+                    EXIT int@5
+                    LABEL ?$pos_end?var_init_ok_68
+                # CHECK VAR [$pos_end] INIT END
+
+            # CHECK EXPR VARS INIT END
+
+            # EXPRESSION START
+                PUSHS int@1
+                PUSHS LF@$pos_end
+                CALL &add_op
+            # EXPRESSION END
+
+            POPS LF@$p1
+        # EXPR ASS END
+
+        # FUNC ASS START
+            # CALL FUNC [substring] START
+                JUMPIFEQ ?substring?func_def_ok_69 GF@?substring?defined bool@true
+                EXIT int@3
+                LABEL ?substring?func_def_ok_69
+                # CHECK FUNC ARG INIT START
+                    # CHECK VAR [$in] INIT START
+                        TYPE GF@_tmp LF@$in
+                        JUMPIFNEQ ?$in?var_init_ok_70 GF@_tmp string@
+                        EXIT int@5
+                        LABEL ?$in?var_init_ok_70
+                    # CHECK VAR [$in] INIT END
+
+                    # CHECK VAR [$pos_end] INIT START
+                        TYPE GF@_tmp LF@$pos_end
+                        JUMPIFNEQ ?$pos_end?var_init_ok_71 GF@_tmp string@
+                        EXIT int@5
+                        LABEL ?$pos_end?var_init_ok_71
+                    # CHECK VAR [$pos_end] INIT END
+
+                    # CHECK VAR [$p1] INIT START
+                        TYPE GF@_tmp LF@$p1
+                        JUMPIFNEQ ?$p1?var_init_ok_72 GF@_tmp string@
+                        EXIT int@5
+                        LABEL ?$p1?var_init_ok_72
+                    # CHECK VAR [$p1] INIT END
+
+                # CHECK FUNC ARG INIT END
+
+                PUSHS LF@$p1
+                PUSHS LF@$pos_end
+                PUSHS LF@$in
+                PUSHS int@3
+                CALL substring
+            # CALL FUNC [substring] END
+
+            POPS LF@$ch
+        # FUNC ASS END
+
+        # WHILE START
+            # CHECK EXPR VARS INIT START
+                # CHECK VAR [$ch] INIT START
+                    TYPE GF@_tmp LF@$ch
+                    JUMPIFNEQ ?$ch?var_init_ok_73 GF@_tmp string@
+                    EXIT int@5
+                    LABEL ?$ch?var_init_ok_73
+                # CHECK VAR [$ch] INIT END
+
+            # CHECK EXPR VARS INIT END
+
+            LABEL ?while_start_7
+            # EXPRESSION START
+                PUSHS string@;
+                PUSHS LF@$ch
+                CALL &neq_op
+            # EXPRESSION END
+
+            CALL &to_bool
+            POPS GF@_tmp_res
+            JUMPIFEQ ?while_end_7 GF@_tmp_res bool@false
+            # EXPR ASS START
+                # CHECK EXPR VARS INIT START
+                    # CHECK VAR [$pos_end] INIT START
+                        TYPE GF@_tmp LF@$pos_end
+                        JUMPIFNEQ ?$pos_end?var_init_ok_74 GF@_tmp string@
+                        EXIT int@5
+                        LABEL ?$pos_end?var_init_ok_74
+                    # CHECK VAR [$pos_end] INIT END
+
+                # CHECK EXPR VARS INIT END
+
+                # EXPRESSION START
+                    PUSHS int@1
+                    PUSHS LF@$pos_end
+                    CALL &add_op
+                # EXPRESSION END
+
+                POPS LF@$pos_end
+            # EXPR ASS END
+
+            # EXPR ASS START
+                # CHECK EXPR VARS INIT START
+                    # CHECK VAR [$pos_end] INIT START
+                        TYPE GF@_tmp LF@$pos_end
+                        JUMPIFNEQ ?$pos_end?var_init_ok_75 GF@_tmp string@
+                        EXIT int@5
+                        LABEL ?$pos_end?var_init_ok_75
+                    # CHECK VAR [$pos_end] INIT END
+
+                # CHECK EXPR VARS INIT END
+
+                # EXPRESSION START
+                    PUSHS int@1
+                    PUSHS LF@$pos_end
+                    CALL &add_op
+                # EXPRESSION END
+
+                POPS LF@$p1
+            # EXPR ASS END
+
+            # FUNC ASS START
+                # CALL FUNC [substring] START
+                    JUMPIFEQ ?substring?func_def_ok_76 GF@?substring?defined bool@true
+                    EXIT int@3
+                    LABEL ?substring?func_def_ok_76
+                    # CHECK FUNC ARG INIT START
+                        # CHECK VAR [$in] INIT START
+                            TYPE GF@_tmp LF@$in
+                            JUMPIFNEQ ?$in?var_init_ok_77 GF@_tmp string@
+                            EXIT int@5
+                            LABEL ?$in?var_init_ok_77
+                        # CHECK VAR [$in] INIT END
+
+                        # CHECK VAR [$pos_end] INIT START
+                            TYPE GF@_tmp LF@$pos_end
+                            JUMPIFNEQ ?$pos_end?var_init_ok_78 GF@_tmp string@
+                            EXIT int@5
+                            LABEL ?$pos_end?var_init_ok_78
+                        # CHECK VAR [$pos_end] INIT END
+
+                        # CHECK VAR [$p1] INIT START
+                            TYPE GF@_tmp LF@$p1
+                            JUMPIFNEQ ?$p1?var_init_ok_79 GF@_tmp string@
+                            EXIT int@5
+                            LABEL ?$p1?var_init_ok_79
+                        # CHECK VAR [$p1] INIT END
+
+                    # CHECK FUNC ARG INIT END
+
+                    PUSHS LF@$p1
+                    PUSHS LF@$pos_end
+                    PUSHS LF@$in
+                    PUSHS int@3
+                    CALL substring
+                # CALL FUNC [substring] END
+
+                POPS LF@$ch
+            # FUNC ASS END
+
+            JUMP ?while_start_7
+            LABEL ?while_end_7
+        # WHILE END
+
+        # FUNC ASS START
+            # CALL FUNC [substring] START
+                JUMPIFEQ ?substring?func_def_ok_80 GF@?substring?defined bool@true
+                EXIT int@3
+                LABEL ?substring?func_def_ok_80
+                # CHECK FUNC ARG INIT START
+                    # CHECK VAR [$in] INIT START
+                        TYPE GF@_tmp LF@$in
+                        JUMPIFNEQ ?$in?var_init_ok_81 GF@_tmp string@
+                        EXIT int@5
+                        LABEL ?$in?var_init_ok_81
+                    # CHECK VAR [$in] INIT END
+
+                    # CHECK VAR [$pos] INIT START
+                        TYPE GF@_tmp LF@$pos
+                        JUMPIFNEQ ?$pos?var_init_ok_82 GF@_tmp string@
+                        EXIT int@5
+                        LABEL ?$pos?var_init_ok_82
+                    # CHECK VAR [$pos] INIT END
+
+                # CHECK FUNC ARG INIT END
+
+                PUSHS LF@$pos
+                PUSHS int@0
+                PUSHS LF@$in
+                PUSHS int@3
+                CALL substring
+            # CALL FUNC [substring] END
+
+            POPS LF@$before
+        # FUNC ASS END
+
+        # FUNC ASS START
+            # CALL FUNC [strlen] START
+                JUMPIFEQ ?strlen?func_def_ok_83 GF@?strlen?defined bool@true
+                EXIT int@3
+                LABEL ?strlen?func_def_ok_83
+                # CHECK FUNC ARG INIT START
+                    # CHECK VAR [$in] INIT START
+                        TYPE GF@_tmp LF@$in
+                        JUMPIFNEQ ?$in?var_init_ok_84 GF@_tmp string@
+                        EXIT int@5
+                        LABEL ?$in?var_init_ok_84
+                    # CHECK VAR [$in] INIT END
+
+                # CHECK FUNC ARG INIT END
+
+                PUSHS LF@$in
+                PUSHS int@1
+                CALL strlen
+            # CALL FUNC [strlen] END
+
+            POPS LF@$slen
+        # FUNC ASS END
+
+        # FUNC ASS START
+            # CALL FUNC [substring] START
+                JUMPIFEQ ?substring?func_def_ok_85 GF@?substring?defined bool@true
+                EXIT int@3
+                LABEL ?substring?func_def_ok_85
+                # CHECK FUNC ARG INIT START
+                    # CHECK VAR [$in] INIT START
+                        TYPE GF@_tmp LF@$in
+                        JUMPIFNEQ ?$in?var_init_ok_86 GF@_tmp string@
+                        EXIT int@5
+                        LABEL ?$in?var_init_ok_86
+                    # CHECK VAR [$in] INIT END
+
+                    # CHECK VAR [$pos_end] INIT START
+                        TYPE GF@_tmp LF@$pos_end
+                        JUMPIFNEQ ?$pos_end?var_init_ok_87 GF@_tmp string@
+                        EXIT int@5
+                        LABEL ?$pos_end?var_init_ok_87
+                    # CHECK VAR [$pos_end] INIT END
+
+                    # CHECK VAR [$slen] INIT START
+                        TYPE GF@_tmp LF@$slen
+                        JUMPIFNEQ ?$slen?var_init_ok_88 GF@_tmp string@
+                        EXIT int@5
+                        LABEL ?$slen?var_init_ok_88
+                    # CHECK VAR [$slen] INIT END
+
+                # CHECK FUNC ARG INIT END
+
+                PUSHS LF@$slen
+                PUSHS LF@$pos_end
+                PUSHS LF@$in
+                PUSHS int@3
+                CALL substring
+            # CALL FUNC [substring] END
+
+            POPS LF@$after
+        # FUNC ASS END
+
+        # RETURN START
+            # CHECK EXPR VARS INIT START
+                # CHECK VAR [$after] INIT START
+                    TYPE GF@_tmp LF@$after
+                    JUMPIFNEQ ?$after?var_init_ok_89 GF@_tmp string@
+                    EXIT int@5
+                    LABEL ?$after?var_init_ok_89
+                # CHECK VAR [$after] INIT END
+
+                # CHECK VAR [$s] INIT START
+                    TYPE GF@_tmp LF@$s
+                    JUMPIFNEQ ?$s?var_init_ok_90 GF@_tmp string@
+                    EXIT int@5
+                    LABEL ?$s?var_init_ok_90
+                # CHECK VAR [$s] INIT END
+
+                # CHECK VAR [$before] INIT START
+                    TYPE GF@_tmp LF@$before
+                    JUMPIFNEQ ?$before?var_init_ok_91 GF@_tmp string@
+                    EXIT int@5
+                    LABEL ?$before?var_init_ok_91
+                # CHECK VAR [$before] INIT END
+
+            # CHECK EXPR VARS INIT END
+
+            # EXPRESSION START
+                PUSHS LF@$after
+                PUSHS LF@$s
+                PUSHS LF@$before
+                CALL &concat_op
+                CALL &concat_op
+            # EXPRESSION END
+
+            POPS GF@_tmp_res
+            PUSHS GF@_tmp_res
+            TYPE GF@_tmp_type GF@_tmp_res
+            JUMPIFEQ ?set?end GF@_tmp_type string@string
+            EXIT int@4
+        # RETURN END
+
+        # MISSING RETURN START
+        	EXIT int@4
+        # MISSING RETURN END
+
+        LABEL ?set?end
+        POPFRAME
+        RETURN
+    # FUNC [set] DEF END
+
+    # FUNC [length] DEF START
+        LABEL length
+        CREATEFRAME
+        PUSHFRAME
+        # FUNCTION PARAMS START
+            # CHECK ARG COUNT START
+                POPS GF@_tmp
+                JUMPIFEQ ?length?arg_count_ok GF@_tmp int@1
+                EXIT int@4
+                LABEL ?length?arg_count_ok
+            # CHECK ARG COUNT END
+
+            # INIT PARAMS, CHECK PARAM TYPES START
+                DEFVAR LF@$in
+                POPS LF@$in
+                TYPE GF@_tmp_type LF@$in
+                JUMPIFEQ ?length?$in?param_type_ok GF@_tmp_type string@string
+                EXIT int@4
+                LABEL ?length?$in?param_type_ok
+            # INIT PARAMS, CHECK PARAM TYPES END
+
+        # FUNCTION PARAMS END
+        # DEFINE USED VARS START
+            DEFVAR LF@$i
+            DEFVAR LF@$pos
+            DEFVAR LF@$p1
+            DEFVAR LF@$ch
+        # DEFINE USED VARS END
+
+        # EXPR ASS START
+            # CHECK EXPR VARS INIT START
+            # CHECK EXPR VARS INIT END
+
+            # EXPRESSION START
+                PUSHS int@0
+            # EXPRESSION END
+
+            POPS LF@$i
+        # EXPR ASS END
+
+        # EXPR ASS START
+            # CHECK EXPR VARS INIT START
+            # CHECK EXPR VARS INIT END
+
+            # EXPRESSION START
+                PUSHS int@0
+            # EXPRESSION END
+
+            POPS LF@$pos
+        # EXPR ASS END
+
+        # EXPR ASS START
+            # CHECK EXPR VARS INIT START
+                # CHECK VAR [$pos] INIT START
+                    TYPE GF@_tmp LF@$pos
+                    JUMPIFNEQ ?$pos?var_init_ok_92 GF@_tmp string@
+                    EXIT int@5
+                    LABEL ?$pos?var_init_ok_92
+                # CHECK VAR [$pos] INIT END
+
+            # CHECK EXPR VARS INIT END
+
+            # EXPRESSION START
+                PUSHS int@1
+                PUSHS LF@$pos
+                CALL &add_op
+            # EXPRESSION END
+
+            POPS LF@$p1
+        # EXPR ASS END
+
+        # FUNC ASS START
+            # CALL FUNC [substring] START
+                JUMPIFEQ ?substring?func_def_ok_93 GF@?substring?defined bool@true
+                EXIT int@3
+                LABEL ?substring?func_def_ok_93
+                # CHECK FUNC ARG INIT START
+                    # CHECK VAR [$in] INIT START
+                        TYPE GF@_tmp LF@$in
+                        JUMPIFNEQ ?$in?var_init_ok_94 GF@_tmp string@
+                        EXIT int@5
+                        LABEL ?$in?var_init_ok_94
+                    # CHECK VAR [$in] INIT END
+
+                    # CHECK VAR [$pos] INIT START
+                        TYPE GF@_tmp LF@$pos
+                        JUMPIFNEQ ?$pos?var_init_ok_95 GF@_tmp string@
+                        EXIT int@5
+                        LABEL ?$pos?var_init_ok_95
+                    # CHECK VAR [$pos] INIT END
+
+                    # CHECK VAR [$p1] INIT START
+                        TYPE GF@_tmp LF@$p1
+                        JUMPIFNEQ ?$p1?var_init_ok_96 GF@_tmp string@
+                        EXIT int@5
+                        LABEL ?$p1?var_init_ok_96
+                    # CHECK VAR [$p1] INIT END
+
+                # CHECK FUNC ARG INIT END
+
+                PUSHS LF@$p1
+                PUSHS LF@$pos
+                PUSHS LF@$in
+                PUSHS int@3
+                CALL substring
+            # CALL FUNC [substring] END
+
+            POPS LF@$ch
+        # FUNC ASS END
+
+        # WHILE START
+            # CHECK EXPR VARS INIT START
+                # CHECK VAR [$ch] INIT START
+                    TYPE GF@_tmp LF@$ch
+                    JUMPIFNEQ ?$ch?var_init_ok_97 GF@_tmp string@
+                    EXIT int@5
+                    LABEL ?$ch?var_init_ok_97
+                # CHECK VAR [$ch] INIT END
+
+            # CHECK EXPR VARS INIT END
+
+            LABEL ?while_start_8
+            # EXPRESSION START
+                PUSHS nil@nil
+                PUSHS LF@$ch
+                CALL &neq_op
+            # EXPRESSION END
+
+            CALL &to_bool
+            POPS GF@_tmp_res
+            JUMPIFEQ ?while_end_8 GF@_tmp_res bool@false
+            # EXPR ASS START
+                # CHECK EXPR VARS INIT START
+                    # CHECK VAR [$pos] INIT START
+                        TYPE GF@_tmp LF@$pos
+                        JUMPIFNEQ ?$pos?var_init_ok_98 GF@_tmp string@
+                        EXIT int@5
+                        LABEL ?$pos?var_init_ok_98
+                    # CHECK VAR [$pos] INIT END
+
+                # CHECK EXPR VARS INIT END
+
+                # EXPRESSION START
+                    PUSHS int@1
+                    PUSHS LF@$pos
+                    CALL &add_op
+                # EXPRESSION END
+
+                POPS LF@$pos
+            # EXPR ASS END
+
+            # EXPR ASS START
+                # CHECK EXPR VARS INIT START
+                    # CHECK VAR [$pos] INIT START
+                        TYPE GF@_tmp LF@$pos
+                        JUMPIFNEQ ?$pos?var_init_ok_99 GF@_tmp string@
+                        EXIT int@5
+                        LABEL ?$pos?var_init_ok_99
+                    # CHECK VAR [$pos] INIT END
+
+                # CHECK EXPR VARS INIT END
+
+                # EXPRESSION START
+                    PUSHS int@1
+                    PUSHS LF@$pos
+                    CALL &add_op
+                # EXPRESSION END
+
+                POPS LF@$p1
+            # EXPR ASS END
+
+            # FUNC ASS START
+                # CALL FUNC [substring] START
+                    JUMPIFEQ ?substring?func_def_ok_100 GF@?substring?defined bool@true
+                    EXIT int@3
+                    LABEL ?substring?func_def_ok_100
+                    # CHECK FUNC ARG INIT START
+                        # CHECK VAR [$in] INIT START
+                            TYPE GF@_tmp LF@$in
+                            JUMPIFNEQ ?$in?var_init_ok_101 GF@_tmp string@
+                            EXIT int@5
+                            LABEL ?$in?var_init_ok_101
+                        # CHECK VAR [$in] INIT END
+
+                        # CHECK VAR [$pos] INIT START
+                            TYPE GF@_tmp LF@$pos
+                            JUMPIFNEQ ?$pos?var_init_ok_102 GF@_tmp string@
+                            EXIT int@5
+                            LABEL ?$pos?var_init_ok_102
+                        # CHECK VAR [$pos] INIT END
+
+                        # CHECK VAR [$p1] INIT START
+                            TYPE GF@_tmp LF@$p1
+                            JUMPIFNEQ ?$p1?var_init_ok_103 GF@_tmp string@
+                            EXIT int@5
+                            LABEL ?$p1?var_init_ok_103
+                        # CHECK VAR [$p1] INIT END
+
+                    # CHECK FUNC ARG INIT END
+
+                    PUSHS LF@$p1
+                    PUSHS LF@$pos
+                    PUSHS LF@$in
+                    PUSHS int@3
+                    CALL substring
+                # CALL FUNC [substring] END
+
+                POPS LF@$ch
+            # FUNC ASS END
+
+            # IF START
+                # CHECK EXPR VARS INIT START
+                    # CHECK VAR [$ch] INIT START
+                        TYPE GF@_tmp LF@$ch
+                        JUMPIFNEQ ?$ch?var_init_ok_104 GF@_tmp string@
+                        EXIT int@5
+                        LABEL ?$ch?var_init_ok_104
+                    # CHECK VAR [$ch] INIT END
+
+                # CHECK EXPR VARS INIT END
+
+                # EXPRESSION START
+                    PUSHS string@;
+                    PUSHS LF@$ch
+                    CALL &eq_op
+                # EXPRESSION END
+
+                CALL &to_bool
+                POPS GF@_tmp_res
+                JUMPIFEQ ?if_branch_false_1 GF@_tmp_res bool@false
+                # EXPR ASS START
+                    # CHECK EXPR VARS INIT START
+                        # CHECK VAR [$i] INIT START
+                            TYPE GF@_tmp LF@$i
+                            JUMPIFNEQ ?$i?var_init_ok_105 GF@_tmp string@
+                            EXIT int@5
+                            LABEL ?$i?var_init_ok_105
+                        # CHECK VAR [$i] INIT END
+
+                    # CHECK EXPR VARS INIT END
+
+                    # EXPRESSION START
+                        PUSHS int@1
+                        PUSHS LF@$i
+                        CALL &add_op
+                    # EXPRESSION END
+
+                    POPS LF@$i
+                # EXPR ASS END
+
+                JUMP ?if_end_1
+                LABEL ?if_branch_false_1
+                LABEL ?if_end_1
+            # IF END
+
+            JUMP ?while_start_8
+            LABEL ?while_end_8
+        # WHILE END
+
+        # RETURN START
+            # CHECK EXPR VARS INIT START
+                # CHECK VAR [$i] INIT START
+                    TYPE GF@_tmp LF@$i
+                    JUMPIFNEQ ?$i?var_init_ok_106 GF@_tmp string@
+                    EXIT int@5
+                    LABEL ?$i?var_init_ok_106
+                # CHECK VAR [$i] INIT END
+
+            # CHECK EXPR VARS INIT END
+
+            # EXPRESSION START
+                PUSHS LF@$i
+            # EXPRESSION END
+
+            POPS GF@_tmp_res
+            PUSHS GF@_tmp_res
+            TYPE GF@_tmp_type GF@_tmp_res
+            JUMPIFEQ ?length?end GF@_tmp_type string@int
+            EXIT int@4
+        # RETURN END
+
+        # MISSING RETURN START
+        	EXIT int@4
+        # MISSING RETURN END
+
+        LABEL ?length?end
+        POPFRAME
+        RETURN
+    # FUNC [length] DEF END
+
+    # FUNC [pow] DEF START
+        LABEL pow
+        CREATEFRAME
+        PUSHFRAME
+        # FUNCTION PARAMS START
+            # CHECK ARG COUNT START
+                POPS GF@_tmp
+                JUMPIFEQ ?pow?arg_count_ok GF@_tmp int@2
+                EXIT int@4
+                LABEL ?pow?arg_count_ok
+            # CHECK ARG COUNT END
+
+            # INIT PARAMS, CHECK PARAM TYPES START
+                DEFVAR LF@$x
+                POPS LF@$x
+                TYPE GF@_tmp_type LF@$x
+                JUMPIFEQ ?pow?$x?param_type_ok GF@_tmp_type string@int
+                EXIT int@4
+                LABEL ?pow?$x?param_type_ok
+                DEFVAR LF@$y
+                POPS LF@$y
+                TYPE GF@_tmp_type LF@$y
+                JUMPIFEQ ?pow?$y?param_type_ok GF@_tmp_type string@int
+                EXIT int@4
+                LABEL ?pow?$y?param_type_ok
+            # INIT PARAMS, CHECK PARAM TYPES END
+
+        # FUNCTION PARAMS END
+        # DEFINE USED VARS START
+            DEFVAR LF@$i
+            DEFVAR LF@$ret
+        # DEFINE USED VARS END
+
+        # EXPR ASS START
+            # CHECK EXPR VARS INIT START
+            # CHECK EXPR VARS INIT END
+
+            # EXPRESSION START
+                PUSHS int@0
+            # EXPRESSION END
+
+            POPS LF@$i
+        # EXPR ASS END
+
+        # EXPR ASS START
+            # CHECK EXPR VARS INIT START
+            # CHECK EXPR VARS INIT END
+
+            # EXPRESSION START
+                PUSHS int@1
+            # EXPRESSION END
+
+            POPS LF@$ret
+        # EXPR ASS END
+
+        # WHILE START
+            # CHECK EXPR VARS INIT START
+                # CHECK VAR [$y] INIT START
+                    TYPE GF@_tmp LF@$y
+                    JUMPIFNEQ ?$y?var_init_ok_107 GF@_tmp string@
+                    EXIT int@5
+                    LABEL ?$y?var_init_ok_107
+                # CHECK VAR [$y] INIT END
+
+                # CHECK VAR [$i] INIT START
+                    TYPE GF@_tmp LF@$i
+                    JUMPIFNEQ ?$i?var_init_ok_108 GF@_tmp string@
+                    EXIT int@5
+                    LABEL ?$i?var_init_ok_108
+                # CHECK VAR [$i] INIT END
+
+            # CHECK EXPR VARS INIT END
+
+            LABEL ?while_start_9
+            # EXPRESSION START
+                PUSHS LF@$y
+                PUSHS LF@$i
+                CALL &lt_op
+            # EXPRESSION END
+
+            CALL &to_bool
+            POPS GF@_tmp_res
+            JUMPIFEQ ?while_end_9 GF@_tmp_res bool@false
+            # EXPR ASS START
+                # CHECK EXPR VARS INIT START
+                    # CHECK VAR [$x] INIT START
+                        TYPE GF@_tmp LF@$x
+                        JUMPIFNEQ ?$x?var_init_ok_109 GF@_tmp string@
+                        EXIT int@5
+                        LABEL ?$x?var_init_ok_109
+                    # CHECK VAR [$x] INIT END
+
+                    # CHECK VAR [$ret] INIT START
+                        TYPE GF@_tmp LF@$ret
+                        JUMPIFNEQ ?$ret?var_init_ok_110 GF@_tmp string@
+                        EXIT int@5
+                        LABEL ?$ret?var_init_ok_110
+                    # CHECK VAR [$ret] INIT END
+
+                # CHECK EXPR VARS INIT END
+
+                # EXPRESSION START
+                    PUSHS LF@$x
+                    PUSHS LF@$ret
+                    CALL &mul_op
+                # EXPRESSION END
+
+                POPS LF@$ret
+            # EXPR ASS END
+
+            # EXPR ASS START
+                # CHECK EXPR VARS INIT START
+                    # CHECK VAR [$i] INIT START
+                        TYPE GF@_tmp LF@$i
+                        JUMPIFNEQ ?$i?var_init_ok_111 GF@_tmp string@
+                        EXIT int@5
+                        LABEL ?$i?var_init_ok_111
+                    # CHECK VAR [$i] INIT END
+
+                # CHECK EXPR VARS INIT END
+
+                # EXPRESSION START
+                    PUSHS int@1
+                    PUSHS LF@$i
+                    CALL &add_op
+                # EXPRESSION END
+
+                POPS LF@$i
+            # EXPR ASS END
+
+            JUMP ?while_start_9
+            LABEL ?while_end_9
+        # WHILE END
+
+        # RETURN START
+            # CHECK EXPR VARS INIT START
+                # CHECK VAR [$ret] INIT START
+                    TYPE GF@_tmp LF@$ret
+                    JUMPIFNEQ ?$ret?var_init_ok_112 GF@_tmp string@
+                    EXIT int@5
+                    LABEL ?$ret?var_init_ok_112
+                # CHECK VAR [$ret] INIT END
+
+            # CHECK EXPR VARS INIT END
+
+            # EXPRESSION START
+                PUSHS LF@$ret
+            # EXPRESSION END
+
+            POPS GF@_tmp_res
+            PUSHS GF@_tmp_res
+            TYPE GF@_tmp_type GF@_tmp_res
+            JUMPIFEQ ?pow?end GF@_tmp_type string@int
+            EXIT int@4
+        # RETURN END
+
+        # MISSING RETURN START
+        	EXIT int@4
+        # MISSING RETURN END
+
+        LABEL ?pow?end
+        POPFRAME
+        RETURN
+    # FUNC [pow] DEF END
+
+    # FUNC [sierpinski] DEF START
+        LABEL sierpinski
+        CREATEFRAME
+        PUSHFRAME
+        # FUNCTION PARAMS START
+            # CHECK ARG COUNT START
+                POPS GF@_tmp
+                JUMPIFEQ ?sierpinski?arg_count_ok GF@_tmp int@1
+                EXIT int@4
+                LABEL ?sierpinski?arg_count_ok
+            # CHECK ARG COUNT END
+
+            # INIT PARAMS, CHECK PARAM TYPES START
+                DEFVAR LF@$n
+                POPS LF@$n
+                TYPE GF@_tmp_type LF@$n
+                JUMPIFEQ ?sierpinski?$n?param_type_ok GF@_tmp_type string@int
+                EXIT int@4
+                LABEL ?sierpinski?$n?param_type_ok
+            # INIT PARAMS, CHECK PARAM TYPES END
+
+        # FUNCTION PARAMS END
+        # DEFINE USED VARS START
+            DEFVAR LF@$d
+            DEFVAR LF@$i
+            DEFVAR LF@$j
+            DEFVAR LF@$sp
+            DEFVAR LF@$p
+            DEFVAR LF@$len
+            DEFVAR LF@$d2
+            DEFVAR LF@$s
+            DEFVAR LF@$t2
+            DEFVAR LF@$d3
+            DEFVAR LF@$t3
+        # DEFINE USED VARS END
+
+        # EXPR ASS START
+            # CHECK EXPR VARS INIT START
+            # CHECK EXPR VARS INIT END
+
+            # EXPRESSION START
+                PUSHS string@
+            # EXPRESSION END
+
+            POPS LF@$d
+        # EXPR ASS END
+
+        # FUNC ASS START
+            # CALL FUNC [append] START
+                JUMPIFEQ ?append?func_def_ok_113 GF@?append?defined bool@true
+                EXIT int@3
+                LABEL ?append?func_def_ok_113
+                # CHECK FUNC ARG INIT START
+                    # CHECK VAR [$d] INIT START
+                        TYPE GF@_tmp LF@$d
+                        JUMPIFNEQ ?$d?var_init_ok_114 GF@_tmp string@
+                        EXIT int@5
+                        LABEL ?$d?var_init_ok_114
+                    # CHECK VAR [$d] INIT END
+
+                # CHECK FUNC ARG INIT END
+
+                PUSHS string@*
+                PUSHS LF@$d
+                PUSHS int@2
+                CALL append
+            # CALL FUNC [append] END
+
+            POPS LF@$d
+        # FUNC ASS END
+
+        # EXPR ASS START
+            # CHECK EXPR VARS INIT START
+            # CHECK EXPR VARS INIT END
+
+            # EXPRESSION START
+                PUSHS int@0
+            # EXPRESSION END
+
+            POPS LF@$i
+        # EXPR ASS END
+
+        # WHILE START
+            # CHECK EXPR VARS INIT START
+                # CHECK VAR [$n] INIT START
+                    TYPE GF@_tmp LF@$n
+                    JUMPIFNEQ ?$n?var_init_ok_115 GF@_tmp string@
+                    EXIT int@5
+                    LABEL ?$n?var_init_ok_115
+                # CHECK VAR [$n] INIT END
+
+                # CHECK VAR [$i] INIT START
+                    TYPE GF@_tmp LF@$i
+                    JUMPIFNEQ ?$i?var_init_ok_116 GF@_tmp string@
+                    EXIT int@5
+                    LABEL ?$i?var_init_ok_116
+                # CHECK VAR [$i] INIT END
+
+            # CHECK EXPR VARS INIT END
+
+            LABEL ?while_start_10
+            # EXPRESSION START
+                PUSHS LF@$n
+                PUSHS LF@$i
+                CALL &lt_op
+            # EXPRESSION END
+
+            CALL &to_bool
+            POPS GF@_tmp_res
+            JUMPIFEQ ?while_end_10 GF@_tmp_res bool@false
+            # EXPR ASS START
+                # CHECK EXPR VARS INIT START
+                # CHECK EXPR VARS INIT END
+
+                # EXPRESSION START
+                    PUSHS int@0
+                # EXPRESSION END
+
+                POPS LF@$j
+            # EXPR ASS END
+
+            # EXPR ASS START
                 # CHECK EXPR VARS INIT START
                 # CHECK EXPR VARS INIT END
 
@@ -2118,24 +2090,546 @@ EXIT int@0
                     PUSHS string@
                 # EXPRESSION END
 
-                POPS GF@_tmp_res
-                PUSHS GF@_tmp_res
-                TYPE GF@_tmp_type GF@_tmp_res
-                JUMPIFEQ ?ssubstr?end GF@_tmp_type string@string
-                EXIT int@4
-            # RETURN END
+                POPS LF@$sp
+            # EXPR ASS END
 
-            LABEL ?if_end_21
-        # IF END
+            # FUNC ASS START
+                # CALL FUNC [pow] START
+                    JUMPIFEQ ?pow?func_def_ok_117 GF@?pow?defined bool@true
+                    EXIT int@3
+                    LABEL ?pow?func_def_ok_117
+                    # CHECK FUNC ARG INIT START
+                        # CHECK VAR [$i] INIT START
+                            TYPE GF@_tmp LF@$i
+                            JUMPIFNEQ ?$i?var_init_ok_118 GF@_tmp string@
+                            EXIT int@5
+                            LABEL ?$i?var_init_ok_118
+                        # CHECK VAR [$i] INIT END
+
+                    # CHECK FUNC ARG INIT END
+
+                    PUSHS LF@$i
+                    PUSHS int@2
+                    PUSHS int@2
+                    CALL pow
+                # CALL FUNC [pow] END
+
+                POPS LF@$p
+            # FUNC ASS END
+
+            # WHILE START
+                # CHECK EXPR VARS INIT START
+                    # CHECK VAR [$p] INIT START
+                        TYPE GF@_tmp LF@$p
+                        JUMPIFNEQ ?$p?var_init_ok_119 GF@_tmp string@
+                        EXIT int@5
+                        LABEL ?$p?var_init_ok_119
+                    # CHECK VAR [$p] INIT END
+
+                    # CHECK VAR [$j] INIT START
+                        TYPE GF@_tmp LF@$j
+                        JUMPIFNEQ ?$j?var_init_ok_120 GF@_tmp string@
+                        EXIT int@5
+                        LABEL ?$j?var_init_ok_120
+                    # CHECK VAR [$j] INIT END
+
+                # CHECK EXPR VARS INIT END
+
+                LABEL ?while_start_11
+                # EXPRESSION START
+                    PUSHS LF@$p
+                    PUSHS LF@$j
+                    CALL &lt_op
+                # EXPRESSION END
+
+                CALL &to_bool
+                POPS GF@_tmp_res
+                JUMPIFEQ ?while_end_11 GF@_tmp_res bool@false
+                # EXPR ASS START
+                    # CHECK EXPR VARS INIT START
+                        # CHECK VAR [$sp] INIT START
+                            TYPE GF@_tmp LF@$sp
+                            JUMPIFNEQ ?$sp?var_init_ok_121 GF@_tmp string@
+                            EXIT int@5
+                            LABEL ?$sp?var_init_ok_121
+                        # CHECK VAR [$sp] INIT END
+
+                    # CHECK EXPR VARS INIT END
+
+                    # EXPRESSION START
+                        PUSHS string@\032
+                        PUSHS LF@$sp
+                        CALL &concat_op
+                    # EXPRESSION END
+
+                    POPS LF@$sp
+                # EXPR ASS END
+
+                # EXPR ASS START
+                    # CHECK EXPR VARS INIT START
+                        # CHECK VAR [$j] INIT START
+                            TYPE GF@_tmp LF@$j
+                            JUMPIFNEQ ?$j?var_init_ok_122 GF@_tmp string@
+                            EXIT int@5
+                            LABEL ?$j?var_init_ok_122
+                        # CHECK VAR [$j] INIT END
+
+                    # CHECK EXPR VARS INIT END
+
+                    # EXPRESSION START
+                        PUSHS int@1
+                        PUSHS LF@$j
+                        CALL &add_op
+                    # EXPRESSION END
+
+                    POPS LF@$j
+                # EXPR ASS END
+
+                JUMP ?while_start_11
+                LABEL ?while_end_11
+            # WHILE END
+
+            # EXPR ASS START
+                # CHECK EXPR VARS INIT START
+                # CHECK EXPR VARS INIT END
+
+                # EXPRESSION START
+                    PUSHS int@0
+                # EXPRESSION END
+
+                POPS LF@$j
+            # EXPR ASS END
+
+            # FUNC ASS START
+                # CALL FUNC [length] START
+                    JUMPIFEQ ?length?func_def_ok_123 GF@?length?defined bool@true
+                    EXIT int@3
+                    LABEL ?length?func_def_ok_123
+                    # CHECK FUNC ARG INIT START
+                        # CHECK VAR [$d] INIT START
+                            TYPE GF@_tmp LF@$d
+                            JUMPIFNEQ ?$d?var_init_ok_124 GF@_tmp string@
+                            EXIT int@5
+                            LABEL ?$d?var_init_ok_124
+                        # CHECK VAR [$d] INIT END
+
+                    # CHECK FUNC ARG INIT END
+
+                    PUSHS LF@$d
+                    PUSHS int@1
+                    CALL length
+                # CALL FUNC [length] END
+
+                POPS LF@$len
+            # FUNC ASS END
+
+            # EXPR ASS START
+                # CHECK EXPR VARS INIT START
+                # CHECK EXPR VARS INIT END
+
+                # EXPRESSION START
+                    PUSHS string@
+                # EXPRESSION END
+
+                POPS LF@$d2
+            # EXPR ASS END
+
+            # WHILE START
+                # CHECK EXPR VARS INIT START
+                    # CHECK VAR [$len] INIT START
+                        TYPE GF@_tmp LF@$len
+                        JUMPIFNEQ ?$len?var_init_ok_125 GF@_tmp string@
+                        EXIT int@5
+                        LABEL ?$len?var_init_ok_125
+                    # CHECK VAR [$len] INIT END
+
+                    # CHECK VAR [$j] INIT START
+                        TYPE GF@_tmp LF@$j
+                        JUMPIFNEQ ?$j?var_init_ok_126 GF@_tmp string@
+                        EXIT int@5
+                        LABEL ?$j?var_init_ok_126
+                    # CHECK VAR [$j] INIT END
+
+                # CHECK EXPR VARS INIT END
+
+                LABEL ?while_start_12
+                # EXPRESSION START
+                    PUSHS LF@$len
+                    PUSHS LF@$j
+                    CALL &lt_op
+                # EXPRESSION END
+
+                CALL &to_bool
+                POPS GF@_tmp_res
+                JUMPIFEQ ?while_end_12 GF@_tmp_res bool@false
+                # FUNC ASS START
+                    # CALL FUNC [get] START
+                        JUMPIFEQ ?get?func_def_ok_127 GF@?get?defined bool@true
+                        EXIT int@3
+                        LABEL ?get?func_def_ok_127
+                        # CHECK FUNC ARG INIT START
+                            # CHECK VAR [$d] INIT START
+                                TYPE GF@_tmp LF@$d
+                                JUMPIFNEQ ?$d?var_init_ok_128 GF@_tmp string@
+                                EXIT int@5
+                                LABEL ?$d?var_init_ok_128
+                            # CHECK VAR [$d] INIT END
+
+                            # CHECK VAR [$j] INIT START
+                                TYPE GF@_tmp LF@$j
+                                JUMPIFNEQ ?$j?var_init_ok_129 GF@_tmp string@
+                                EXIT int@5
+                                LABEL ?$j?var_init_ok_129
+                            # CHECK VAR [$j] INIT END
+
+                        # CHECK FUNC ARG INIT END
+
+                        PUSHS LF@$j
+                        PUSHS LF@$d
+                        PUSHS int@2
+                        CALL get
+                    # CALL FUNC [get] END
+
+                    POPS LF@$s
+                # FUNC ASS END
+
+                # EXPR ASS START
+                    # CHECK EXPR VARS INIT START
+                        # CHECK VAR [$sp] INIT START
+                            TYPE GF@_tmp LF@$sp
+                            JUMPIFNEQ ?$sp?var_init_ok_130 GF@_tmp string@
+                            EXIT int@5
+                            LABEL ?$sp?var_init_ok_130
+                        # CHECK VAR [$sp] INIT END
+
+                        # CHECK VAR [$s] INIT START
+                            TYPE GF@_tmp LF@$s
+                            JUMPIFNEQ ?$s?var_init_ok_131 GF@_tmp string@
+                            EXIT int@5
+                            LABEL ?$s?var_init_ok_131
+                        # CHECK VAR [$s] INIT END
+
+                        # CHECK VAR [$sp] INIT START
+                            TYPE GF@_tmp LF@$sp
+                            JUMPIFNEQ ?$sp?var_init_ok_132 GF@_tmp string@
+                            EXIT int@5
+                            LABEL ?$sp?var_init_ok_132
+                        # CHECK VAR [$sp] INIT END
+
+                    # CHECK EXPR VARS INIT END
+
+                    # EXPRESSION START
+                        PUSHS LF@$sp
+                        PUSHS LF@$s
+                        PUSHS LF@$sp
+                        CALL &concat_op
+                        CALL &concat_op
+                    # EXPRESSION END
+
+                    POPS LF@$t2
+                # EXPR ASS END
+
+                # FUNC ASS START
+                    # CALL FUNC [append] START
+                        JUMPIFEQ ?append?func_def_ok_133 GF@?append?defined bool@true
+                        EXIT int@3
+                        LABEL ?append?func_def_ok_133
+                        # CHECK FUNC ARG INIT START
+                            # CHECK VAR [$d2] INIT START
+                                TYPE GF@_tmp LF@$d2
+                                JUMPIFNEQ ?$d2?var_init_ok_134 GF@_tmp string@
+                                EXIT int@5
+                                LABEL ?$d2?var_init_ok_134
+                            # CHECK VAR [$d2] INIT END
+
+                            # CHECK VAR [$t2] INIT START
+                                TYPE GF@_tmp LF@$t2
+                                JUMPIFNEQ ?$t2?var_init_ok_135 GF@_tmp string@
+                                EXIT int@5
+                                LABEL ?$t2?var_init_ok_135
+                            # CHECK VAR [$t2] INIT END
+
+                        # CHECK FUNC ARG INIT END
+
+                        PUSHS LF@$t2
+                        PUSHS LF@$d2
+                        PUSHS int@2
+                        CALL append
+                    # CALL FUNC [append] END
+
+                    POPS LF@$d2
+                # FUNC ASS END
+
+                # EXPR ASS START
+                    # CHECK EXPR VARS INIT START
+                        # CHECK VAR [$j] INIT START
+                            TYPE GF@_tmp LF@$j
+                            JUMPIFNEQ ?$j?var_init_ok_136 GF@_tmp string@
+                            EXIT int@5
+                            LABEL ?$j?var_init_ok_136
+                        # CHECK VAR [$j] INIT END
+
+                    # CHECK EXPR VARS INIT END
+
+                    # EXPRESSION START
+                        PUSHS int@1
+                        PUSHS LF@$j
+                        CALL &add_op
+                    # EXPRESSION END
+
+                    POPS LF@$j
+                # EXPR ASS END
+
+                JUMP ?while_start_12
+                LABEL ?while_end_12
+            # WHILE END
+
+            # EXPR ASS START
+                # CHECK EXPR VARS INIT START
+                # CHECK EXPR VARS INIT END
+
+                # EXPRESSION START
+                    PUSHS int@0
+                # EXPRESSION END
+
+                POPS LF@$j
+            # EXPR ASS END
+
+            # EXPR ASS START
+                # CHECK EXPR VARS INIT START
+                # CHECK EXPR VARS INIT END
+
+                # EXPRESSION START
+                    PUSHS string@
+                # EXPRESSION END
+
+                POPS LF@$d3
+            # EXPR ASS END
+
+            # WHILE START
+                # CHECK EXPR VARS INIT START
+                    # CHECK VAR [$len] INIT START
+                        TYPE GF@_tmp LF@$len
+                        JUMPIFNEQ ?$len?var_init_ok_137 GF@_tmp string@
+                        EXIT int@5
+                        LABEL ?$len?var_init_ok_137
+                    # CHECK VAR [$len] INIT END
+
+                    # CHECK VAR [$j] INIT START
+                        TYPE GF@_tmp LF@$j
+                        JUMPIFNEQ ?$j?var_init_ok_138 GF@_tmp string@
+                        EXIT int@5
+                        LABEL ?$j?var_init_ok_138
+                    # CHECK VAR [$j] INIT END
+
+                # CHECK EXPR VARS INIT END
+
+                LABEL ?while_start_13
+                # EXPRESSION START
+                    PUSHS LF@$len
+                    PUSHS LF@$j
+                    CALL &lt_op
+                # EXPRESSION END
+
+                CALL &to_bool
+                POPS GF@_tmp_res
+                JUMPIFEQ ?while_end_13 GF@_tmp_res bool@false
+                # FUNC ASS START
+                    # CALL FUNC [get] START
+                        JUMPIFEQ ?get?func_def_ok_139 GF@?get?defined bool@true
+                        EXIT int@3
+                        LABEL ?get?func_def_ok_139
+                        # CHECK FUNC ARG INIT START
+                            # CHECK VAR [$d] INIT START
+                                TYPE GF@_tmp LF@$d
+                                JUMPIFNEQ ?$d?var_init_ok_140 GF@_tmp string@
+                                EXIT int@5
+                                LABEL ?$d?var_init_ok_140
+                            # CHECK VAR [$d] INIT END
+
+                            # CHECK VAR [$j] INIT START
+                                TYPE GF@_tmp LF@$j
+                                JUMPIFNEQ ?$j?var_init_ok_141 GF@_tmp string@
+                                EXIT int@5
+                                LABEL ?$j?var_init_ok_141
+                            # CHECK VAR [$j] INIT END
+
+                        # CHECK FUNC ARG INIT END
+
+                        PUSHS LF@$j
+                        PUSHS LF@$d
+                        PUSHS int@2
+                        CALL get
+                    # CALL FUNC [get] END
+
+                    POPS LF@$s
+                # FUNC ASS END
+
+                # EXPR ASS START
+                    # CHECK EXPR VARS INIT START
+                        # CHECK VAR [$s] INIT START
+                            TYPE GF@_tmp LF@$s
+                            JUMPIFNEQ ?$s?var_init_ok_142 GF@_tmp string@
+                            EXIT int@5
+                            LABEL ?$s?var_init_ok_142
+                        # CHECK VAR [$s] INIT END
+
+                        # CHECK VAR [$s] INIT START
+                            TYPE GF@_tmp LF@$s
+                            JUMPIFNEQ ?$s?var_init_ok_143 GF@_tmp string@
+                            EXIT int@5
+                            LABEL ?$s?var_init_ok_143
+                        # CHECK VAR [$s] INIT END
+
+                    # CHECK EXPR VARS INIT END
+
+                    # EXPRESSION START
+                        PUSHS LF@$s
+                        PUSHS string@\032
+                        PUSHS LF@$s
+                        CALL &concat_op
+                        CALL &concat_op
+                    # EXPRESSION END
+
+                    POPS LF@$t3
+                # EXPR ASS END
+
+                # FUNC ASS START
+                    # CALL FUNC [append] START
+                        JUMPIFEQ ?append?func_def_ok_144 GF@?append?defined bool@true
+                        EXIT int@3
+                        LABEL ?append?func_def_ok_144
+                        # CHECK FUNC ARG INIT START
+                            # CHECK VAR [$d3] INIT START
+                                TYPE GF@_tmp LF@$d3
+                                JUMPIFNEQ ?$d3?var_init_ok_145 GF@_tmp string@
+                                EXIT int@5
+                                LABEL ?$d3?var_init_ok_145
+                            # CHECK VAR [$d3] INIT END
+
+                            # CHECK VAR [$t3] INIT START
+                                TYPE GF@_tmp LF@$t3
+                                JUMPIFNEQ ?$t3?var_init_ok_146 GF@_tmp string@
+                                EXIT int@5
+                                LABEL ?$t3?var_init_ok_146
+                            # CHECK VAR [$t3] INIT END
+
+                        # CHECK FUNC ARG INIT END
+
+                        PUSHS LF@$t3
+                        PUSHS LF@$d3
+                        PUSHS int@2
+                        CALL append
+                    # CALL FUNC [append] END
+
+                    POPS LF@$d3
+                # FUNC ASS END
+
+                # EXPR ASS START
+                    # CHECK EXPR VARS INIT START
+                        # CHECK VAR [$j] INIT START
+                            TYPE GF@_tmp LF@$j
+                            JUMPIFNEQ ?$j?var_init_ok_147 GF@_tmp string@
+                            EXIT int@5
+                            LABEL ?$j?var_init_ok_147
+                        # CHECK VAR [$j] INIT END
+
+                    # CHECK EXPR VARS INIT END
+
+                    # EXPRESSION START
+                        PUSHS int@1
+                        PUSHS LF@$j
+                        CALL &add_op
+                    # EXPRESSION END
+
+                    POPS LF@$j
+                # EXPR ASS END
+
+                JUMP ?while_start_13
+                LABEL ?while_end_13
+            # WHILE END
+
+            # EXPR ASS START
+                # CHECK EXPR VARS INIT START
+                    # CHECK VAR [$d3] INIT START
+                        TYPE GF@_tmp LF@$d3
+                        JUMPIFNEQ ?$d3?var_init_ok_148 GF@_tmp string@
+                        EXIT int@5
+                        LABEL ?$d3?var_init_ok_148
+                    # CHECK VAR [$d3] INIT END
+
+                    # CHECK VAR [$d2] INIT START
+                        TYPE GF@_tmp LF@$d2
+                        JUMPIFNEQ ?$d2?var_init_ok_149 GF@_tmp string@
+                        EXIT int@5
+                        LABEL ?$d2?var_init_ok_149
+                    # CHECK VAR [$d2] INIT END
+
+                # CHECK EXPR VARS INIT END
+
+                # EXPRESSION START
+                    PUSHS LF@$d3
+                    PUSHS LF@$d2
+                    CALL &concat_op
+                # EXPRESSION END
+
+                POPS LF@$d
+            # EXPR ASS END
+
+            # EXPR ASS START
+                # CHECK EXPR VARS INIT START
+                    # CHECK VAR [$i] INIT START
+                        TYPE GF@_tmp LF@$i
+                        JUMPIFNEQ ?$i?var_init_ok_150 GF@_tmp string@
+                        EXIT int@5
+                        LABEL ?$i?var_init_ok_150
+                    # CHECK VAR [$i] INIT END
+
+                # CHECK EXPR VARS INIT END
+
+                # EXPRESSION START
+                    PUSHS int@1
+                    PUSHS LF@$i
+                    CALL &add_op
+                # EXPRESSION END
+
+                POPS LF@$i
+            # EXPR ASS END
+
+            JUMP ?while_start_10
+            LABEL ?while_end_10
+        # WHILE END
+
+        # RETURN START
+            # CHECK EXPR VARS INIT START
+                # CHECK VAR [$d] INIT START
+                    TYPE GF@_tmp LF@$d
+                    JUMPIFNEQ ?$d?var_init_ok_151 GF@_tmp string@
+                    EXIT int@5
+                    LABEL ?$d?var_init_ok_151
+                # CHECK VAR [$d] INIT END
+
+            # CHECK EXPR VARS INIT END
+
+            # EXPRESSION START
+                PUSHS LF@$d
+            # EXPRESSION END
+
+            POPS GF@_tmp_res
+            PUSHS GF@_tmp_res
+            TYPE GF@_tmp_type GF@_tmp_res
+            JUMPIFEQ ?sierpinski?end GF@_tmp_type string@string
+            EXIT int@4
+        # RETURN END
 
         # MISSING RETURN START
         	EXIT int@4
         # MISSING RETURN END
 
-        LABEL ?ssubstr?end
+        LABEL ?sierpinski?end
         POPFRAME
         RETURN
-    # FUNC [ssubstr] DEF END
+    # FUNC [sierpinski] DEF END
 
 # USER FUNCTIONS END
 
@@ -2164,34 +2658,26 @@ PUSHFRAME
 POPFRAME												
 RETURN													
 
-LABEL ord														
+LABEL strlen													
 	# check if number of arguments is 1							
 	POPS GF@_arg_count											
-	JUMPIFEQ ?ord?arg_count_ok GF@_arg_count int@1				
+	JUMPIFEQ ?strlen?arg_count_ok GF@_arg_count int@1			
 		EXIT int@4												
-	LABEL ?ord?arg_count_ok										
+	LABEL ?strlen?arg_count_ok									
 																
 	# get argument												
 	POPS GF@_tmp												
 																
 	# check if parameter type is string							
 	TYPE GF@_tmp_type GF@_tmp									
-	JUMPIFEQ ?ord?param_type_ok GF@_tmp_type string@string		
+	JUMPIFEQ ?strlen?param_type_ok GF@_tmp_type string@string	
 		EXIT int@4												
-	LABEL ?ord?param_type_ok									
+	LABEL ?strlen?param_type_ok									
 																
-	# check if string is not empty								
-	JUMPIFEQ ?ord?empty_string GF@_tmp string@					
-																
-	# string is not empty, return ASCII value of first character
-	STRI2INT GF@_tmp GF@_tmp int@0								
+	# get and return length of string							
+	STRLEN GF@_tmp GF@_tmp										
 	PUSHS GF@_tmp												
-	RETURN														
-																
-	# string is empty, return zero								
-	LABEL ?ord?empty_string										
-	PUSHS int@0													
-	RETURN														
+RETURN															
 
 LABEL substring														
 CREATEFRAME															
@@ -2260,64 +2746,6 @@ PUSHFRAME
 	PUSHS nil@nil													
 	POPFRAME														
 	RETURN															
-
-LABEL chr														
-	# check if number of arguments is 1							
-	POPS GF@_arg_count											
-	JUMPIFEQ ?chr?arg_count_ok GF@_arg_count int@1				
-		EXIT int@4												
-	LABEL ?chr?arg_count_ok										
-																
-	# get argument												
-	POPS GF@_tmp												
-																
-	# check if parameter type is int							
-	TYPE GF@_tmp_type GF@_tmp									
-	JUMPIFEQ ?chr?param_type_ok GF@_tmp_type string@int			
-		EXIT int@4												
-	LABEL ?chr?param_type_ok									
-																
-	# get and return length of string							
-	INT2CHAR GF@_tmp GF@_tmp									
-	PUSHS GF@_tmp												
-RETURN															
-
-LABEL strlen													
-	# check if number of arguments is 1							
-	POPS GF@_arg_count											
-	JUMPIFEQ ?strlen?arg_count_ok GF@_arg_count int@1			
-		EXIT int@4												
-	LABEL ?strlen?arg_count_ok									
-																
-	# get argument												
-	POPS GF@_tmp												
-																
-	# check if parameter type is string							
-	TYPE GF@_tmp_type GF@_tmp									
-	JUMPIFEQ ?strlen?param_type_ok GF@_tmp_type string@string	
-		EXIT int@4												
-	LABEL ?strlen?param_type_ok									
-																
-	# get and return length of string							
-	STRLEN GF@_tmp GF@_tmp										
-	PUSHS GF@_tmp												
-RETURN															
-
-LABEL reads												
-CREATEFRAME												
-PUSHFRAME												
-	# check if number of arguments is 0					
-		POPS GF@_arg_count								
-		JUMPIFEQ ?reads?arg_count_ok GF@_arg_count int@0
-			EXIT int@4									
-		LABEL ?reads?arg_count_ok						
-														
-	# read string from input							
-		DEFVAR LF@read_string							
-		READ LF@read_string string						
-		PUSHS LF@read_string							
-POPFRAME												
-RETURN													
 
 # BUILT IN FUNCTIONS END
 
@@ -2462,9 +2890,9 @@ JUMPIFNEQ ?skip_nil_conversion_7 GF@_tlhs string@nil
 MOVE GF@_lhs int@0
 LABEL ?skip_nil_conversion_7
 TYPE GF@_tlhs GF@_lhs
-JUMPIFEQ ?skip_int_conversion_124 GF@_tlhs string@float
+JUMPIFEQ ?skip_int_conversion_152 GF@_tlhs string@float
 INT2FLOAT GF@_lhs GF@_lhs
-LABEL ?skip_int_conversion_124
+LABEL ?skip_int_conversion_152
 POPS GF@_rhs
 TYPE GF@_trhs GF@_rhs
 JUMPIFNEQ ?type_ok_8 GF@_trhs string@string
@@ -2474,9 +2902,9 @@ JUMPIFNEQ ?skip_nil_conversion_8 GF@_trhs string@nil
 MOVE GF@_rhs int@0
 LABEL ?skip_nil_conversion_8
 TYPE GF@_trhs GF@_rhs
-JUMPIFEQ ?skip_int_conversion_125 GF@_trhs string@float
+JUMPIFEQ ?skip_int_conversion_153 GF@_trhs string@float
 INT2FLOAT GF@_rhs GF@_rhs
-LABEL ?skip_int_conversion_125
+LABEL ?skip_int_conversion_153
 DIV GF@_lhs GF@_lhs GF@_rhs
 PUSHS GF@_lhs
 RETURN

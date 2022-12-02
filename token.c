@@ -53,8 +53,10 @@ int t_attach(token_t * t, const char * str) {
 	return 0;
 }
 
-// TODO: Deallocate associated values.
 void t_dstr(token_t * t) {
+	if(t == NULL) {
+		return;
+	}
 	free(t->aval);
 	free(t);
 	return;
