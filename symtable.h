@@ -28,8 +28,6 @@ typedef int datatype_t;
  *
  */
 typedef struct{
-	bool checking_nested_calls_defs;
-
 	bool all_nested_calls_defined;
 	
 	AST_node_t* func_body_n;

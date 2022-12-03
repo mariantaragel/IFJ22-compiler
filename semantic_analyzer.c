@@ -495,17 +495,14 @@ error_codes_t sem_check_nested_func_call_defs(AST_node_t* cur_n, semantic_contex
 			return SEM_ERROR_3; // undefined function
 		}
 		else{
-			if(func_info->checking_nested_calls_defs == true){
-				return OK;
-			}
-			else if(func_info->all_nested_calls_defined == false){
-				func_info->checking_nested_calls_defs = true;
+			if(func_info->all_nested_calls_defined == false){
+				func_info->all_nested_calls_defined = true;
 
 				AST_node_t* body_of_called_func = func_info->func_body_n;
 				if((res = sem_check_nested_func_call_defs(body_of_called_func, sem_context)) != OK) return res;
-				func_info->all_nested_calls_defined = true;
-
-				func_info->checking_nested_calls_defs = false;
+			}
+			else{
+				return OK;
 			}
 		}
 	}
