@@ -23,8 +23,8 @@
 
 //============================
 
-// TODO: add source
-// Sdbm implementation of hash function (public-domain). Returns hash of "str".
+// Sdbm implementation of hash function. Returns hash of "str".
+// Source: http://www.cse.yorku.ca/~oz/hash.html#sdbm
 size_t hash_function(const char* str) {
     uint32_t h = 0;
     const unsigned char* p;
