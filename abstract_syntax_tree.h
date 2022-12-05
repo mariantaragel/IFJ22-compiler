@@ -151,16 +151,6 @@ void AST_free(AST_node_t* root);
 AST_node_t* AST_create_node(AST_node_type_t type);
 
 /**
- * @brief Adds new child node to parent node of AST.
- * 
- * @param parent Parent node.
- * @param new_child New child node to be added.
- * @return int Returns 0 on sucess, otherwise non zero value is returned, 
- * if allocation fails or either parent or new_child is NULL.
- */
-//int AST_add_child(AST_node_t* parent, AST_node_t* new_child);
-
-/**
  * @brief Creates new node of specified type and adds it to parent node as its child.
  * 
  * @param parent Parent node.
