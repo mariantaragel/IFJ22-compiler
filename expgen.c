@@ -20,19 +20,16 @@
 #include "scanner.h"
 #include "error.h"
 #include "precedence_parser.h"
-// #include "generator.c" // Testing only.
 
-/* Global variables */
+/* Global variables for generator. Don't change! */
 const char * lhs = "GF@_lhs";
 const char * rhs = "GF@_rhs";
 const char * tlhs = "GF@_tlhs";
 const char * trhs = "GF@_trhs";
 const char * aux1 = "GF@_aux1";
-// const char * aux2 = "GF@_aux2";
-
 
 typedef enum {ARITHMETIC, DIVISION, STRING, EQUALITY, LTGT, LTEGTE} operation_t;
-void push_operand(const token_t * token, const char * scope_label);
+void push_operand(const token_t * token, char * scope_label);
 bool isoperand(const token_t * token);
 void gen_arithmetic_operation(const token_type_t operation);
 void pop_operand_arithmetic(const char * operand, const char * operand_type);
@@ -48,8 +45,9 @@ void gen_ltegte_operation(const token_type_t operation);
 void pop_operand_ltegte(const char * operand, const char * operand_type);
 
 /* Helper functions */
-token_array_t * get_exp(char* expression);
+// token_array_t * get_exp(char* expression);
 
+/* Testing main. Makefile -> make expgen*/
 // int main() {
 //     G(".IFJcode22");
 //     G("DEFVAR %s", lhs);
@@ -63,7 +61,7 @@ token_array_t * get_exp(char* expression);
 //     G("LABEL program_start");
 //     token_array_t * tarr;
 //     tarr = get_exp("\"\" <= null");
-// 	printf("\n\n\n");
+// 	   printf("\n\n\n");
     
 //     generator_context_t * gc = generator_context_create();
 //     if(gc == NULL) {
@@ -75,7 +73,6 @@ token_array_t * get_exp(char* expression);
 //     generator_context_free(gc);
 // }
 
-/// @brief Generates IFJcode22 code of function definitions, for all (arithmetic, string, relational) operations.
 void gen_operation_functions() {
     gen_arithmetic_operation(ADD);
     gen_arithmetic_operation(MUL);
@@ -90,21 +87,18 @@ void gen_operation_functions() {
     gen_ltegte_operation(GTE);
 } // gen_operation_functions, OK
 
-/// @brief Generates IFJcode22 code which calculates the result of an expression.
-/// @param tarr Expression (in postfix notation) to generate.
-/// @param gc Program context (local/global).
 void gen_expression(token_array_t * tarr, generator_context_t * gc) {
     char * scope_label;
-    if(gc->is_in_function) {
+    if(gc->is_in_function) { // Set scope label.
         scope_label = "LF@";
     } else {
         scope_label = "GF@";
     }
     for(unsigned i = 0; i < tarr->token_count; i++) { // Parse expression.
         token_t * token = tarr->array[i];
-        if(isoperand(token)) {
-            push_operand(token, scope_label); // Check error flag.
-        } else { // Is operator
+        if(isoperand(token)) { // If operand, push onto stack.
+            push_operand(token, scope_label);
+        } else { // If operator, perform operation on two last pushed operands.
             switch(token->type) {
                 case ADD: G("CALL &add_op"); break;
                 case MUL: G("CALL &mul_op"); break;
@@ -113,7 +107,6 @@ void gen_expression(token_array_t * tarr, generator_context_t * gc) {
                 case CONCAT: G("CALL &concat_op"); break;
                 case EQ: G("CALL &eq_op"); break;
                 case NEQ: G("CALL &neq_op"); break;
-                /* OPERATIONS TODO */
                 case LT: G("CALL &lt_op"); break;
                 case GT: G("CALL &gt_op"); break;
                 case GTE: G("CALL &gte_op"); break;
@@ -124,7 +117,7 @@ void gen_expression(token_array_t * tarr, generator_context_t * gc) {
     }
 } // gen_expression, OK
 
-void push_operand(const token_t * token, const char * scope_label) {
+void push_operand(const token_t * token, char * scope_label) {
     char * label;
     switch(token->type) {
         case VAR_ID: label = gen_label(scope_label, token->aval, NULL, false); break;
@@ -148,10 +141,10 @@ bool isoperand(const token_t * token) {
 
 void gen_arithmetic_operation(const token_type_t operation) {
     if(operation != MUL && operation != SUB && operation != ADD) {
-        return; // Set error.
+        return;
     }
     char * execute, * convert_rhs;
-    switch(operation) {
+    switch(operation) { // Set correct labels.
         case MUL: G("LABEL &mul_op"); execute = "?mul_op?execute"; convert_rhs = "?mul_op?convert_rhs"; break;
         case SUB: G("LABEL &sub_op"); execute = "?sub_op?execute"; convert_rhs = "?sub_op?convert_rhs"; break;
         case ADD: G("LABEL &add_op"); execute = "?add_op?execute"; convert_rhs = "?add_op?convert_rhs"; break;
@@ -159,6 +152,7 @@ void gen_arithmetic_operation(const token_type_t operation) {
     }
     pop_operand_arithmetic(lhs, tlhs);
     pop_operand_arithmetic(rhs, trhs);
+    /* Type checking. */
     G("JUMPIFEQ %s %s %s", execute, tlhs, trhs);
     G("JUMPIFEQ %s %s string@float", convert_rhs, tlhs);
     G("INT2FLOAT %s %s", lhs, lhs);
@@ -166,6 +160,7 @@ void gen_arithmetic_operation(const token_type_t operation) {
     G("LABEL %s", convert_rhs);
     G("INT2FLOAT %s %s", rhs, rhs);
     G("LABEL %s", execute);
+    /* Execution. */
     switch(operation) {
         case MUL: G("MUL %s %s %s", lhs, lhs, rhs); break;
         case SUB: G("SUB %s %s %s", lhs, lhs, rhs); break;
@@ -317,18 +312,18 @@ void gen_ltgt_operation(token_type_t operation) {
         return; // Set error.
     }
     /* Labels used */
-    char * execute, * end, * skip_lhs_cast, * skip_rhs_cast, * lhs_not_string, * rhs_not_string, * lhs_not_nil, * rhs_not_nil;
+
+    char * execute = "?lt_op?execute",
+        * end = "?lt_op?end",
+        * skip_lhs_cast = "?lt_op?skip_lhs_cast",
+        * skip_rhs_cast = "?lt_op?skip_rhs_cast",
+        * lhs_not_string = "?lt_op?lhs_not_string",
+        * rhs_not_string = "?lt_op?rhs_not_string",
+        * lhs_not_nil = "?lt_op?lhs_not_nil",
+        * rhs_not_nil = "?lt_op?rhs_not_nil";
     switch(operation) {
         case LT: 
                 G("LABEL &lt_op");
-                execute = "?lt_op?execute";
-                end = "?lt_op?end";
-                skip_lhs_cast = "?lt_op?skip_lhs_cast";
-                skip_rhs_cast = "?lt_op?skip_rhs_cast";
-                lhs_not_string = "?lt_op?lhs_not_string";
-                rhs_not_string = "?lt_op?rhs_not_string";
-                lhs_not_nil = "?lt_op?lhs_not_nil";
-                rhs_not_nil = "?lt_op?rhs_not_nil";
                 break;
         case GT:
                 G("LABEL &gt_op");
@@ -357,7 +352,7 @@ void gen_ltgt_operation(token_type_t operation) {
     G("LABEL %s", rhs_not_nil);
 
 
-    G("JUMPIFEQ %s %s %s", execute, tlhs, trhs); // Priame porovnanie
+    G("JUMPIFEQ %s %s %s", execute, tlhs, trhs); // Direct comparison.
     G("JUMPIFNEQ %s %s string@string", lhs_not_string, tlhs);
     G("MOVE %s bool@false", lhs);
     G("JUMP %s", end);
@@ -408,26 +403,22 @@ void gen_ltegte_operation(token_type_t operation) {
     if(operation != LTE && operation != GTE) {
         return; // Set errror.
     }
-    char * execute, * skip_lhs_nil_conversion, * skip_rhs_nil_conversion, * skip_lhs_to_int_conversion, * skip_rhs_to_int_conversion,
-    * skip_lhs_to_string_conversion, * skip_rhs_to_string_conversion, * skip_lhs_to_float_conversion, * skip_rhs_to_float_conversion,
-    * lhs_not_string, * rhs_not_string, * skip_lhs_cast, * skip_rhs_cast, * end;
+    
+    char * execute = "?lte_op?execute",
+    * skip_lhs_nil_conversion = "?lte_op?skip_lhs_nil_conversion",
+    * skip_rhs_nil_conversion = "?lte_op?skip_rhs_nil_conversion",
+    * skip_lhs_to_int_conversion = "?lte_op?skip_lhs_to_int_conversion",
+    * skip_rhs_to_int_conversion = "?lte_op?skip_rhs_to_int_conversion",
+    * skip_lhs_to_string_conversion = "?lte_op?skip_lhs_to_string_conversion",
+    * skip_rhs_to_string_conversion = "?lte_op?skip_rhs_to_string_conversion",
+    * lhs_not_string = "?lte_op?lhs_not_string",
+    * rhs_not_string = "?lte_op?rhs_not_string",
+    * skip_lhs_cast = "?lte_op?skip_lhs_cast",
+    * skip_rhs_cast = "?lte_op?skip_rhs_cast",
+    * end = "?lte_op?end"; 
     switch(operation) {
         case LTE: 
                 G("LABEL &lte_op");
-                execute = "?lte_op?execute";
-                skip_lhs_nil_conversion = "?lte_op?skip_lhs_nil_conversion";
-                skip_rhs_nil_conversion = "?lte_op?skip_rhs_nil_conversion";
-                skip_lhs_to_int_conversion = "?lte_op?skip_lhs_to_int_conversion";
-                skip_rhs_to_int_conversion = "?lte_op?skip_rhs_to_int_conversion";
-                skip_lhs_to_string_conversion = "?lte_op?skip_lhs_to_string_conversion";
-                skip_rhs_to_string_conversion = "?lte_op?skip_rhs_to_string_conversion";
-                skip_lhs_to_float_conversion = "?lte_op?skip_lhs_to_float_conversion";
-                skip_rhs_to_float_conversion = "?lte_op?skip_rhs_to_float_conversion";
-                lhs_not_string = "?lte_op?lhs_not_string";
-                rhs_not_string = "?lte_op?rhs_not_string";
-                skip_lhs_cast = "?lte_op?skip_lhs_cast";
-                skip_rhs_cast = "?lte_op?skip_rhs_cast";
-                end = "?lte_op?end"; 
                 break;
         case GTE: 
                 G("LABEL &gte_op");
@@ -438,8 +429,6 @@ void gen_ltegte_operation(token_type_t operation) {
                 skip_rhs_to_int_conversion = "?gte_op?skip_rhs_to_int_conversion";
                 skip_lhs_to_string_conversion = "?gte_op?skip_lhs_to_string_conversion";
                 skip_rhs_to_string_conversion = "?gte_op?skip_rhs_to_string_conversion";
-                skip_lhs_to_float_conversion = "?gte_op?skip_lhs_to_float_conversion";
-                skip_rhs_to_float_conversion = "?gte_op?skip_rhs_to_float_conversion";
                 lhs_not_string = "?gte_op?lhs_not_string";
                 rhs_not_string = "?gte_op?rhs_not_string";
                 skip_lhs_cast = "?gte_op?skip_lhs_cast";
@@ -488,7 +477,7 @@ void gen_ltegte_operation(token_type_t operation) {
     G("LABEL %s", skip_rhs_nil_conversion);
 
 
-    G("JUMPIFEQ %s %s %s", execute, tlhs, trhs); // Priame porovnanie
+    G("JUMPIFEQ %s %s %s", execute, tlhs, trhs); // Direct comparison.
     G("JUMPIFNEQ %s %s string@string", lhs_not_string, tlhs);
     G("MOVE %s bool@false", lhs);
     G("JUMP %s", end);
@@ -540,32 +529,31 @@ void pop_operand_ltegte(const char * operand, const char * operand_type) {
 }
 
 /* Helper function */
+// token_array_t * get_exp(char* expression){
+// 	FILE* fp = fopen("./tests/expgen/test_in.php","w+");
+// 	if(fp == NULL) exit(1);
+// 	fprintf(fp, "%s", expression);
+// 	fclose(fp);
 
-token_array_t * get_exp(char* expression){
-	FILE* fp = fopen("./tests/expgen/test_in.php","w+");
-	if(fp == NULL) exit(1);
-	fprintf(fp, "%s", expression);
-	fclose(fp);
-
-	freopen("./tests/expgen/test_in.php", "r", stdin);
-	token_t* t;
-	token_array_t* ta = token_array_create();
-	if(ta == NULL){
-		printf("Allocation error\n");
-		exit(1);
-	} 
+// 	freopen("./tests/expgen/test_in.php", "r", stdin);
+// 	token_t* t;
+// 	token_array_t* ta = token_array_create();
+// 	if(ta == NULL){
+// 		printf("Allocation error\n");
+// 		exit(1);
+// 	} 
 	
-	error = OK;
-    while((t = get_token()) != NULL && t->type != END){
-		if(token_array_push_token(ta, t) != 0){
-			printf("Allocation error\n");
-			exit(1);
-		} 
-	}
-	if(t != NULL) t_dstr(t);
+// 	error = OK;
+//     while((t = get_token()) != NULL && t->type != END){
+// 		if(token_array_push_token(ta, t) != 0){
+// 			printf("Allocation error\n");
+// 			exit(1);
+// 		} 
+// 	}
+// 	if(t != NULL) t_dstr(t);
 	
-	return parse_expression(ta);
-}
+// 	return parse_expression(ta);
+// }
 
 
 

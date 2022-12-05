@@ -16,6 +16,7 @@
 #ifndef ERROR_H
 #define ERROR_H
 
+// Error types.
 typedef enum error {OK, LEXICAL_ERROR, SYNTAX_ERROR, SEM_ERROR_3, SEM_ERROR_4, SEM_ERROR_5, SEM_ERROR_6, SEM_ERROR_7, SEM_ERROR_8, INTERNAL_ERROR = 99} error_codes_t;
 
 // Global error variable.

@@ -1,14 +1,13 @@
 /****
  ** dynamic_string.h
  ** Řešení IFJ-PROJEKT, 5.10.2022
- ** Autor: xhorva17
- ** Přeloženo:
+ ** Autor: Martin Horvat, xhorva17
  **/
 
 /**
  * @file dynamic_string.h
- * @author xhorva17
- * @brief Dynamic string header file.
+ * @author Martin Horvat, xhorva17
+ * @brief Header file for dynamic string.
  * @date 2022-10-05
  */
 
@@ -18,18 +17,10 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
-/* TODO:
-	Implement:
-		ds_strinit;
-		ds_concat;
-		ds_concat_str;
-		ds_write_int;
-*/
-
 typedef struct {
-	char * str; // String.
-	size_t size; // String length.
-	unsigned wi; // Next index for write.
+	char * str; // String to write into.
+	size_t size; // Size of currently allocated string buffer.
+	unsigned wi; // Next index of writing into str.
 } dynamic_string_t;
 
 /**
@@ -39,7 +30,7 @@ typedef struct {
 dynamic_string_t * ds_init();
 
 /**
- * @brief Initialize dynamic string with a given value.
+ * @brief Initialize dynamic string with a given string.
  * @param str String with which the ds is initialized.
  * @returns Initialized dynamic string. NULL if error.
 */
@@ -81,12 +72,18 @@ int ds_concat(dynamic_string_t * a, dynamic_string_t * b);
 int ds_concat_str(dynamic_string_t * ds, const char * str);
 
 /**
- * @brief Writes an integer as a string value onto the end of a dynamic string.
+ * @brief Writes an unsigned integer as a string value onto the end of a dynamic string.
  * @param ds Dynamic string for writing.
  * @param n Integer to write.
 */
 int ds_write_uint(dynamic_string_t * ds, unsigned n);
 
+/**
+ * @brief Returns the string contained in ds.
+ * @param ds Dynamic string with string.
+ * @param free_ds Deinitialize ds if true.
+ * @returns String from ds, NULL on failure.
+*/
 char * ds_get_str(dynamic_string_t * ds, bool free_ds);
 
 #endif // DYNAMIC_STRING_H

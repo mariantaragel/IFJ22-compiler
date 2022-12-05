@@ -113,7 +113,4 @@ void t_dstr(token_t * t);
  */
 void t_print(token_t * t);
 
-
-
-
 #endif // TOKEN_H

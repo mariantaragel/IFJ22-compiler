@@ -1,12 +1,12 @@
 /****
  ** scanner.c
  ** Řešení IFJ-PROJEKT, 01.10.2022
- ** Autor: xhorva17
+ ** Autor: Martin Horvat, xhorva17
  **/
 
 /**
  * @file scanner.c
- * @author xhorva17
+ * @author Martin Horvat, xhorva17
  * @brief Implementation of lexical analyzer.
  * @date 2022-10-01
  */
@@ -18,18 +18,36 @@
 #include <string.h>
 #include <inttypes.h>
 #include <errno.h>
+#include "limits.h"
 #include "scanner.h"
 #include "dynamic_string.h"
 #include "token.h"
 #include "error.h"
 
+// A-Z, a-z
+#define letter 65: case 66: case 67: case 68: case 69: case 70: case 71: case 72: case 73: case 74: case 75: case 76: case 77: case 78: case 79: case 80: case 81: case 82: case 83: case 84: case 85: case 86: case 87: case 88: case 89: case 90: case 97: case 98: case 99: case 100: case 101: case 102: case 103: case 104: case 105: case 106: case 107: case 108: case 109: case 110: case 111: case 112: case 113: case 114: case 115: case 116: case 117: case 118: case 119: case 120: case 121: case 122:
+
+// 0-9
+#define digit 48: case 49: case 50: case 51: case 52: case 53: case 54: case 55: case 56: case 57:
+
+/* Lexeme handlers */
+
+void vik_handler(dynamic_string_t * ds, token_t * t, int * c);
+void fi_handler(dynamic_string_t * ds, token_t * t, int * c);
+void s_handler(dynamic_string_t * ds, token_t * t, int * c);
+void nte_handler(dynamic_string_t * ds, token_t * t, int * c);
+void lp_handler(dynamic_string_t * ds, token_t * t, int * c);
+void g_handler(token_t * t, int * c);
+void neq_handler(token_t * t, int * c);
+void aeq_handler(token_t * t, int * c);
+int oct_write(dynamic_string_t * ds, int * c);
+int hex_write(dynamic_string_t * ds, int * c);
+int float_write(dynamic_string_t * ds, int * c);
+
+
+/* Testing main, Makefile -> make scanner */
 // int main() {
-
-// 	// double value = 123.123;
-// 	// double value2 = 0x1.ec7df3b645a1dp+6;
-
-// 	// printf("Standard -> %lf\n", value2);
-// 	// printf("Hex -> %a\n", value2);
+//
 // 	token_t * token;
 // 	do {
 // 		token = get_token();
@@ -48,6 +66,7 @@
 
 
 token_t * get_token() {
+	static bool prolog_found = false; // Check for prolog as first token.
 	dynamic_string_t * ds = ds_init(); // Initialize write buffer.
 	if(ds == NULL) {
 		error = INTERNAL_ERROR;
@@ -61,6 +80,27 @@ token_t * get_token() {
 
 	int c = 0; // Character for read/write.
 	
+	if(!prolog_found) { // Get prolog first.
+		while((c = fgetc(stdin)) != EOF && !isspace(c)) {
+			if(ds_write(ds, c)) {
+				error = INTERNAL_ERROR;
+				ds_dstr(ds);
+				return t;
+			}
+		}
+		if(strcmp(ds->str, "<?php") == 0) {
+			prolog_found = true;
+			t->type = PROLOG;
+			ds_dstr(ds);
+			return t;
+		} else {
+			error = LEXICAL_ERROR;
+			ds_dstr(ds);
+			return t;
+		}
+	}
+
+
 	do { // Skip leading whitespace and comments.
 		c = fgetc(stdin);
 		if(c == '/') { // Skip if comment.
@@ -144,7 +184,7 @@ void vik_handler(dynamic_string_t * ds, token_t * t, int * c) {
 			error = INTERNAL_ERROR;
 			return;
 		}
-	} while( (*c = fgetc(stdin)) != EOF && (isalnum(*c) != 0 || *c == '_') && isspace(*c) == 0); // Watchout for file end.
+	} while( (*c = fgetc(stdin)) != EOF && (isalnum(*c) != 0 || *c == '_') && !isspace(*c));
 	ungetc(*c, stdin);
 
 	for(int i = 0; i < reserved_words_count; i++) {
@@ -179,8 +219,8 @@ void vik_handler(dynamic_string_t * ds, token_t * t, int * c) {
 	} else {
 		t->type = FUNC_ID;
 	}
+	
 	/* Attach attribute */
-
 	if(t_attach(t, ds->str)) {
 		error = INTERNAL_ERROR;
 	};
@@ -195,49 +235,48 @@ void fi_handler(dynamic_string_t * ds, token_t * t, int * c) {
 	} while( (*c = fgetc(stdin)) != EOF && isdigit(*c));
 
 	if(*c != '.' && *c != 'e' && *c != 'E') { // Value should be an integer literal.
-	
 		ungetc(*c, stdin); // Return false read.
 
 		/* Check if value is ok. */
-
 		char * end_ptr;
-		strtoumax(ds->str, &end_ptr, 10);
+		long int value = strtoimax(ds->str, &end_ptr, 10);
 		
-		if(*end_ptr != '\0') { // Incorrect read.
+		if(*end_ptr != '\0') { // Unsuccesful conversion.
 			error = LEXICAL_ERROR;
 			return;
 		}
-		if(errno == ERANGE) { // Out of range conversion error.
+		if(value > INT_MAX) { // Check range error.
 			error = LEXICAL_ERROR;
 			return;
 		}
 		t->type = INT_LIT;
-
-
-		/* Attaching token attribute. */
+		
+		/* Attach token attribute. */
 		if(t_attach(t, ds->str)) {
 			error = INTERNAL_ERROR;
 		}
 	} else {
-			if(float_write(ds, c)) {
-				return; // Error is set in float_write.
+			if(float_write(ds, c)) { // Write rest of float number.
+				return; // Possible error is set in float_write.
 			}
 
-			/* Check if value is correct. */
-
+			/* Check if value is ok. */
 			char * end_ptr;
 			double value = strtod(ds->str, &end_ptr); // Try to convert value.
 
-			if(*end_ptr != '\0') { // Incorrect read.
+			if(*end_ptr != '\0') { // Unsuccesful conversion.
+				error = LEXICAL_ERROR;
+				return;
+			}
+			if(errno == ERANGE || value > __DBL_MAX__) { // Check for range error.
 				error = LEXICAL_ERROR;
 				return;
 			}
 			t->type = FLT_LIT;
-
 			char dummy[50];
-			sprintf(dummy, "%a", value); // Write into dummy.
-
-			/* String option */
+			sprintf(dummy, "%a", value); // Write in hexadecimal into dummy.
+			
+			/* Attach dummy as attribute. */
 			if(t_attach(t, dummy)) {
 				error = INTERNAL_ERROR;
 			}
@@ -246,19 +285,27 @@ void fi_handler(dynamic_string_t * ds, token_t * t, int * c) {
 }
 
 void s_handler(dynamic_string_t * ds, token_t * t, int * c) {
-	
-	while( (*c = fgetc(stdin)) != EOF && *c != '"') { // Write string to buffer.
-		// Case for whitespace and other characters.
+	while( (*c = fgetc(stdin)) != EOF && *c != '"') { // Write string to ds.
 		if(*c <= 32 || *c == 35) {
-			if(ds_concat_str(ds, "\\0") || ds_write_uint(ds, *c)) {
+			/* Except unwriteable characters. */
+			if(*c < 10) {
+				if(ds_concat_str(ds, "\\00") || ds_write_uint(ds, *c)) {
+					error = INTERNAL_ERROR;
+					return;
+				}	
+			} else if(ds_concat_str(ds, "\\0") || ds_write_uint(ds, *c)) {
 				error = INTERNAL_ERROR;
 				return;
 			}
 			continue;
 		}
+		if(*c == '$') {
+			error = LEXICAL_ERROR;
+			return;
+		}
 		if(*c == '\\') { // Escape sequence.
 			*c = fgetc(stdin);
-			// String interpolation...
+			/* String interpolation. */
 			switch(*c) {
 				case 'n': if(ds_concat_str(ds, "\\010")) { error = INTERNAL_ERROR; return; } break;
 				case 't': if(ds_concat_str(ds, "\\009")) { error = INTERNAL_ERROR; return; } break;
@@ -267,6 +314,7 @@ void s_handler(dynamic_string_t * ds, token_t * t, int * c) {
 				case '$': if(ds_write(ds, '$')) { error = INTERNAL_ERROR; return; } break;
 				case '0': case '1': case '2': case '3': if(oct_write(ds, c)) { error = INTERNAL_ERROR; return; } break; // Octal conversion of three characters.
 				case 'x': if(hex_write(ds, c)) { error = INTERNAL_ERROR; return; } break;
+				case EOF: error = LEXICAL_ERROR; break;
 				default: 
 					if(ds_concat_str(ds, "\\092")) { error = INTERNAL_ERROR; return; }
 					ungetc(*c, stdin);
@@ -284,7 +332,7 @@ void s_handler(dynamic_string_t * ds, token_t * t, int * c) {
 		return;
 	}
 
-	/* Set type and save associated value. */
+	/* Set type and attach associated value. */
 	t->type = STR_LIT;
 	if(t_attach(t, ds->str)) {
 		error = INTERNAL_ERROR;
@@ -309,16 +357,14 @@ void nte_handler(dynamic_string_t * ds, token_t * t, int * c) {
 		*c = '?'; // Set to original.
 	}
 
-
 	do { // Read all letters.
 		if(ds_write(ds, *c)) {
 			error = INTERNAL_ERROR;
 			return;
 		}
-	} while( (*c = fgetc(stdin)) != EOF && isalpha(*c) != 0);
+	} while( (*c = fgetc(stdin)) != EOF && isalpha(*c));
 	ungetc(*c, stdin);
 	
-
 	/* Try matching with reserved keywords */
 	for(int i = 0; i < reserved_words_count; i++) {
 		if(strcmp(reserved_words[i], ds->str) == 0) {
@@ -409,13 +455,13 @@ int oct_write(dynamic_string_t * ds, int * c) {
 		ds_dstr(aux);
 		return 1;
 	}
-	*c = fgetc(stdin); // Get second digit.
+	*c = fgetc(stdin); // Get and write second digit.
 	if(ds_write(aux, *c)) {
 		error = INTERNAL_ERROR;
 		ds_dstr(aux);
 		return 1;
 	}
-	*c = fgetc(stdin); // Get third digit.
+	*c = fgetc(stdin); // Get and write third digit.
 	if(ds_write(aux, *c)) {
 		error = INTERNAL_ERROR;
 		ds_dstr(aux);
@@ -426,13 +472,21 @@ int oct_write(dynamic_string_t * ds, int * c) {
 	char * endptr;
 
 	unsigned value = strtoumax(aux->str, &endptr, 8);
-	if(*endptr != '\0') {
-		ds_concat_str(ds, "\\092"); // Insert escape sequence 
-		ds_concat(ds, aux); // Conversion failed
+	if(*endptr != '\0') { // Conversion failed, insert as normal sequence.
+		if(ds_concat_str(ds, "\\092")) { error = INTERNAL_ERROR; return 1; } // Insert escape sequence
+		/* Return all characters back to stream for and escape sequence checking. */ 
+		ungetc(aux->str[2], stdin);
+		ungetc(aux->str[1], stdin);
+		ungetc(aux->str[0], stdin); 
 	} else {
 		if(value >= 1 && value <= 255) {
 			if(value <= 32 || value == 35 || value == 92) { // Check for special values.
-				if(ds_concat_str(ds, "\\0") || ds_write_uint(ds, value)) {
+				if(value < 10) {
+					if(ds_concat_str(ds, "\\00") || ds_write_uint(ds, value)) {
+						error = INTERNAL_ERROR;
+						return 1; 
+					} 
+				} else if(ds_concat_str(ds, "\\0") || ds_write_uint(ds, value)) {
 					error = INTERNAL_ERROR;
 					return 1;
 				}
@@ -440,7 +494,13 @@ int oct_write(dynamic_string_t * ds, int * c) {
 				ds_write(ds, value); // Write value directly...
 				return 0;
 			}
-		} // write as something...
+		} else {
+			if(ds_concat_str(ds, "\\092")) { error = INTERNAL_ERROR; return 1; } // Insert escape sequence
+			/* Return all characters back to stream for and escape sequence checking. */
+			ungetc(aux->str[2], stdin);
+			ungetc(aux->str[1], stdin);
+			ungetc(aux->str[0], stdin); 
+		}
 	}
 	ds_dstr(aux);
 
@@ -468,19 +528,24 @@ int hex_write(dynamic_string_t * ds, int * c) {
 		return 1;
 	}
 
-
-	// try hex conversion
+	// Try hex conversion
 	char * endptr;
-
 
 	unsigned value = strtoumax(aux->str, &endptr, 16);
 	if(*endptr != '\0') {
-		ds_concat_str(ds, "\\092x"); // Insert escape sequence 
-		ds_concat(ds, aux); // Conversion failed
+		if(ds_concat_str(ds, "\\092x")) { error = INTERNAL_ERROR; return 1; }  // Insert escape sequence
+		/* Return all characters back to stream for and escape sequence checking. */
+		ungetc(aux->str[1], stdin);
+		ungetc(aux->str[0], stdin);
 	} else {
 		if(value >= 1 && value <= 255) {
 			if(value <= 32 || value == 35 || value == 92) { // Check for special values.
-				if(ds_concat_str(ds, "\\0") || ds_write_uint(ds, value)) {
+				if(value < 10) {
+					if(ds_concat_str(ds, "\\00") || ds_write_uint(ds, value)) {
+						error = INTERNAL_ERROR;
+						return 1;
+					}
+				} else if(ds_concat_str(ds, "\\0") || ds_write_uint(ds, value)) {
 					error = INTERNAL_ERROR;
 					return 1;
 				}
@@ -488,7 +553,12 @@ int hex_write(dynamic_string_t * ds, int * c) {
 				ds_write(ds, value); // Write value directly...
 				return 0;
 			}
-		} // write as something...
+		} else {
+			if(ds_concat_str(ds, "\\092x")) { error = INTERNAL_ERROR; return 1; }  // Insert escape sequence
+			/* Return all characters back to stream for and escape sequence checking. */
+			ungetc(aux->str[1], stdin);
+			ungetc(aux->str[0], stdin);
+		}
 	}
 	ds_dstr(aux);
 	return 0;

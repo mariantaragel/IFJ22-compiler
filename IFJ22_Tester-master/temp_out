@@ -1,0 +1,2617 @@
+.IFJcode22
+# TMP VARS START
+    DEFVAR GF@_tmp
+    DEFVAR GF@_tmp_res
+    DEFVAR GF@_tmp_type
+    DEFVAR GF@_arg_count
+    DEFVAR GF@_rhs
+    DEFVAR GF@_lhs
+    DEFVAR GF@_tlhs
+    DEFVAR GF@_trhs
+    DEFVAR GF@_aux1
+# TMP VARS END
+
+# DEFINE USED VARS START
+    DEFVAR GF@$tri
+    DEFVAR GF@$i
+    DEFVAR GF@$len
+    DEFVAR GF@$res
+# DEFINE USED VARS END
+
+# FUNC ASS START
+    # CHECK FUNC ARG INIT START
+    # CHECK FUNC ARG INIT END
+
+    PUSHS int@4
+    PUSHS int@1
+    CALL sierpinski
+    POPS GF@$tri
+# FUNC ASS END
+
+# EXPR ASS START
+    # CHECK EXPR VARS DEFS START
+    # CHECK EXPR VARS DEFS END
+
+    PUSHS int@0
+    POPS GF@$i
+# EXPR ASS END
+
+# FUNC ASS START
+    # CHECK FUNC ARG INIT START
+        TYPE GF@_tmp GF@$tri
+        JUMPIFNEQ ?$tri?var_init_ok_1 GF@_tmp string@
+        EXIT int@5
+        LABEL ?$tri?var_init_ok_1
+    # CHECK FUNC ARG INIT END
+
+    PUSHS GF@$tri
+    PUSHS int@1
+    CALL length
+    POPS GF@$len
+# FUNC ASS END
+
+# WHILE START
+    # CHECK WHILE COND VARS DEFS START
+        TYPE GF@_tmp GF@$len
+        JUMPIFNEQ ?$len?var_init_ok_2 GF@_tmp string@
+        EXIT int@5
+        LABEL ?$len?var_init_ok_2
+        TYPE GF@_tmp GF@$i
+        JUMPIFNEQ ?$i?var_init_ok_3 GF@_tmp string@
+        EXIT int@5
+        LABEL ?$i?var_init_ok_3
+    # CHECK WHILE COND VARS DEFS END
+
+    LABEL ?while_start_1
+    PUSHS GF@$len
+    PUSHS GF@$i
+    CALL &lt_op
+    CALL &to_bool
+    POPS GF@_tmp_res
+    JUMPIFEQ ?while_end_1 GF@_tmp_res bool@false
+    # FUNC ASS START
+        # CHECK FUNC ARG INIT START
+            TYPE GF@_tmp GF@$tri
+            JUMPIFNEQ ?$tri?var_init_ok_4 GF@_tmp string@
+            EXIT int@5
+            LABEL ?$tri?var_init_ok_4
+            TYPE GF@_tmp GF@$i
+            JUMPIFNEQ ?$i?var_init_ok_5 GF@_tmp string@
+            EXIT int@5
+            LABEL ?$i?var_init_ok_5
+        # CHECK FUNC ARG INIT END
+
+        PUSHS GF@$i
+        PUSHS GF@$tri
+        PUSHS int@2
+        CALL get
+        POPS GF@$res
+    # FUNC ASS END
+
+    # STANDALONE FUNC CALL START
+        # CHECK FUNC ARG INIT START
+            TYPE GF@_tmp GF@$res
+            JUMPIFNEQ ?$res?var_init_ok_6 GF@_tmp string@
+            EXIT int@5
+            LABEL ?$res?var_init_ok_6
+        # CHECK FUNC ARG INIT END
+
+        PUSHS GF@$res
+        PUSHS int@1
+        CALL write
+        POPS GF@_tmp_res
+    # STANDALONE FUNC CALL END
+
+    # STANDALONE FUNC CALL START
+        # CHECK FUNC ARG INIT START
+        # CHECK FUNC ARG INIT END
+
+        PUSHS string@\010
+        PUSHS int@1
+        CALL write
+        POPS GF@_tmp_res
+    # STANDALONE FUNC CALL END
+
+    # EXPR ASS START
+        # CHECK EXPR VARS DEFS START
+            TYPE GF@_tmp GF@$i
+            JUMPIFNEQ ?$i?var_init_ok_7 GF@_tmp string@
+            EXIT int@5
+            LABEL ?$i?var_init_ok_7
+        # CHECK EXPR VARS DEFS END
+
+        PUSHS int@1
+        PUSHS GF@$i
+        CALL &add_op
+        POPS GF@$i
+    # EXPR ASS END
+
+    # FUNC ASS START
+        # CHECK FUNC ARG INIT START
+            TYPE GF@_tmp GF@$tri
+            JUMPIFNEQ ?$tri?var_init_ok_8 GF@_tmp string@
+            EXIT int@5
+            LABEL ?$tri?var_init_ok_8
+        # CHECK FUNC ARG INIT END
+
+        PUSHS GF@$tri
+        PUSHS int@1
+        CALL length
+        POPS GF@$len
+    # FUNC ASS END
+
+    JUMP ?while_start_1
+    LABEL ?while_end_1
+# WHILE END
+
+EXIT int@0
+
+# USER FUNCTIONS START
+    # FUNC [append] DEF START
+        LABEL append
+        CREATEFRAME
+        PUSHFRAME
+        # FUNCTION PARAMS START
+            # CHECK ARG COUNT START
+                POPS GF@_tmp
+                JUMPIFEQ ?append?arg_count_ok GF@_tmp int@2
+                EXIT int@4
+                LABEL ?append?arg_count_ok
+            # CHECK ARG COUNT END
+
+            # INIT PARAMS, CHECK PARAM TYPES START
+                DEFVAR LF@$in
+                POPS LF@$in
+                TYPE GF@_tmp_type LF@$in
+                JUMPIFEQ ?append?$in?param_type_ok GF@_tmp_type string@string
+                EXIT int@4
+                LABEL ?append?$in?param_type_ok
+                DEFVAR LF@$s
+                POPS LF@$s
+                TYPE GF@_tmp_type LF@$s
+                JUMPIFEQ ?append?$s?param_type_ok GF@_tmp_type string@string
+                EXIT int@4
+                LABEL ?append?$s?param_type_ok
+            # INIT PARAMS, CHECK PARAM TYPES END
+
+        # FUNCTION PARAMS END
+        # DEFINE USED VARS START
+        # DEFINE USED VARS END
+
+        # RETURN START
+            TYPE GF@_tmp LF@$s
+            JUMPIFNEQ ?$s?var_init_ok_9 GF@_tmp string@
+            EXIT int@5
+            LABEL ?$s?var_init_ok_9
+            TYPE GF@_tmp LF@$in
+            JUMPIFNEQ ?$in?var_init_ok_10 GF@_tmp string@
+            EXIT int@5
+            LABEL ?$in?var_init_ok_10
+            PUSHS string@;
+            PUSHS LF@$s
+            PUSHS LF@$in
+            CALL &concat_op
+            CALL &concat_op
+            POPS GF@_tmp_res
+            PUSHS GF@_tmp_res
+            TYPE GF@_tmp_type GF@_tmp_res
+            JUMPIFEQ ?append?end GF@_tmp_type string@string
+            EXIT int@4
+        # RETURN END
+
+        # MISSING RETURN START
+        	EXIT int@4
+        # MISSING RETURN END
+
+        LABEL ?append?end
+        POPFRAME
+        RETURN
+    # FUNC [append] DEF END
+
+    # FUNC [get] DEF START
+        LABEL get
+        CREATEFRAME
+        PUSHFRAME
+        # FUNCTION PARAMS START
+            # CHECK ARG COUNT START
+                POPS GF@_tmp
+                JUMPIFEQ ?get?arg_count_ok GF@_tmp int@2
+                EXIT int@4
+                LABEL ?get?arg_count_ok
+            # CHECK ARG COUNT END
+
+            # INIT PARAMS, CHECK PARAM TYPES START
+                DEFVAR LF@$in
+                POPS LF@$in
+                TYPE GF@_tmp_type LF@$in
+                JUMPIFEQ ?get?$in?param_type_ok GF@_tmp_type string@string
+                EXIT int@4
+                LABEL ?get?$in?param_type_ok
+                DEFVAR LF@$id
+                POPS LF@$id
+                TYPE GF@_tmp_type LF@$id
+                JUMPIFEQ ?get?$id?param_type_ok GF@_tmp_type string@int
+                EXIT int@4
+                LABEL ?get?$id?param_type_ok
+            # INIT PARAMS, CHECK PARAM TYPES END
+
+        # FUNCTION PARAMS END
+        # DEFINE USED VARS START
+            DEFVAR LF@$i
+            DEFVAR LF@$pos
+            DEFVAR LF@$p1
+            DEFVAR LF@$ch
+            DEFVAR LF@$pos_end
+            DEFVAR LF@$ret
+        # DEFINE USED VARS END
+
+        # EXPR ASS START
+            # CHECK EXPR VARS DEFS START
+            # CHECK EXPR VARS DEFS END
+
+            PUSHS int@0
+            POPS LF@$i
+        # EXPR ASS END
+
+        # EXPR ASS START
+            # CHECK EXPR VARS DEFS START
+            # CHECK EXPR VARS DEFS END
+
+            PUSHS int@0
+            POPS LF@$pos
+        # EXPR ASS END
+
+        # WHILE START
+            # CHECK WHILE COND VARS DEFS START
+                TYPE GF@_tmp LF@$id
+                JUMPIFNEQ ?$id?var_init_ok_11 GF@_tmp string@
+                EXIT int@5
+                LABEL ?$id?var_init_ok_11
+                TYPE GF@_tmp LF@$i
+                JUMPIFNEQ ?$i?var_init_ok_12 GF@_tmp string@
+                EXIT int@5
+                LABEL ?$i?var_init_ok_12
+            # CHECK WHILE COND VARS DEFS END
+
+            LABEL ?while_start_2
+            PUSHS LF@$id
+            PUSHS LF@$i
+            CALL &lt_op
+            CALL &to_bool
+            POPS GF@_tmp_res
+            JUMPIFEQ ?while_end_2 GF@_tmp_res bool@false
+            # EXPR ASS START
+                # CHECK EXPR VARS DEFS START
+                    TYPE GF@_tmp LF@$pos
+                    JUMPIFNEQ ?$pos?var_init_ok_13 GF@_tmp string@
+                    EXIT int@5
+                    LABEL ?$pos?var_init_ok_13
+                # CHECK EXPR VARS DEFS END
+
+                PUSHS int@1
+                PUSHS LF@$pos
+                CALL &add_op
+                POPS LF@$p1
+            # EXPR ASS END
+
+            # FUNC ASS START
+                # CHECK FUNC ARG INIT START
+                    TYPE GF@_tmp LF@$in
+                    JUMPIFNEQ ?$in?var_init_ok_14 GF@_tmp string@
+                    EXIT int@5
+                    LABEL ?$in?var_init_ok_14
+                    TYPE GF@_tmp LF@$pos
+                    JUMPIFNEQ ?$pos?var_init_ok_15 GF@_tmp string@
+                    EXIT int@5
+                    LABEL ?$pos?var_init_ok_15
+                    TYPE GF@_tmp LF@$p1
+                    JUMPIFNEQ ?$p1?var_init_ok_16 GF@_tmp string@
+                    EXIT int@5
+                    LABEL ?$p1?var_init_ok_16
+                # CHECK FUNC ARG INIT END
+
+                PUSHS LF@$p1
+                PUSHS LF@$pos
+                PUSHS LF@$in
+                PUSHS int@3
+                CALL substring
+                POPS LF@$ch
+            # FUNC ASS END
+
+            # WHILE START
+                # CHECK WHILE COND VARS DEFS START
+                    TYPE GF@_tmp LF@$ch
+                    JUMPIFNEQ ?$ch?var_init_ok_17 GF@_tmp string@
+                    EXIT int@5
+                    LABEL ?$ch?var_init_ok_17
+                # CHECK WHILE COND VARS DEFS END
+
+                LABEL ?while_start_3
+                PUSHS string@;
+                PUSHS LF@$ch
+                CALL &neq_op
+                CALL &to_bool
+                POPS GF@_tmp_res
+                JUMPIFEQ ?while_end_3 GF@_tmp_res bool@false
+                # EXPR ASS START
+                    # CHECK EXPR VARS DEFS START
+                        TYPE GF@_tmp LF@$pos
+                        JUMPIFNEQ ?$pos?var_init_ok_18 GF@_tmp string@
+                        EXIT int@5
+                        LABEL ?$pos?var_init_ok_18
+                    # CHECK EXPR VARS DEFS END
+
+                    PUSHS int@1
+                    PUSHS LF@$pos
+                    CALL &add_op
+                    POPS LF@$pos
+                # EXPR ASS END
+
+                # EXPR ASS START
+                    # CHECK EXPR VARS DEFS START
+                        TYPE GF@_tmp LF@$pos
+                        JUMPIFNEQ ?$pos?var_init_ok_19 GF@_tmp string@
+                        EXIT int@5
+                        LABEL ?$pos?var_init_ok_19
+                    # CHECK EXPR VARS DEFS END
+
+                    PUSHS int@1
+                    PUSHS LF@$pos
+                    CALL &add_op
+                    POPS LF@$p1
+                # EXPR ASS END
+
+                # FUNC ASS START
+                    # CHECK FUNC ARG INIT START
+                        TYPE GF@_tmp LF@$in
+                        JUMPIFNEQ ?$in?var_init_ok_20 GF@_tmp string@
+                        EXIT int@5
+                        LABEL ?$in?var_init_ok_20
+                        TYPE GF@_tmp LF@$pos
+                        JUMPIFNEQ ?$pos?var_init_ok_21 GF@_tmp string@
+                        EXIT int@5
+                        LABEL ?$pos?var_init_ok_21
+                        TYPE GF@_tmp LF@$p1
+                        JUMPIFNEQ ?$p1?var_init_ok_22 GF@_tmp string@
+                        EXIT int@5
+                        LABEL ?$p1?var_init_ok_22
+                    # CHECK FUNC ARG INIT END
+
+                    PUSHS LF@$p1
+                    PUSHS LF@$pos
+                    PUSHS LF@$in
+                    PUSHS int@3
+                    CALL substring
+                    POPS LF@$ch
+                # FUNC ASS END
+
+                JUMP ?while_start_3
+                LABEL ?while_end_3
+            # WHILE END
+
+            # EXPR ASS START
+                # CHECK EXPR VARS DEFS START
+                    TYPE GF@_tmp LF@$pos
+                    JUMPIFNEQ ?$pos?var_init_ok_23 GF@_tmp string@
+                    EXIT int@5
+                    LABEL ?$pos?var_init_ok_23
+                # CHECK EXPR VARS DEFS END
+
+                PUSHS int@1
+                PUSHS LF@$pos
+                CALL &add_op
+                POPS LF@$pos
+            # EXPR ASS END
+
+            # EXPR ASS START
+                # CHECK EXPR VARS DEFS START
+                    TYPE GF@_tmp LF@$i
+                    JUMPIFNEQ ?$i?var_init_ok_24 GF@_tmp string@
+                    EXIT int@5
+                    LABEL ?$i?var_init_ok_24
+                # CHECK EXPR VARS DEFS END
+
+                PUSHS int@1
+                PUSHS LF@$i
+                CALL &add_op
+                POPS LF@$i
+            # EXPR ASS END
+
+            JUMP ?while_start_2
+            LABEL ?while_end_2
+        # WHILE END
+
+        # EXPR ASS START
+            # CHECK EXPR VARS DEFS START
+                TYPE GF@_tmp LF@$pos
+                JUMPIFNEQ ?$pos?var_init_ok_25 GF@_tmp string@
+                EXIT int@5
+                LABEL ?$pos?var_init_ok_25
+            # CHECK EXPR VARS DEFS END
+
+            PUSHS LF@$pos
+            POPS LF@$pos_end
+        # EXPR ASS END
+
+        # EXPR ASS START
+            # CHECK EXPR VARS DEFS START
+                TYPE GF@_tmp LF@$pos_end
+                JUMPIFNEQ ?$pos_end?var_init_ok_26 GF@_tmp string@
+                EXIT int@5
+                LABEL ?$pos_end?var_init_ok_26
+            # CHECK EXPR VARS DEFS END
+
+            PUSHS int@1
+            PUSHS LF@$pos_end
+            CALL &add_op
+            POPS LF@$p1
+        # EXPR ASS END
+
+        # FUNC ASS START
+            # CHECK FUNC ARG INIT START
+                TYPE GF@_tmp LF@$in
+                JUMPIFNEQ ?$in?var_init_ok_27 GF@_tmp string@
+                EXIT int@5
+                LABEL ?$in?var_init_ok_27
+                TYPE GF@_tmp LF@$pos_end
+                JUMPIFNEQ ?$pos_end?var_init_ok_28 GF@_tmp string@
+                EXIT int@5
+                LABEL ?$pos_end?var_init_ok_28
+                TYPE GF@_tmp LF@$p1
+                JUMPIFNEQ ?$p1?var_init_ok_29 GF@_tmp string@
+                EXIT int@5
+                LABEL ?$p1?var_init_ok_29
+            # CHECK FUNC ARG INIT END
+
+            PUSHS LF@$p1
+            PUSHS LF@$pos_end
+            PUSHS LF@$in
+            PUSHS int@3
+            CALL substring
+            POPS LF@$ch
+        # FUNC ASS END
+
+        # WHILE START
+            # CHECK WHILE COND VARS DEFS START
+                TYPE GF@_tmp LF@$ch
+                JUMPIFNEQ ?$ch?var_init_ok_30 GF@_tmp string@
+                EXIT int@5
+                LABEL ?$ch?var_init_ok_30
+            # CHECK WHILE COND VARS DEFS END
+
+            LABEL ?while_start_4
+            PUSHS string@;
+            PUSHS LF@$ch
+            CALL &neq_op
+            CALL &to_bool
+            POPS GF@_tmp_res
+            JUMPIFEQ ?while_end_4 GF@_tmp_res bool@false
+            # EXPR ASS START
+                # CHECK EXPR VARS DEFS START
+                    TYPE GF@_tmp LF@$pos_end
+                    JUMPIFNEQ ?$pos_end?var_init_ok_31 GF@_tmp string@
+                    EXIT int@5
+                    LABEL ?$pos_end?var_init_ok_31
+                # CHECK EXPR VARS DEFS END
+
+                PUSHS int@1
+                PUSHS LF@$pos_end
+                CALL &add_op
+                POPS LF@$pos_end
+            # EXPR ASS END
+
+            # EXPR ASS START
+                # CHECK EXPR VARS DEFS START
+                    TYPE GF@_tmp LF@$pos_end
+                    JUMPIFNEQ ?$pos_end?var_init_ok_32 GF@_tmp string@
+                    EXIT int@5
+                    LABEL ?$pos_end?var_init_ok_32
+                # CHECK EXPR VARS DEFS END
+
+                PUSHS int@1
+                PUSHS LF@$pos_end
+                CALL &add_op
+                POPS LF@$p1
+            # EXPR ASS END
+
+            # FUNC ASS START
+                # CHECK FUNC ARG INIT START
+                    TYPE GF@_tmp LF@$in
+                    JUMPIFNEQ ?$in?var_init_ok_33 GF@_tmp string@
+                    EXIT int@5
+                    LABEL ?$in?var_init_ok_33
+                    TYPE GF@_tmp LF@$pos_end
+                    JUMPIFNEQ ?$pos_end?var_init_ok_34 GF@_tmp string@
+                    EXIT int@5
+                    LABEL ?$pos_end?var_init_ok_34
+                    TYPE GF@_tmp LF@$p1
+                    JUMPIFNEQ ?$p1?var_init_ok_35 GF@_tmp string@
+                    EXIT int@5
+                    LABEL ?$p1?var_init_ok_35
+                # CHECK FUNC ARG INIT END
+
+                PUSHS LF@$p1
+                PUSHS LF@$pos_end
+                PUSHS LF@$in
+                PUSHS int@3
+                CALL substring
+                POPS LF@$ch
+            # FUNC ASS END
+
+            JUMP ?while_start_4
+            LABEL ?while_end_4
+        # WHILE END
+
+        # FUNC ASS START
+            # CHECK FUNC ARG INIT START
+                TYPE GF@_tmp LF@$in
+                JUMPIFNEQ ?$in?var_init_ok_36 GF@_tmp string@
+                EXIT int@5
+                LABEL ?$in?var_init_ok_36
+                TYPE GF@_tmp LF@$pos
+                JUMPIFNEQ ?$pos?var_init_ok_37 GF@_tmp string@
+                EXIT int@5
+                LABEL ?$pos?var_init_ok_37
+                TYPE GF@_tmp LF@$pos_end
+                JUMPIFNEQ ?$pos_end?var_init_ok_38 GF@_tmp string@
+                EXIT int@5
+                LABEL ?$pos_end?var_init_ok_38
+            # CHECK FUNC ARG INIT END
+
+            PUSHS LF@$pos_end
+            PUSHS LF@$pos
+            PUSHS LF@$in
+            PUSHS int@3
+            CALL substring
+            POPS LF@$ret
+        # FUNC ASS END
+
+        # RETURN START
+            TYPE GF@_tmp LF@$ret
+            JUMPIFNEQ ?$ret?var_init_ok_39 GF@_tmp string@
+            EXIT int@5
+            LABEL ?$ret?var_init_ok_39
+            PUSHS LF@$ret
+            POPS GF@_tmp_res
+            PUSHS GF@_tmp_res
+            TYPE GF@_tmp_type GF@_tmp_res
+            JUMPIFEQ ?get?end GF@_tmp_type string@string
+            JUMPIFEQ ?get?end GF@_tmp_type string@nil
+            EXIT int@4
+        # RETURN END
+
+        # MISSING RETURN START
+        	EXIT int@4
+        # MISSING RETURN END
+
+        LABEL ?get?end
+        POPFRAME
+        RETURN
+    # FUNC [get] DEF END
+
+    # FUNC [set] DEF START
+        LABEL set
+        CREATEFRAME
+        PUSHFRAME
+        # FUNCTION PARAMS START
+            # CHECK ARG COUNT START
+                POPS GF@_tmp
+                JUMPIFEQ ?set?arg_count_ok GF@_tmp int@3
+                EXIT int@4
+                LABEL ?set?arg_count_ok
+            # CHECK ARG COUNT END
+
+            # INIT PARAMS, CHECK PARAM TYPES START
+                DEFVAR LF@$in
+                POPS LF@$in
+                TYPE GF@_tmp_type LF@$in
+                JUMPIFEQ ?set?$in?param_type_ok GF@_tmp_type string@string
+                EXIT int@4
+                LABEL ?set?$in?param_type_ok
+                DEFVAR LF@$id
+                POPS LF@$id
+                TYPE GF@_tmp_type LF@$id
+                JUMPIFEQ ?set?$id?param_type_ok GF@_tmp_type string@int
+                EXIT int@4
+                LABEL ?set?$id?param_type_ok
+                DEFVAR LF@$s
+                POPS LF@$s
+                TYPE GF@_tmp_type LF@$s
+                JUMPIFEQ ?set?$s?param_type_ok GF@_tmp_type string@string
+                EXIT int@4
+                LABEL ?set?$s?param_type_ok
+            # INIT PARAMS, CHECK PARAM TYPES END
+
+        # FUNCTION PARAMS END
+        # DEFINE USED VARS START
+            DEFVAR LF@$i
+            DEFVAR LF@$pos
+            DEFVAR LF@$p1
+            DEFVAR LF@$ch
+            DEFVAR LF@$pos_end
+            DEFVAR LF@$before
+            DEFVAR LF@$slen
+            DEFVAR LF@$after
+        # DEFINE USED VARS END
+
+        # EXPR ASS START
+            # CHECK EXPR VARS DEFS START
+            # CHECK EXPR VARS DEFS END
+
+            PUSHS int@0
+            POPS LF@$i
+        # EXPR ASS END
+
+        # EXPR ASS START
+            # CHECK EXPR VARS DEFS START
+            # CHECK EXPR VARS DEFS END
+
+            PUSHS int@0
+            POPS LF@$pos
+        # EXPR ASS END
+
+        # WHILE START
+            # CHECK WHILE COND VARS DEFS START
+                TYPE GF@_tmp LF@$id
+                JUMPIFNEQ ?$id?var_init_ok_40 GF@_tmp string@
+                EXIT int@5
+                LABEL ?$id?var_init_ok_40
+                TYPE GF@_tmp LF@$i
+                JUMPIFNEQ ?$i?var_init_ok_41 GF@_tmp string@
+                EXIT int@5
+                LABEL ?$i?var_init_ok_41
+            # CHECK WHILE COND VARS DEFS END
+
+            LABEL ?while_start_5
+            PUSHS LF@$id
+            PUSHS LF@$i
+            CALL &lt_op
+            CALL &to_bool
+            POPS GF@_tmp_res
+            JUMPIFEQ ?while_end_5 GF@_tmp_res bool@false
+            # EXPR ASS START
+                # CHECK EXPR VARS DEFS START
+                    TYPE GF@_tmp LF@$pos
+                    JUMPIFNEQ ?$pos?var_init_ok_42 GF@_tmp string@
+                    EXIT int@5
+                    LABEL ?$pos?var_init_ok_42
+                # CHECK EXPR VARS DEFS END
+
+                PUSHS int@1
+                PUSHS LF@$pos
+                CALL &add_op
+                POPS LF@$p1
+            # EXPR ASS END
+
+            # FUNC ASS START
+                # CHECK FUNC ARG INIT START
+                    TYPE GF@_tmp LF@$in
+                    JUMPIFNEQ ?$in?var_init_ok_43 GF@_tmp string@
+                    EXIT int@5
+                    LABEL ?$in?var_init_ok_43
+                    TYPE GF@_tmp LF@$pos
+                    JUMPIFNEQ ?$pos?var_init_ok_44 GF@_tmp string@
+                    EXIT int@5
+                    LABEL ?$pos?var_init_ok_44
+                    TYPE GF@_tmp LF@$p1
+                    JUMPIFNEQ ?$p1?var_init_ok_45 GF@_tmp string@
+                    EXIT int@5
+                    LABEL ?$p1?var_init_ok_45
+                # CHECK FUNC ARG INIT END
+
+                PUSHS LF@$p1
+                PUSHS LF@$pos
+                PUSHS LF@$in
+                PUSHS int@3
+                CALL substring
+                POPS LF@$ch
+            # FUNC ASS END
+
+            # WHILE START
+                # CHECK WHILE COND VARS DEFS START
+                    TYPE GF@_tmp LF@$ch
+                    JUMPIFNEQ ?$ch?var_init_ok_46 GF@_tmp string@
+                    EXIT int@5
+                    LABEL ?$ch?var_init_ok_46
+                # CHECK WHILE COND VARS DEFS END
+
+                LABEL ?while_start_6
+                PUSHS string@;
+                PUSHS LF@$ch
+                CALL &neq_op
+                CALL &to_bool
+                POPS GF@_tmp_res
+                JUMPIFEQ ?while_end_6 GF@_tmp_res bool@false
+                # EXPR ASS START
+                    # CHECK EXPR VARS DEFS START
+                        TYPE GF@_tmp LF@$pos
+                        JUMPIFNEQ ?$pos?var_init_ok_47 GF@_tmp string@
+                        EXIT int@5
+                        LABEL ?$pos?var_init_ok_47
+                    # CHECK EXPR VARS DEFS END
+
+                    PUSHS int@1
+                    PUSHS LF@$pos
+                    CALL &add_op
+                    POPS LF@$pos
+                # EXPR ASS END
+
+                # EXPR ASS START
+                    # CHECK EXPR VARS DEFS START
+                        TYPE GF@_tmp LF@$pos
+                        JUMPIFNEQ ?$pos?var_init_ok_48 GF@_tmp string@
+                        EXIT int@5
+                        LABEL ?$pos?var_init_ok_48
+                    # CHECK EXPR VARS DEFS END
+
+                    PUSHS int@1
+                    PUSHS LF@$pos
+                    CALL &add_op
+                    POPS LF@$p1
+                # EXPR ASS END
+
+                # FUNC ASS START
+                    # CHECK FUNC ARG INIT START
+                        TYPE GF@_tmp LF@$in
+                        JUMPIFNEQ ?$in?var_init_ok_49 GF@_tmp string@
+                        EXIT int@5
+                        LABEL ?$in?var_init_ok_49
+                        TYPE GF@_tmp LF@$pos
+                        JUMPIFNEQ ?$pos?var_init_ok_50 GF@_tmp string@
+                        EXIT int@5
+                        LABEL ?$pos?var_init_ok_50
+                        TYPE GF@_tmp LF@$p1
+                        JUMPIFNEQ ?$p1?var_init_ok_51 GF@_tmp string@
+                        EXIT int@5
+                        LABEL ?$p1?var_init_ok_51
+                    # CHECK FUNC ARG INIT END
+
+                    PUSHS LF@$p1
+                    PUSHS LF@$pos
+                    PUSHS LF@$in
+                    PUSHS int@3
+                    CALL substring
+                    POPS LF@$ch
+                # FUNC ASS END
+
+                JUMP ?while_start_6
+                LABEL ?while_end_6
+            # WHILE END
+
+            # EXPR ASS START
+                # CHECK EXPR VARS DEFS START
+                    TYPE GF@_tmp LF@$pos
+                    JUMPIFNEQ ?$pos?var_init_ok_52 GF@_tmp string@
+                    EXIT int@5
+                    LABEL ?$pos?var_init_ok_52
+                # CHECK EXPR VARS DEFS END
+
+                PUSHS int@1
+                PUSHS LF@$pos
+                CALL &add_op
+                POPS LF@$pos
+            # EXPR ASS END
+
+            # EXPR ASS START
+                # CHECK EXPR VARS DEFS START
+                    TYPE GF@_tmp LF@$i
+                    JUMPIFNEQ ?$i?var_init_ok_53 GF@_tmp string@
+                    EXIT int@5
+                    LABEL ?$i?var_init_ok_53
+                # CHECK EXPR VARS DEFS END
+
+                PUSHS int@1
+                PUSHS LF@$i
+                CALL &add_op
+                POPS LF@$i
+            # EXPR ASS END
+
+            JUMP ?while_start_5
+            LABEL ?while_end_5
+        # WHILE END
+
+        # EXPR ASS START
+            # CHECK EXPR VARS DEFS START
+                TYPE GF@_tmp LF@$pos
+                JUMPIFNEQ ?$pos?var_init_ok_54 GF@_tmp string@
+                EXIT int@5
+                LABEL ?$pos?var_init_ok_54
+            # CHECK EXPR VARS DEFS END
+
+            PUSHS LF@$pos
+            POPS LF@$pos_end
+        # EXPR ASS END
+
+        # EXPR ASS START
+            # CHECK EXPR VARS DEFS START
+                TYPE GF@_tmp LF@$pos_end
+                JUMPIFNEQ ?$pos_end?var_init_ok_55 GF@_tmp string@
+                EXIT int@5
+                LABEL ?$pos_end?var_init_ok_55
+            # CHECK EXPR VARS DEFS END
+
+            PUSHS int@1
+            PUSHS LF@$pos_end
+            CALL &add_op
+            POPS LF@$p1
+        # EXPR ASS END
+
+        # FUNC ASS START
+            # CHECK FUNC ARG INIT START
+                TYPE GF@_tmp LF@$in
+                JUMPIFNEQ ?$in?var_init_ok_56 GF@_tmp string@
+                EXIT int@5
+                LABEL ?$in?var_init_ok_56
+                TYPE GF@_tmp LF@$pos_end
+                JUMPIFNEQ ?$pos_end?var_init_ok_57 GF@_tmp string@
+                EXIT int@5
+                LABEL ?$pos_end?var_init_ok_57
+                TYPE GF@_tmp LF@$p1
+                JUMPIFNEQ ?$p1?var_init_ok_58 GF@_tmp string@
+                EXIT int@5
+                LABEL ?$p1?var_init_ok_58
+            # CHECK FUNC ARG INIT END
+
+            PUSHS LF@$p1
+            PUSHS LF@$pos_end
+            PUSHS LF@$in
+            PUSHS int@3
+            CALL substring
+            POPS LF@$ch
+        # FUNC ASS END
+
+        # WHILE START
+            # CHECK WHILE COND VARS DEFS START
+                TYPE GF@_tmp LF@$ch
+                JUMPIFNEQ ?$ch?var_init_ok_59 GF@_tmp string@
+                EXIT int@5
+                LABEL ?$ch?var_init_ok_59
+            # CHECK WHILE COND VARS DEFS END
+
+            LABEL ?while_start_7
+            PUSHS string@;
+            PUSHS LF@$ch
+            CALL &neq_op
+            CALL &to_bool
+            POPS GF@_tmp_res
+            JUMPIFEQ ?while_end_7 GF@_tmp_res bool@false
+            # EXPR ASS START
+                # CHECK EXPR VARS DEFS START
+                    TYPE GF@_tmp LF@$pos_end
+                    JUMPIFNEQ ?$pos_end?var_init_ok_60 GF@_tmp string@
+                    EXIT int@5
+                    LABEL ?$pos_end?var_init_ok_60
+                # CHECK EXPR VARS DEFS END
+
+                PUSHS int@1
+                PUSHS LF@$pos_end
+                CALL &add_op
+                POPS LF@$pos_end
+            # EXPR ASS END
+
+            # EXPR ASS START
+                # CHECK EXPR VARS DEFS START
+                    TYPE GF@_tmp LF@$pos_end
+                    JUMPIFNEQ ?$pos_end?var_init_ok_61 GF@_tmp string@
+                    EXIT int@5
+                    LABEL ?$pos_end?var_init_ok_61
+                # CHECK EXPR VARS DEFS END
+
+                PUSHS int@1
+                PUSHS LF@$pos_end
+                CALL &add_op
+                POPS LF@$p1
+            # EXPR ASS END
+
+            # FUNC ASS START
+                # CHECK FUNC ARG INIT START
+                    TYPE GF@_tmp LF@$in
+                    JUMPIFNEQ ?$in?var_init_ok_62 GF@_tmp string@
+                    EXIT int@5
+                    LABEL ?$in?var_init_ok_62
+                    TYPE GF@_tmp LF@$pos_end
+                    JUMPIFNEQ ?$pos_end?var_init_ok_63 GF@_tmp string@
+                    EXIT int@5
+                    LABEL ?$pos_end?var_init_ok_63
+                    TYPE GF@_tmp LF@$p1
+                    JUMPIFNEQ ?$p1?var_init_ok_64 GF@_tmp string@
+                    EXIT int@5
+                    LABEL ?$p1?var_init_ok_64
+                # CHECK FUNC ARG INIT END
+
+                PUSHS LF@$p1
+                PUSHS LF@$pos_end
+                PUSHS LF@$in
+                PUSHS int@3
+                CALL substring
+                POPS LF@$ch
+            # FUNC ASS END
+
+            JUMP ?while_start_7
+            LABEL ?while_end_7
+        # WHILE END
+
+        # FUNC ASS START
+            # CHECK FUNC ARG INIT START
+                TYPE GF@_tmp LF@$in
+                JUMPIFNEQ ?$in?var_init_ok_65 GF@_tmp string@
+                EXIT int@5
+                LABEL ?$in?var_init_ok_65
+                TYPE GF@_tmp LF@$pos
+                JUMPIFNEQ ?$pos?var_init_ok_66 GF@_tmp string@
+                EXIT int@5
+                LABEL ?$pos?var_init_ok_66
+            # CHECK FUNC ARG INIT END
+
+            PUSHS LF@$pos
+            PUSHS int@0
+            PUSHS LF@$in
+            PUSHS int@3
+            CALL substring
+            POPS LF@$before
+        # FUNC ASS END
+
+        # FUNC ASS START
+            # CHECK FUNC ARG INIT START
+                TYPE GF@_tmp LF@$in
+                JUMPIFNEQ ?$in?var_init_ok_67 GF@_tmp string@
+                EXIT int@5
+                LABEL ?$in?var_init_ok_67
+            # CHECK FUNC ARG INIT END
+
+            PUSHS LF@$in
+            PUSHS int@1
+            CALL strlen
+            POPS LF@$slen
+        # FUNC ASS END
+
+        # FUNC ASS START
+            # CHECK FUNC ARG INIT START
+                TYPE GF@_tmp LF@$in
+                JUMPIFNEQ ?$in?var_init_ok_68 GF@_tmp string@
+                EXIT int@5
+                LABEL ?$in?var_init_ok_68
+                TYPE GF@_tmp LF@$pos_end
+                JUMPIFNEQ ?$pos_end?var_init_ok_69 GF@_tmp string@
+                EXIT int@5
+                LABEL ?$pos_end?var_init_ok_69
+                TYPE GF@_tmp LF@$slen
+                JUMPIFNEQ ?$slen?var_init_ok_70 GF@_tmp string@
+                EXIT int@5
+                LABEL ?$slen?var_init_ok_70
+            # CHECK FUNC ARG INIT END
+
+            PUSHS LF@$slen
+            PUSHS LF@$pos_end
+            PUSHS LF@$in
+            PUSHS int@3
+            CALL substring
+            POPS LF@$after
+        # FUNC ASS END
+
+        # RETURN START
+            TYPE GF@_tmp LF@$after
+            JUMPIFNEQ ?$after?var_init_ok_71 GF@_tmp string@
+            EXIT int@5
+            LABEL ?$after?var_init_ok_71
+            TYPE GF@_tmp LF@$s
+            JUMPIFNEQ ?$s?var_init_ok_72 GF@_tmp string@
+            EXIT int@5
+            LABEL ?$s?var_init_ok_72
+            TYPE GF@_tmp LF@$before
+            JUMPIFNEQ ?$before?var_init_ok_73 GF@_tmp string@
+            EXIT int@5
+            LABEL ?$before?var_init_ok_73
+            PUSHS LF@$after
+            PUSHS LF@$s
+            PUSHS LF@$before
+            CALL &concat_op
+            CALL &concat_op
+            POPS GF@_tmp_res
+            PUSHS GF@_tmp_res
+            TYPE GF@_tmp_type GF@_tmp_res
+            JUMPIFEQ ?set?end GF@_tmp_type string@string
+            EXIT int@4
+        # RETURN END
+
+        # MISSING RETURN START
+        	EXIT int@4
+        # MISSING RETURN END
+
+        LABEL ?set?end
+        POPFRAME
+        RETURN
+    # FUNC [set] DEF END
+
+    # FUNC [length] DEF START
+        LABEL length
+        CREATEFRAME
+        PUSHFRAME
+        # FUNCTION PARAMS START
+            # CHECK ARG COUNT START
+                POPS GF@_tmp
+                JUMPIFEQ ?length?arg_count_ok GF@_tmp int@1
+                EXIT int@4
+                LABEL ?length?arg_count_ok
+            # CHECK ARG COUNT END
+
+            # INIT PARAMS, CHECK PARAM TYPES START
+                DEFVAR LF@$in
+                POPS LF@$in
+                TYPE GF@_tmp_type LF@$in
+                JUMPIFEQ ?length?$in?param_type_ok GF@_tmp_type string@string
+                EXIT int@4
+                LABEL ?length?$in?param_type_ok
+            # INIT PARAMS, CHECK PARAM TYPES END
+
+        # FUNCTION PARAMS END
+        # DEFINE USED VARS START
+            DEFVAR LF@$i
+            DEFVAR LF@$pos
+            DEFVAR LF@$p1
+            DEFVAR LF@$ch
+        # DEFINE USED VARS END
+
+        # EXPR ASS START
+            # CHECK EXPR VARS DEFS START
+            # CHECK EXPR VARS DEFS END
+
+            PUSHS int@0
+            POPS LF@$i
+        # EXPR ASS END
+
+        # EXPR ASS START
+            # CHECK EXPR VARS DEFS START
+            # CHECK EXPR VARS DEFS END
+
+            PUSHS int@0
+            POPS LF@$pos
+        # EXPR ASS END
+
+        # EXPR ASS START
+            # CHECK EXPR VARS DEFS START
+                TYPE GF@_tmp LF@$pos
+                JUMPIFNEQ ?$pos?var_init_ok_74 GF@_tmp string@
+                EXIT int@5
+                LABEL ?$pos?var_init_ok_74
+            # CHECK EXPR VARS DEFS END
+
+            PUSHS int@1
+            PUSHS LF@$pos
+            CALL &add_op
+            POPS LF@$p1
+        # EXPR ASS END
+
+        # FUNC ASS START
+            # CHECK FUNC ARG INIT START
+                TYPE GF@_tmp LF@$in
+                JUMPIFNEQ ?$in?var_init_ok_75 GF@_tmp string@
+                EXIT int@5
+                LABEL ?$in?var_init_ok_75
+                TYPE GF@_tmp LF@$pos
+                JUMPIFNEQ ?$pos?var_init_ok_76 GF@_tmp string@
+                EXIT int@5
+                LABEL ?$pos?var_init_ok_76
+                TYPE GF@_tmp LF@$p1
+                JUMPIFNEQ ?$p1?var_init_ok_77 GF@_tmp string@
+                EXIT int@5
+                LABEL ?$p1?var_init_ok_77
+            # CHECK FUNC ARG INIT END
+
+            PUSHS LF@$p1
+            PUSHS LF@$pos
+            PUSHS LF@$in
+            PUSHS int@3
+            CALL substring
+            POPS LF@$ch
+        # FUNC ASS END
+
+        # WHILE START
+            # CHECK WHILE COND VARS DEFS START
+                TYPE GF@_tmp LF@$ch
+                JUMPIFNEQ ?$ch?var_init_ok_78 GF@_tmp string@
+                EXIT int@5
+                LABEL ?$ch?var_init_ok_78
+            # CHECK WHILE COND VARS DEFS END
+
+            LABEL ?while_start_8
+            PUSHS nil@nil
+            PUSHS LF@$ch
+            CALL &neq_op
+            CALL &to_bool
+            POPS GF@_tmp_res
+            JUMPIFEQ ?while_end_8 GF@_tmp_res bool@false
+            # EXPR ASS START
+                # CHECK EXPR VARS DEFS START
+                    TYPE GF@_tmp LF@$pos
+                    JUMPIFNEQ ?$pos?var_init_ok_79 GF@_tmp string@
+                    EXIT int@5
+                    LABEL ?$pos?var_init_ok_79
+                # CHECK EXPR VARS DEFS END
+
+                PUSHS int@1
+                PUSHS LF@$pos
+                CALL &add_op
+                POPS LF@$pos
+            # EXPR ASS END
+
+            # EXPR ASS START
+                # CHECK EXPR VARS DEFS START
+                    TYPE GF@_tmp LF@$pos
+                    JUMPIFNEQ ?$pos?var_init_ok_80 GF@_tmp string@
+                    EXIT int@5
+                    LABEL ?$pos?var_init_ok_80
+                # CHECK EXPR VARS DEFS END
+
+                PUSHS int@1
+                PUSHS LF@$pos
+                CALL &add_op
+                POPS LF@$p1
+            # EXPR ASS END
+
+            # FUNC ASS START
+                # CHECK FUNC ARG INIT START
+                    TYPE GF@_tmp LF@$in
+                    JUMPIFNEQ ?$in?var_init_ok_81 GF@_tmp string@
+                    EXIT int@5
+                    LABEL ?$in?var_init_ok_81
+                    TYPE GF@_tmp LF@$pos
+                    JUMPIFNEQ ?$pos?var_init_ok_82 GF@_tmp string@
+                    EXIT int@5
+                    LABEL ?$pos?var_init_ok_82
+                    TYPE GF@_tmp LF@$p1
+                    JUMPIFNEQ ?$p1?var_init_ok_83 GF@_tmp string@
+                    EXIT int@5
+                    LABEL ?$p1?var_init_ok_83
+                # CHECK FUNC ARG INIT END
+
+                PUSHS LF@$p1
+                PUSHS LF@$pos
+                PUSHS LF@$in
+                PUSHS int@3
+                CALL substring
+                POPS LF@$ch
+            # FUNC ASS END
+
+            # IF START
+                # CHECK IF COND VARS DEFS START
+                    TYPE GF@_tmp LF@$ch
+                    JUMPIFNEQ ?$ch?var_init_ok_84 GF@_tmp string@
+                    EXIT int@5
+                    LABEL ?$ch?var_init_ok_84
+                # CHECK IF COND VARS DEFS END
+
+                PUSHS string@;
+                PUSHS LF@$ch
+                CALL &eq_op
+                CALL &to_bool
+                POPS GF@_tmp_res
+                JUMPIFEQ ?if_branch_false_1 GF@_tmp_res bool@false
+                # EXPR ASS START
+                    # CHECK EXPR VARS DEFS START
+                        TYPE GF@_tmp LF@$i
+                        JUMPIFNEQ ?$i?var_init_ok_85 GF@_tmp string@
+                        EXIT int@5
+                        LABEL ?$i?var_init_ok_85
+                    # CHECK EXPR VARS DEFS END
+
+                    PUSHS int@1
+                    PUSHS LF@$i
+                    CALL &add_op
+                    POPS LF@$i
+                # EXPR ASS END
+
+                JUMP ?if_end_1
+                LABEL ?if_branch_false_1
+                LABEL ?if_end_1
+            # IF END
+
+            JUMP ?while_start_8
+            LABEL ?while_end_8
+        # WHILE END
+
+        # RETURN START
+            TYPE GF@_tmp LF@$i
+            JUMPIFNEQ ?$i?var_init_ok_86 GF@_tmp string@
+            EXIT int@5
+            LABEL ?$i?var_init_ok_86
+            PUSHS LF@$i
+            POPS GF@_tmp_res
+            PUSHS GF@_tmp_res
+            TYPE GF@_tmp_type GF@_tmp_res
+            JUMPIFEQ ?length?end GF@_tmp_type string@int
+            EXIT int@4
+        # RETURN END
+
+        # MISSING RETURN START
+        	EXIT int@4
+        # MISSING RETURN END
+
+        LABEL ?length?end
+        POPFRAME
+        RETURN
+    # FUNC [length] DEF END
+
+    # FUNC [pow] DEF START
+        LABEL pow
+        CREATEFRAME
+        PUSHFRAME
+        # FUNCTION PARAMS START
+            # CHECK ARG COUNT START
+                POPS GF@_tmp
+                JUMPIFEQ ?pow?arg_count_ok GF@_tmp int@2
+                EXIT int@4
+                LABEL ?pow?arg_count_ok
+            # CHECK ARG COUNT END
+
+            # INIT PARAMS, CHECK PARAM TYPES START
+                DEFVAR LF@$x
+                POPS LF@$x
+                TYPE GF@_tmp_type LF@$x
+                JUMPIFEQ ?pow?$x?param_type_ok GF@_tmp_type string@int
+                EXIT int@4
+                LABEL ?pow?$x?param_type_ok
+                DEFVAR LF@$y
+                POPS LF@$y
+                TYPE GF@_tmp_type LF@$y
+                JUMPIFEQ ?pow?$y?param_type_ok GF@_tmp_type string@int
+                EXIT int@4
+                LABEL ?pow?$y?param_type_ok
+            # INIT PARAMS, CHECK PARAM TYPES END
+
+        # FUNCTION PARAMS END
+        # DEFINE USED VARS START
+            DEFVAR LF@$i
+            DEFVAR LF@$ret
+        # DEFINE USED VARS END
+
+        # EXPR ASS START
+            # CHECK EXPR VARS DEFS START
+            # CHECK EXPR VARS DEFS END
+
+            PUSHS int@0
+            POPS LF@$i
+        # EXPR ASS END
+
+        # EXPR ASS START
+            # CHECK EXPR VARS DEFS START
+            # CHECK EXPR VARS DEFS END
+
+            PUSHS int@1
+            POPS LF@$ret
+        # EXPR ASS END
+
+        # WHILE START
+            # CHECK WHILE COND VARS DEFS START
+                TYPE GF@_tmp LF@$y
+                JUMPIFNEQ ?$y?var_init_ok_87 GF@_tmp string@
+                EXIT int@5
+                LABEL ?$y?var_init_ok_87
+                TYPE GF@_tmp LF@$i
+                JUMPIFNEQ ?$i?var_init_ok_88 GF@_tmp string@
+                EXIT int@5
+                LABEL ?$i?var_init_ok_88
+            # CHECK WHILE COND VARS DEFS END
+
+            LABEL ?while_start_9
+            PUSHS LF@$y
+            PUSHS LF@$i
+            CALL &lt_op
+            CALL &to_bool
+            POPS GF@_tmp_res
+            JUMPIFEQ ?while_end_9 GF@_tmp_res bool@false
+            # EXPR ASS START
+                # CHECK EXPR VARS DEFS START
+                    TYPE GF@_tmp LF@$x
+                    JUMPIFNEQ ?$x?var_init_ok_89 GF@_tmp string@
+                    EXIT int@5
+                    LABEL ?$x?var_init_ok_89
+                    TYPE GF@_tmp LF@$ret
+                    JUMPIFNEQ ?$ret?var_init_ok_90 GF@_tmp string@
+                    EXIT int@5
+                    LABEL ?$ret?var_init_ok_90
+                # CHECK EXPR VARS DEFS END
+
+                PUSHS LF@$x
+                PUSHS LF@$ret
+                CALL &mul_op
+                POPS LF@$ret
+            # EXPR ASS END
+
+            # EXPR ASS START
+                # CHECK EXPR VARS DEFS START
+                    TYPE GF@_tmp LF@$i
+                    JUMPIFNEQ ?$i?var_init_ok_91 GF@_tmp string@
+                    EXIT int@5
+                    LABEL ?$i?var_init_ok_91
+                # CHECK EXPR VARS DEFS END
+
+                PUSHS int@1
+                PUSHS LF@$i
+                CALL &add_op
+                POPS LF@$i
+            # EXPR ASS END
+
+            JUMP ?while_start_9
+            LABEL ?while_end_9
+        # WHILE END
+
+        # RETURN START
+            TYPE GF@_tmp LF@$ret
+            JUMPIFNEQ ?$ret?var_init_ok_92 GF@_tmp string@
+            EXIT int@5
+            LABEL ?$ret?var_init_ok_92
+            PUSHS LF@$ret
+            POPS GF@_tmp_res
+            PUSHS GF@_tmp_res
+            TYPE GF@_tmp_type GF@_tmp_res
+            JUMPIFEQ ?pow?end GF@_tmp_type string@int
+            EXIT int@4
+        # RETURN END
+
+        # MISSING RETURN START
+        	EXIT int@4
+        # MISSING RETURN END
+
+        LABEL ?pow?end
+        POPFRAME
+        RETURN
+    # FUNC [pow] DEF END
+
+    # FUNC [sierpinski] DEF START
+        LABEL sierpinski
+        CREATEFRAME
+        PUSHFRAME
+        # FUNCTION PARAMS START
+            # CHECK ARG COUNT START
+                POPS GF@_tmp
+                JUMPIFEQ ?sierpinski?arg_count_ok GF@_tmp int@1
+                EXIT int@4
+                LABEL ?sierpinski?arg_count_ok
+            # CHECK ARG COUNT END
+
+            # INIT PARAMS, CHECK PARAM TYPES START
+                DEFVAR LF@$n
+                POPS LF@$n
+                TYPE GF@_tmp_type LF@$n
+                JUMPIFEQ ?sierpinski?$n?param_type_ok GF@_tmp_type string@int
+                EXIT int@4
+                LABEL ?sierpinski?$n?param_type_ok
+            # INIT PARAMS, CHECK PARAM TYPES END
+
+        # FUNCTION PARAMS END
+        # DEFINE USED VARS START
+            DEFVAR LF@$d
+            DEFVAR LF@$i
+            DEFVAR LF@$j
+            DEFVAR LF@$sp
+            DEFVAR LF@$p
+            DEFVAR LF@$len
+            DEFVAR LF@$d2
+            DEFVAR LF@$s
+            DEFVAR LF@$t2
+            DEFVAR LF@$d3
+            DEFVAR LF@$t3
+        # DEFINE USED VARS END
+
+        # EXPR ASS START
+            # CHECK EXPR VARS DEFS START
+            # CHECK EXPR VARS DEFS END
+
+            PUSHS string@
+            POPS LF@$d
+        # EXPR ASS END
+
+        # FUNC ASS START
+            # CHECK FUNC ARG INIT START
+                TYPE GF@_tmp LF@$d
+                JUMPIFNEQ ?$d?var_init_ok_93 GF@_tmp string@
+                EXIT int@5
+                LABEL ?$d?var_init_ok_93
+            # CHECK FUNC ARG INIT END
+
+            PUSHS string@*
+            PUSHS LF@$d
+            PUSHS int@2
+            CALL append
+            POPS LF@$d
+        # FUNC ASS END
+
+        # EXPR ASS START
+            # CHECK EXPR VARS DEFS START
+            # CHECK EXPR VARS DEFS END
+
+            PUSHS int@0
+            POPS LF@$i
+        # EXPR ASS END
+
+        # WHILE START
+            # CHECK WHILE COND VARS DEFS START
+                TYPE GF@_tmp LF@$n
+                JUMPIFNEQ ?$n?var_init_ok_94 GF@_tmp string@
+                EXIT int@5
+                LABEL ?$n?var_init_ok_94
+                TYPE GF@_tmp LF@$i
+                JUMPIFNEQ ?$i?var_init_ok_95 GF@_tmp string@
+                EXIT int@5
+                LABEL ?$i?var_init_ok_95
+            # CHECK WHILE COND VARS DEFS END
+
+            LABEL ?while_start_10
+            PUSHS LF@$n
+            PUSHS LF@$i
+            CALL &lt_op
+            CALL &to_bool
+            POPS GF@_tmp_res
+            JUMPIFEQ ?while_end_10 GF@_tmp_res bool@false
+            # EXPR ASS START
+                # CHECK EXPR VARS DEFS START
+                # CHECK EXPR VARS DEFS END
+
+                PUSHS int@0
+                POPS LF@$j
+            # EXPR ASS END
+
+            # EXPR ASS START
+                # CHECK EXPR VARS DEFS START
+                # CHECK EXPR VARS DEFS END
+
+                PUSHS string@
+                POPS LF@$sp
+            # EXPR ASS END
+
+            # FUNC ASS START
+                # CHECK FUNC ARG INIT START
+                    TYPE GF@_tmp LF@$i
+                    JUMPIFNEQ ?$i?var_init_ok_96 GF@_tmp string@
+                    EXIT int@5
+                    LABEL ?$i?var_init_ok_96
+                # CHECK FUNC ARG INIT END
+
+                PUSHS LF@$i
+                PUSHS int@2
+                PUSHS int@2
+                CALL pow
+                POPS LF@$p
+            # FUNC ASS END
+
+            # WHILE START
+                # CHECK WHILE COND VARS DEFS START
+                    TYPE GF@_tmp LF@$p
+                    JUMPIFNEQ ?$p?var_init_ok_97 GF@_tmp string@
+                    EXIT int@5
+                    LABEL ?$p?var_init_ok_97
+                    TYPE GF@_tmp LF@$j
+                    JUMPIFNEQ ?$j?var_init_ok_98 GF@_tmp string@
+                    EXIT int@5
+                    LABEL ?$j?var_init_ok_98
+                # CHECK WHILE COND VARS DEFS END
+
+                LABEL ?while_start_11
+                PUSHS LF@$p
+                PUSHS LF@$j
+                CALL &lt_op
+                CALL &to_bool
+                POPS GF@_tmp_res
+                JUMPIFEQ ?while_end_11 GF@_tmp_res bool@false
+                # EXPR ASS START
+                    # CHECK EXPR VARS DEFS START
+                        TYPE GF@_tmp LF@$sp
+                        JUMPIFNEQ ?$sp?var_init_ok_99 GF@_tmp string@
+                        EXIT int@5
+                        LABEL ?$sp?var_init_ok_99
+                    # CHECK EXPR VARS DEFS END
+
+                    PUSHS string@\032
+                    PUSHS LF@$sp
+                    CALL &concat_op
+                    POPS LF@$sp
+                # EXPR ASS END
+
+                # EXPR ASS START
+                    # CHECK EXPR VARS DEFS START
+                        TYPE GF@_tmp LF@$j
+                        JUMPIFNEQ ?$j?var_init_ok_100 GF@_tmp string@
+                        EXIT int@5
+                        LABEL ?$j?var_init_ok_100
+                    # CHECK EXPR VARS DEFS END
+
+                    PUSHS int@1
+                    PUSHS LF@$j
+                    CALL &add_op
+                    POPS LF@$j
+                # EXPR ASS END
+
+                JUMP ?while_start_11
+                LABEL ?while_end_11
+            # WHILE END
+
+            # EXPR ASS START
+                # CHECK EXPR VARS DEFS START
+                # CHECK EXPR VARS DEFS END
+
+                PUSHS int@0
+                POPS LF@$j
+            # EXPR ASS END
+
+            # FUNC ASS START
+                # CHECK FUNC ARG INIT START
+                    TYPE GF@_tmp LF@$d
+                    JUMPIFNEQ ?$d?var_init_ok_101 GF@_tmp string@
+                    EXIT int@5
+                    LABEL ?$d?var_init_ok_101
+                # CHECK FUNC ARG INIT END
+
+                PUSHS LF@$d
+                PUSHS int@1
+                CALL length
+                POPS LF@$len
+            # FUNC ASS END
+
+            # EXPR ASS START
+                # CHECK EXPR VARS DEFS START
+                # CHECK EXPR VARS DEFS END
+
+                PUSHS string@
+                POPS LF@$d2
+            # EXPR ASS END
+
+            # WHILE START
+                # CHECK WHILE COND VARS DEFS START
+                    TYPE GF@_tmp LF@$len
+                    JUMPIFNEQ ?$len?var_init_ok_102 GF@_tmp string@
+                    EXIT int@5
+                    LABEL ?$len?var_init_ok_102
+                    TYPE GF@_tmp LF@$j
+                    JUMPIFNEQ ?$j?var_init_ok_103 GF@_tmp string@
+                    EXIT int@5
+                    LABEL ?$j?var_init_ok_103
+                # CHECK WHILE COND VARS DEFS END
+
+                LABEL ?while_start_12
+                PUSHS LF@$len
+                PUSHS LF@$j
+                CALL &lt_op
+                CALL &to_bool
+                POPS GF@_tmp_res
+                JUMPIFEQ ?while_end_12 GF@_tmp_res bool@false
+                # FUNC ASS START
+                    # CHECK FUNC ARG INIT START
+                        TYPE GF@_tmp LF@$d
+                        JUMPIFNEQ ?$d?var_init_ok_104 GF@_tmp string@
+                        EXIT int@5
+                        LABEL ?$d?var_init_ok_104
+                        TYPE GF@_tmp LF@$j
+                        JUMPIFNEQ ?$j?var_init_ok_105 GF@_tmp string@
+                        EXIT int@5
+                        LABEL ?$j?var_init_ok_105
+                    # CHECK FUNC ARG INIT END
+
+                    PUSHS LF@$j
+                    PUSHS LF@$d
+                    PUSHS int@2
+                    CALL get
+                    POPS LF@$s
+                # FUNC ASS END
+
+                # EXPR ASS START
+                    # CHECK EXPR VARS DEFS START
+                        TYPE GF@_tmp LF@$sp
+                        JUMPIFNEQ ?$sp?var_init_ok_106 GF@_tmp string@
+                        EXIT int@5
+                        LABEL ?$sp?var_init_ok_106
+                        TYPE GF@_tmp LF@$s
+                        JUMPIFNEQ ?$s?var_init_ok_107 GF@_tmp string@
+                        EXIT int@5
+                        LABEL ?$s?var_init_ok_107
+                        TYPE GF@_tmp LF@$sp
+                        JUMPIFNEQ ?$sp?var_init_ok_108 GF@_tmp string@
+                        EXIT int@5
+                        LABEL ?$sp?var_init_ok_108
+                    # CHECK EXPR VARS DEFS END
+
+                    PUSHS LF@$sp
+                    PUSHS LF@$s
+                    PUSHS LF@$sp
+                    CALL &concat_op
+                    CALL &concat_op
+                    POPS LF@$t2
+                # EXPR ASS END
+
+                # FUNC ASS START
+                    # CHECK FUNC ARG INIT START
+                        TYPE GF@_tmp LF@$d2
+                        JUMPIFNEQ ?$d2?var_init_ok_109 GF@_tmp string@
+                        EXIT int@5
+                        LABEL ?$d2?var_init_ok_109
+                        TYPE GF@_tmp LF@$t2
+                        JUMPIFNEQ ?$t2?var_init_ok_110 GF@_tmp string@
+                        EXIT int@5
+                        LABEL ?$t2?var_init_ok_110
+                    # CHECK FUNC ARG INIT END
+
+                    PUSHS LF@$t2
+                    PUSHS LF@$d2
+                    PUSHS int@2
+                    CALL append
+                    POPS LF@$d2
+                # FUNC ASS END
+
+                # EXPR ASS START
+                    # CHECK EXPR VARS DEFS START
+                        TYPE GF@_tmp LF@$j
+                        JUMPIFNEQ ?$j?var_init_ok_111 GF@_tmp string@
+                        EXIT int@5
+                        LABEL ?$j?var_init_ok_111
+                    # CHECK EXPR VARS DEFS END
+
+                    PUSHS int@1
+                    PUSHS LF@$j
+                    CALL &add_op
+                    POPS LF@$j
+                # EXPR ASS END
+
+                JUMP ?while_start_12
+                LABEL ?while_end_12
+            # WHILE END
+
+            # EXPR ASS START
+                # CHECK EXPR VARS DEFS START
+                # CHECK EXPR VARS DEFS END
+
+                PUSHS int@0
+                POPS LF@$j
+            # EXPR ASS END
+
+            # EXPR ASS START
+                # CHECK EXPR VARS DEFS START
+                # CHECK EXPR VARS DEFS END
+
+                PUSHS string@
+                POPS LF@$d3
+            # EXPR ASS END
+
+            # WHILE START
+                # CHECK WHILE COND VARS DEFS START
+                    TYPE GF@_tmp LF@$len
+                    JUMPIFNEQ ?$len?var_init_ok_112 GF@_tmp string@
+                    EXIT int@5
+                    LABEL ?$len?var_init_ok_112
+                    TYPE GF@_tmp LF@$j
+                    JUMPIFNEQ ?$j?var_init_ok_113 GF@_tmp string@
+                    EXIT int@5
+                    LABEL ?$j?var_init_ok_113
+                # CHECK WHILE COND VARS DEFS END
+
+                LABEL ?while_start_13
+                PUSHS LF@$len
+                PUSHS LF@$j
+                CALL &lt_op
+                CALL &to_bool
+                POPS GF@_tmp_res
+                JUMPIFEQ ?while_end_13 GF@_tmp_res bool@false
+                # FUNC ASS START
+                    # CHECK FUNC ARG INIT START
+                        TYPE GF@_tmp LF@$d
+                        JUMPIFNEQ ?$d?var_init_ok_114 GF@_tmp string@
+                        EXIT int@5
+                        LABEL ?$d?var_init_ok_114
+                        TYPE GF@_tmp LF@$j
+                        JUMPIFNEQ ?$j?var_init_ok_115 GF@_tmp string@
+                        EXIT int@5
+                        LABEL ?$j?var_init_ok_115
+                    # CHECK FUNC ARG INIT END
+
+                    PUSHS LF@$j
+                    PUSHS LF@$d
+                    PUSHS int@2
+                    CALL get
+                    POPS LF@$s
+                # FUNC ASS END
+
+                # EXPR ASS START
+                    # CHECK EXPR VARS DEFS START
+                        TYPE GF@_tmp LF@$s
+                        JUMPIFNEQ ?$s?var_init_ok_116 GF@_tmp string@
+                        EXIT int@5
+                        LABEL ?$s?var_init_ok_116
+                        TYPE GF@_tmp LF@$s
+                        JUMPIFNEQ ?$s?var_init_ok_117 GF@_tmp string@
+                        EXIT int@5
+                        LABEL ?$s?var_init_ok_117
+                    # CHECK EXPR VARS DEFS END
+
+                    PUSHS LF@$s
+                    PUSHS string@\032
+                    PUSHS LF@$s
+                    CALL &concat_op
+                    CALL &concat_op
+                    POPS LF@$t3
+                # EXPR ASS END
+
+                # FUNC ASS START
+                    # CHECK FUNC ARG INIT START
+                        TYPE GF@_tmp LF@$d3
+                        JUMPIFNEQ ?$d3?var_init_ok_118 GF@_tmp string@
+                        EXIT int@5
+                        LABEL ?$d3?var_init_ok_118
+                        TYPE GF@_tmp LF@$t3
+                        JUMPIFNEQ ?$t3?var_init_ok_119 GF@_tmp string@
+                        EXIT int@5
+                        LABEL ?$t3?var_init_ok_119
+                    # CHECK FUNC ARG INIT END
+
+                    PUSHS LF@$t3
+                    PUSHS LF@$d3
+                    PUSHS int@2
+                    CALL append
+                    POPS LF@$d3
+                # FUNC ASS END
+
+                # EXPR ASS START
+                    # CHECK EXPR VARS DEFS START
+                        TYPE GF@_tmp LF@$j
+                        JUMPIFNEQ ?$j?var_init_ok_120 GF@_tmp string@
+                        EXIT int@5
+                        LABEL ?$j?var_init_ok_120
+                    # CHECK EXPR VARS DEFS END
+
+                    PUSHS int@1
+                    PUSHS LF@$j
+                    CALL &add_op
+                    POPS LF@$j
+                # EXPR ASS END
+
+                JUMP ?while_start_13
+                LABEL ?while_end_13
+            # WHILE END
+
+            # EXPR ASS START
+                # CHECK EXPR VARS DEFS START
+                    TYPE GF@_tmp LF@$d3
+                    JUMPIFNEQ ?$d3?var_init_ok_121 GF@_tmp string@
+                    EXIT int@5
+                    LABEL ?$d3?var_init_ok_121
+                    TYPE GF@_tmp LF@$d2
+                    JUMPIFNEQ ?$d2?var_init_ok_122 GF@_tmp string@
+                    EXIT int@5
+                    LABEL ?$d2?var_init_ok_122
+                # CHECK EXPR VARS DEFS END
+
+                PUSHS LF@$d3
+                PUSHS LF@$d2
+                CALL &concat_op
+                POPS LF@$d
+            # EXPR ASS END
+
+            # EXPR ASS START
+                # CHECK EXPR VARS DEFS START
+                    TYPE GF@_tmp LF@$i
+                    JUMPIFNEQ ?$i?var_init_ok_123 GF@_tmp string@
+                    EXIT int@5
+                    LABEL ?$i?var_init_ok_123
+                # CHECK EXPR VARS DEFS END
+
+                PUSHS int@1
+                PUSHS LF@$i
+                CALL &add_op
+                POPS LF@$i
+            # EXPR ASS END
+
+            JUMP ?while_start_10
+            LABEL ?while_end_10
+        # WHILE END
+
+        # RETURN START
+            TYPE GF@_tmp LF@$d
+            JUMPIFNEQ ?$d?var_init_ok_124 GF@_tmp string@
+            EXIT int@5
+            LABEL ?$d?var_init_ok_124
+            PUSHS LF@$d
+            POPS GF@_tmp_res
+            PUSHS GF@_tmp_res
+            TYPE GF@_tmp_type GF@_tmp_res
+            JUMPIFEQ ?sierpinski?end GF@_tmp_type string@string
+            EXIT int@4
+        # RETURN END
+
+        # MISSING RETURN START
+        	EXIT int@4
+        # MISSING RETURN END
+
+        LABEL ?sierpinski?end
+        POPFRAME
+        RETURN
+    # FUNC [sierpinski] DEF END
+
+# USER FUNCTIONS END
+
+# BUILT IN FUNCTIONS START
+LABEL reads												
+CREATEFRAME												
+PUSHFRAME												
+	# check if number of arguments is 0					
+		POPS GF@_arg_count								
+		JUMPIFEQ ?reads?arg_count_ok GF@_arg_count int@0
+			EXIT int@4									
+		LABEL ?reads?arg_count_ok						
+														
+	# read string from input							
+		DEFVAR LF@read_string							
+		READ LF@read_string string						
+		PUSHS LF@read_string							
+POPFRAME												
+RETURN													
+
+LABEL readi												
+CREATEFRAME												
+PUSHFRAME												
+	# check if number of arguments is 0					
+		POPS GF@_arg_count								
+		JUMPIFEQ ?readi?arg_count_ok GF@_arg_count int@0
+			EXIT int@4									
+		LABEL ?readi?arg_count_ok						
+														
+	# read int from input								
+		DEFVAR LF@read_int								
+		READ LF@read_int int							
+		PUSHS LF@read_int								
+POPFRAME												
+RETURN													
+
+LABEL readf												
+CREATEFRAME												
+PUSHFRAME												
+	# check if number of arguments is 0					
+		POPS GF@_arg_count								
+		JUMPIFEQ ?readf?arg_count_ok GF@_arg_count int@0
+			EXIT int@4									
+		LABEL ?readf?arg_count_ok						
+														
+	# read float from input								
+		DEFVAR LF@read_float							
+		READ LF@read_float float						
+		PUSHS LF@read_float								
+POPFRAME												
+RETURN													
+
+LABEL write												
+CREATEFRAME												
+PUSHFRAME												
+	DEFVAR LF@cur_arg									
+														
+	# get number of arguments							
+	POPS GF@_arg_count									
+														
+	# iterate over all arguments and print them			
+	LABEL ?write?while_start							
+	JUMPIFEQ ?write?while_end GF@_arg_count int@0		
+														
+		SUB GF@_arg_count GF@_arg_count int@1			
+		POPS LF@cur_arg									
+		WRITE LF@cur_arg								
+														
+	JUMP ?write?while_start								
+	LABEL ?write?while_end								
+														
+	# return implicit null								
+	PUSHS nil@nil										
+POPFRAME												
+RETURN													
+
+LABEL floatval											
+	# check if number of arguments is 1					
+	POPS GF@_arg_count									
+	JUMPIFEQ ?floatval?arg_count_ok GF@_arg_count int@1	
+		EXIT int@4										
+	LABEL ?floatval?arg_count_ok						
+														
+	# get argument										
+	POPS GF@_tmp										
+														
+	TYPE GF@_tmp_type GF@_tmp							
+														
+	JUMPIFNEQ ?floatval?next1 GF@_tmp_type string@nil	
+		MOVE GF@_tmp_res float@0x0p+0					
+		JUMP ?floatval?end								
+														
+	LABEL ?floatval?next1								
+	JUMPIFNEQ ?floatval?next2 GF@_tmp_type string@int	
+		INT2FLOAT GF@_tmp_res GF@_tmp					
+		JUMP ?floatval?end								
+														
+	LABEL ?floatval?next2								
+	JUMPIFNEQ ?floatval?next3 GF@_tmp_type string@float	
+		MOVE GF@_tmp_res GF@_tmp						
+		JUMP ?floatval?end								
+														
+	LABEL ?floatval?next3								
+	JUMPIFNEQ ?floatval?next4 GF@_tmp_type string@string
+		EXIT int@8										
+														
+	LABEL ?floatval?next4								
+		JUMPIFEQ ?floatval?false GF@_tmp bool@false		
+			MOVE GF@_tmp_res float@0x1p+0				
+			JUMP ?floatval?end							
+		LABEL ?floatval?false							
+			MOVE GF@_tmp_res float@0x0p+0				
+														
+	LABEL ?floatval?end									
+	PUSHS GF@_tmp_res									
+RETURN													
+
+LABEL intval											
+	# check if number of arguments is 1					
+	POPS GF@_arg_count									
+	JUMPIFEQ ?intval?arg_count_ok GF@_arg_count int@1	
+		EXIT int@4										
+	LABEL ?intval?arg_count_ok							
+														
+	# get argument										
+	POPS GF@_tmp										
+														
+	TYPE GF@_tmp_type GF@_tmp							
+														
+	JUMPIFNEQ ?intval?next1 GF@_tmp_type string@nil		
+		MOVE GF@_tmp_res int@0							
+		JUMP ?intval?end								
+														
+	LABEL ?intval?next1									
+	JUMPIFNEQ ?intval?next2 GF@_tmp_type string@int		
+		MOVE GF@_tmp_res GF@_tmp						
+		JUMP ?intval?end								
+														
+	LABEL ?intval?next2									
+	JUMPIFNEQ ?intval?next3 GF@_tmp_type string@float	
+		FLOAT2INT GF@_tmp_res GF@_tmp					
+		JUMP ?intval?end								
+														
+	LABEL ?intval?next3									
+	JUMPIFNEQ ?intval?next4 GF@_tmp_type string@string	
+		EXIT int@8										
+														
+	LABEL ?intval?next4									
+		JUMPIFEQ ?intval?false GF@_tmp bool@false		
+			MOVE GF@_tmp_res int@1						
+			JUMP ?intval?end							
+		LABEL ?intval?false								
+			MOVE GF@_tmp_res int@0						
+														
+	LABEL ?intval?end									
+	PUSHS GF@_tmp_res									
+RETURN													
+
+LABEL strval											
+	# check if number of arguments is 1					
+	POPS GF@_arg_count									
+	JUMPIFEQ ?strval?arg_count_ok GF@_arg_count int@1	
+		EXIT int@4										
+	LABEL ?strval?arg_count_ok							
+														
+	# get argument										
+	POPS GF@_tmp										
+														
+	TYPE GF@_tmp_type GF@_tmp							
+														
+	JUMPIFNEQ ?strval?next1 GF@_tmp_type string@nil		
+		MOVE GF@_tmp_res string@						
+		JUMP ?strval?end								
+														
+	LABEL ?strval?next1									
+	JUMPIFNEQ ?strval?next2 GF@_tmp_type string@int		
+		EXIT int@8										
+														
+	LABEL ?strval?next2									
+	JUMPIFNEQ ?strval?next3 GF@_tmp_type string@float	
+		EXIT int@8										
+														
+	LABEL ?strval?next3									
+	JUMPIFNEQ ?strval?next4 GF@_tmp_type string@string	
+		MOVE GF@_tmp_res GF@_tmp						
+		JUMP ?strval?end								
+														
+	LABEL ?strval?next4									
+		JUMPIFEQ ?strval?false GF@_tmp bool@false		
+			MOVE GF@_tmp_res string@1					
+			JUMP ?strval?end							
+		LABEL ?strval?false								
+			MOVE GF@_tmp_res string@					
+														
+	LABEL ?strval?end									
+	PUSHS GF@_tmp_res									
+RETURN													
+
+LABEL strlen													
+	# check if number of arguments is 1							
+	POPS GF@_arg_count											
+	JUMPIFEQ ?strlen?arg_count_ok GF@_arg_count int@1			
+		EXIT int@4												
+	LABEL ?strlen?arg_count_ok									
+																
+	# get argument												
+	POPS GF@_tmp												
+																
+	# check if parameter type is string							
+	TYPE GF@_tmp_type GF@_tmp									
+	JUMPIFEQ ?strlen?param_type_ok GF@_tmp_type string@string	
+		EXIT int@4												
+	LABEL ?strlen?param_type_ok									
+																
+	# get and return length of string							
+	STRLEN GF@_tmp GF@_tmp										
+	PUSHS GF@_tmp												
+RETURN															
+
+LABEL substring														
+CREATEFRAME															
+PUSHFRAME															
+	# check if number of arguments is 3								
+	POPS GF@_arg_count												
+	JUMPIFEQ ?substring?arg_count_ok GF@_arg_count int@3			
+		EXIT int@4													
+	LABEL ?substring?arg_count_ok									
+																	
+	DEFVAR LF@str													
+	POPS LF@str														
+	TYPE GF@_tmp_type LF@str										
+	JUMPIFEQ ?substring?str?param_type_ok GF@_tmp_type string@string
+		EXIT int@4													
+	LABEL ?substring?str?param_type_ok								
+																	
+	DEFVAR LF@i														
+	POPS LF@i														
+	TYPE GF@_tmp_type LF@i											
+	JUMPIFEQ ?substring?i?param_type_ok GF@_tmp_type string@int		
+		EXIT int@4													
+	LABEL ?substring?i?param_type_ok								
+																	
+	DEFVAR LF@j														
+	POPS LF@j														
+	TYPE GF@_tmp_type LF@j											
+	JUMPIFEQ ?substring?j?param_type_ok GF@_tmp_type string@int		
+		EXIT int@4													
+	LABEL ?substring?j?param_type_ok								
+																	
+	LT GF@_tmp LF@i int@0 # if i < 0 return null					
+	JUMPIFEQ ?substring?return_null GF@_tmp bool@true				
+																	
+	LT GF@_tmp LF@j int@0 # if j < 0								
+	JUMPIFEQ ?substring?return_null GF@_tmp bool@true				
+																	
+	GT GF@_tmp LF@i LF@j # if i > j return null						
+	JUMPIFEQ ?substring?return_null GF@_tmp bool@true				
+																	
+	STRLEN GF@_tmp_res LF@str										
+	GT GF@_tmp LF@j GF@_tmp_res # if j > strlen(s) return null		
+	JUMPIFEQ ?substring?return_null GF@_tmp bool@true				
+	GT GF@_tmp LF@i GF@_tmp_res # if i > strlen(s) return null		
+	JUMPIFEQ ?substring?return_null GF@_tmp bool@true				
+	EQ GF@_tmp LF@i GF@_tmp_res # if i = strlen(s) return null		
+	JUMPIFEQ ?substring?return_null GF@_tmp bool@true				
+																	
+	MOVE GF@_tmp_res string@										
+																	
+	LABEL ?substring?while_start									
+	JUMPIFEQ ?substring?while_end LF@i LF@j							
+																	
+		GETCHAR GF@_tmp LF@str LF@i									
+		CONCAT GF@_tmp_res GF@_tmp_res GF@_tmp						
+		ADD LF@i LF@i int@1											
+																	
+	JUMP ?substring?while_start										
+	LABEL ?substring?while_end										
+																	
+	PUSHS GF@_tmp_res												
+	POPFRAME														
+	RETURN															
+																	
+	LABEL ?substring?return_null									
+	PUSHS nil@nil													
+	POPFRAME														
+	RETURN															
+
+LABEL ord														
+	# check if number of arguments is 1							
+	POPS GF@_arg_count											
+	JUMPIFEQ ?ord?arg_count_ok GF@_arg_count int@1				
+		EXIT int@4												
+	LABEL ?ord?arg_count_ok										
+																
+	# get argument												
+	POPS GF@_tmp												
+																
+	# check if parameter type is string							
+	TYPE GF@_tmp_type GF@_tmp									
+	JUMPIFEQ ?ord?param_type_ok GF@_tmp_type string@string		
+		EXIT int@4												
+	LABEL ?ord?param_type_ok									
+																
+	# check if string is not empty								
+	JUMPIFEQ ?ord?empty_string GF@_tmp string@					
+																
+	# string is not empty, return ASCII value of first character
+	STRI2INT GF@_tmp GF@_tmp int@0								
+	PUSHS GF@_tmp												
+	RETURN														
+																
+	# string is empty, return zero								
+	LABEL ?ord?empty_string										
+	PUSHS int@0													
+	RETURN														
+
+LABEL chr														
+	# check if number of arguments is 1							
+	POPS GF@_arg_count											
+	JUMPIFEQ ?chr?arg_count_ok GF@_arg_count int@1				
+		EXIT int@4												
+	LABEL ?chr?arg_count_ok										
+																
+	# get argument												
+	POPS GF@_tmp												
+																
+	# check if parameter type is int							
+	TYPE GF@_tmp_type GF@_tmp									
+	JUMPIFEQ ?chr?param_type_ok GF@_tmp_type string@int			
+		EXIT int@4												
+	LABEL ?chr?param_type_ok									
+																
+	# get and return length of string							
+	INT2CHAR GF@_tmp GF@_tmp									
+	PUSHS GF@_tmp												
+RETURN															
+
+# BUILT IN FUNCTIONS END
+
+# HELPER FUNCTIONS START
+LABEL &to_bool											
+	POPS GF@_tmp										
+	TYPE GF@_tmp_type GF@_tmp							
+														
+	JUMPIFNEQ ?&to_bool?next1 GF@_tmp_type string@nil	
+		JUMP ?&to_bool?false							
+														
+	LABEL ?&to_bool?next1								
+	JUMPIFNEQ ?&to_bool?next2 GF@_tmp_type string@int	
+		JUMPIFEQ ?&to_bool?false GF@_tmp int@0			
+		JUMP ?&to_bool?true								
+														
+	LABEL ?&to_bool?next2								
+	JUMPIFNEQ ?&to_bool?next3 GF@_tmp_type string@float	
+		JUMPIFEQ ?&to_bool?false GF@_tmp float@0x0p+0	
+		JUMP ?&to_bool?true								
+														
+	LABEL ?&to_bool?next3								
+	JUMPIFNEQ ?&to_bool?next4 GF@_tmp_type string@string
+		JUMPIFEQ ?&to_bool?false GF@_tmp string@		
+		JUMPIFEQ ?&to_bool?false GF@_tmp string@0		
+		JUMP ?&to_bool?true								
+														
+	LABEL ?&to_bool?next4								
+		JUMPIFEQ ?&to_bool?false GF@_tmp bool@false		
+														
+	LABEL ?&to_bool?true								
+		PUSHS bool@true									
+		RETURN											
+														
+	LABEL ?&to_bool?false								
+		PUSHS bool@false								
+		RETURN											
+
+LABEL &add_op
+POPS GF@_lhs
+TYPE GF@_tlhs GF@_lhs
+JUMPIFNEQ ?type_ok_1 GF@_tlhs string@string
+EXIT int@7
+LABEL ?type_ok_1
+JUMPIFNEQ ?skip_nil_conversion_1 GF@_tlhs string@nil
+MOVE GF@_lhs int@0
+LABEL ?skip_nil_conversion_1
+TYPE GF@_tlhs GF@_lhs
+POPS GF@_rhs
+TYPE GF@_trhs GF@_rhs
+JUMPIFNEQ ?type_ok_2 GF@_trhs string@string
+EXIT int@7
+LABEL ?type_ok_2
+JUMPIFNEQ ?skip_nil_conversion_2 GF@_trhs string@nil
+MOVE GF@_rhs int@0
+LABEL ?skip_nil_conversion_2
+TYPE GF@_trhs GF@_rhs
+JUMPIFEQ ?add_op?execute GF@_tlhs GF@_trhs
+JUMPIFEQ ?add_op?convert_rhs GF@_tlhs string@float
+INT2FLOAT GF@_lhs GF@_lhs
+JUMP ?add_op?execute
+LABEL ?add_op?convert_rhs
+INT2FLOAT GF@_rhs GF@_rhs
+LABEL ?add_op?execute
+ADD GF@_lhs GF@_lhs GF@_rhs
+PUSHS GF@_lhs
+RETURN
+
+
+
+LABEL &mul_op
+POPS GF@_lhs
+TYPE GF@_tlhs GF@_lhs
+JUMPIFNEQ ?type_ok_3 GF@_tlhs string@string
+EXIT int@7
+LABEL ?type_ok_3
+JUMPIFNEQ ?skip_nil_conversion_3 GF@_tlhs string@nil
+MOVE GF@_lhs int@0
+LABEL ?skip_nil_conversion_3
+TYPE GF@_tlhs GF@_lhs
+POPS GF@_rhs
+TYPE GF@_trhs GF@_rhs
+JUMPIFNEQ ?type_ok_4 GF@_trhs string@string
+EXIT int@7
+LABEL ?type_ok_4
+JUMPIFNEQ ?skip_nil_conversion_4 GF@_trhs string@nil
+MOVE GF@_rhs int@0
+LABEL ?skip_nil_conversion_4
+TYPE GF@_trhs GF@_rhs
+JUMPIFEQ ?mul_op?execute GF@_tlhs GF@_trhs
+JUMPIFEQ ?mul_op?convert_rhs GF@_tlhs string@float
+INT2FLOAT GF@_lhs GF@_lhs
+JUMP ?mul_op?execute
+LABEL ?mul_op?convert_rhs
+INT2FLOAT GF@_rhs GF@_rhs
+LABEL ?mul_op?execute
+MUL GF@_lhs GF@_lhs GF@_rhs
+PUSHS GF@_lhs
+RETURN
+
+
+
+LABEL &sub_op
+POPS GF@_lhs
+TYPE GF@_tlhs GF@_lhs
+JUMPIFNEQ ?type_ok_5 GF@_tlhs string@string
+EXIT int@7
+LABEL ?type_ok_5
+JUMPIFNEQ ?skip_nil_conversion_5 GF@_tlhs string@nil
+MOVE GF@_lhs int@0
+LABEL ?skip_nil_conversion_5
+TYPE GF@_tlhs GF@_lhs
+POPS GF@_rhs
+TYPE GF@_trhs GF@_rhs
+JUMPIFNEQ ?type_ok_6 GF@_trhs string@string
+EXIT int@7
+LABEL ?type_ok_6
+JUMPIFNEQ ?skip_nil_conversion_6 GF@_trhs string@nil
+MOVE GF@_rhs int@0
+LABEL ?skip_nil_conversion_6
+TYPE GF@_trhs GF@_rhs
+JUMPIFEQ ?sub_op?execute GF@_tlhs GF@_trhs
+JUMPIFEQ ?sub_op?convert_rhs GF@_tlhs string@float
+INT2FLOAT GF@_lhs GF@_lhs
+JUMP ?sub_op?execute
+LABEL ?sub_op?convert_rhs
+INT2FLOAT GF@_rhs GF@_rhs
+LABEL ?sub_op?execute
+SUB GF@_lhs GF@_lhs GF@_rhs
+PUSHS GF@_lhs
+RETURN
+
+
+
+LABEL &div_op
+POPS GF@_lhs
+TYPE GF@_tlhs GF@_lhs
+JUMPIFNEQ ?type_ok_7 GF@_tlhs string@string
+EXIT int@7
+LABEL ?type_ok_7
+JUMPIFNEQ ?skip_nil_conversion_7 GF@_tlhs string@nil
+MOVE GF@_lhs int@0
+LABEL ?skip_nil_conversion_7
+TYPE GF@_tlhs GF@_lhs
+JUMPIFEQ ?skip_int_conversion_125 GF@_tlhs string@float
+INT2FLOAT GF@_lhs GF@_lhs
+LABEL ?skip_int_conversion_125
+POPS GF@_rhs
+TYPE GF@_trhs GF@_rhs
+JUMPIFNEQ ?type_ok_8 GF@_trhs string@string
+EXIT int@7
+LABEL ?type_ok_8
+JUMPIFNEQ ?skip_nil_conversion_8 GF@_trhs string@nil
+MOVE GF@_rhs int@0
+LABEL ?skip_nil_conversion_8
+TYPE GF@_trhs GF@_rhs
+JUMPIFEQ ?skip_int_conversion_126 GF@_trhs string@float
+INT2FLOAT GF@_rhs GF@_rhs
+LABEL ?skip_int_conversion_126
+DIV GF@_lhs GF@_lhs GF@_rhs
+PUSHS GF@_lhs
+RETURN
+LABEL &concat_op
+POPS GF@_lhs
+TYPE GF@_tlhs GF@_lhs
+JUMPIFEQ ?type_ok_9 GF@_tlhs string@string
+JUMPIFEQ ?type_ok_9 GF@_tlhs string@nil
+EXIT int@7
+LABEL ?type_ok_9
+JUMPIFNEQ ?skip_nil_conversion_9 GF@_tlhs string@nil
+MOVE GF@_lhs string@
+LABEL ?skip_nil_conversion_9
+TYPE GF@_tlhs GF@_lhs
+POPS GF@_rhs
+TYPE GF@_trhs GF@_rhs
+JUMPIFEQ ?type_ok_10 GF@_trhs string@string
+JUMPIFEQ ?type_ok_10 GF@_trhs string@nil
+EXIT int@7
+LABEL ?type_ok_10
+JUMPIFNEQ ?skip_nil_conversion_10 GF@_trhs string@nil
+MOVE GF@_rhs string@
+LABEL ?skip_nil_conversion_10
+TYPE GF@_trhs GF@_rhs
+CONCAT GF@_lhs GF@_lhs GF@_rhs
+PUSHS GF@_lhs
+RETURN
+
+
+
+LABEL &eq_op
+POPS GF@_lhs
+TYPE GF@_tlhs GF@_lhs
+JUMPIFNEQ ?type_ok_11 GF@_tlhs string@bool
+EXIT int@7
+LABEL ?type_ok_11
+POPS GF@_rhs
+TYPE GF@_trhs GF@_rhs
+JUMPIFNEQ ?type_ok_12 GF@_trhs string@bool
+EXIT int@7
+LABEL ?type_ok_12
+JUMPIFEQ ?eq_op?execute GF@_tlhs GF@_trhs
+MOVE GF@_lhs bool@false
+JUMP ?eq_op?end
+LABEL ?eq_op?execute
+EQ GF@_lhs GF@_lhs GF@_rhs
+LABEL ?eq_op?end
+PUSHS GF@_lhs
+RETURN
+
+
+
+LABEL &neq_op
+POPS GF@_lhs
+TYPE GF@_tlhs GF@_lhs
+JUMPIFNEQ ?type_ok_13 GF@_tlhs string@bool
+EXIT int@7
+LABEL ?type_ok_13
+POPS GF@_rhs
+TYPE GF@_trhs GF@_rhs
+JUMPIFNEQ ?type_ok_14 GF@_trhs string@bool
+EXIT int@7
+LABEL ?type_ok_14
+JUMPIFEQ ?neq_op?execute GF@_tlhs GF@_trhs
+MOVE GF@_lhs bool@true
+JUMP ?neq_op?end
+LABEL ?neq_op?execute
+EQ GF@_lhs GF@_lhs GF@_rhs
+NOT GF@_lhs GF@_lhs
+LABEL ?neq_op?end
+PUSHS GF@_lhs
+RETURN
+
+
+
+LABEL &lt_op
+POPS GF@_lhs
+TYPE GF@_tlhs GF@_lhs
+JUMPIFNEQ ?type_ok_15 GF@_tlhs string@bool
+EXIT int@7
+LABEL ?type_ok_15
+POPS GF@_rhs
+TYPE GF@_trhs GF@_rhs
+JUMPIFNEQ ?type_ok_16 GF@_trhs string@bool
+EXIT int@7
+LABEL ?type_ok_16
+JUMPIFNEQ ?lt_op?lhs_not_nil GF@_tlhs string@nil
+MOVE GF@_lhs bool@false
+JUMP ?lt_op?end
+LABEL ?lt_op?lhs_not_nil
+JUMPIFNEQ ?lt_op?rhs_not_nil GF@_trhs string@nil
+MOVE GF@_lhs bool@false
+JUMP ?lt_op?end
+LABEL ?lt_op?rhs_not_nil
+JUMPIFEQ ?lt_op?execute GF@_tlhs GF@_trhs
+JUMPIFNEQ ?lt_op?lhs_not_string GF@_tlhs string@string
+MOVE GF@_lhs bool@false
+JUMP ?lt_op?end
+LABEL ?lt_op?lhs_not_string
+JUMPIFNEQ ?lt_op?rhs_not_string GF@_trhs string@string
+MOVE GF@_lhs bool@false
+JUMP ?lt_op?end
+LABEL ?lt_op?rhs_not_string
+JUMPIFNEQ ?lt_op?skip_lhs_cast GF@_tlhs string@int
+INT2FLOAT GF@_lhs GF@_lhs
+LABEL ?lt_op?skip_lhs_cast
+JUMPIFNEQ ?lt_op?skip_rhs_cast GF@_trhs string@int
+INT2FLOAT GF@_rhs GF@_rhs
+LABEL ?lt_op?skip_rhs_cast
+LABEL ?lt_op?execute
+LT GF@_lhs GF@_lhs GF@_rhs
+LABEL ?lt_op?end
+PUSHS GF@_lhs
+RETURN
+
+
+
+LABEL &gt_op
+POPS GF@_lhs
+TYPE GF@_tlhs GF@_lhs
+JUMPIFNEQ ?type_ok_17 GF@_tlhs string@bool
+EXIT int@7
+LABEL ?type_ok_17
+POPS GF@_rhs
+TYPE GF@_trhs GF@_rhs
+JUMPIFNEQ ?type_ok_18 GF@_trhs string@bool
+EXIT int@7
+LABEL ?type_ok_18
+JUMPIFNEQ ?gt_op?lhs_not_nil GF@_tlhs string@nil
+MOVE GF@_lhs bool@false
+JUMP ?gt_op?end
+LABEL ?gt_op?lhs_not_nil
+JUMPIFNEQ ?gt_op?rhs_not_nil GF@_trhs string@nil
+MOVE GF@_lhs bool@false
+JUMP ?gt_op?end
+LABEL ?gt_op?rhs_not_nil
+JUMPIFEQ ?gt_op?execute GF@_tlhs GF@_trhs
+JUMPIFNEQ ?gt_op?lhs_not_string GF@_tlhs string@string
+MOVE GF@_lhs bool@false
+JUMP ?gt_op?end
+LABEL ?gt_op?lhs_not_string
+JUMPIFNEQ ?gt_op?rhs_not_string GF@_trhs string@string
+MOVE GF@_lhs bool@false
+JUMP ?gt_op?end
+LABEL ?gt_op?rhs_not_string
+JUMPIFNEQ ?gt_op?skip_lhs_cast GF@_tlhs string@int
+INT2FLOAT GF@_lhs GF@_lhs
+LABEL ?gt_op?skip_lhs_cast
+JUMPIFNEQ ?gt_op?skip_rhs_cast GF@_trhs string@int
+INT2FLOAT GF@_rhs GF@_rhs
+LABEL ?gt_op?skip_rhs_cast
+LABEL ?gt_op?execute
+GT GF@_lhs GF@_lhs GF@_rhs
+LABEL ?gt_op?end
+PUSHS GF@_lhs
+RETURN
+
+
+
+LABEL &lte_op
+POPS GF@_lhs
+TYPE GF@_tlhs GF@_lhs
+JUMPIFNEQ ?type_ok_19 GF@_tlhs string@bool
+EXIT int@7
+LABEL ?type_ok_19
+POPS GF@_rhs
+TYPE GF@_trhs GF@_rhs
+JUMPIFNEQ ?type_ok_20 GF@_trhs string@bool
+EXIT int@7
+LABEL ?type_ok_20
+JUMPIFNEQ ?lte_op?skip_lhs_nil_conversion GF@_tlhs string@nil
+JUMPIFEQ ?lte_op?skip_lhs_to_int_conversion GF@_trhs string@string
+JUMPIFEQ ?lte_op?skip_lhs_to_int_conversion GF@_trhs string@float
+MOVE GF@_lhs int@0
+TYPE GF@_tlhs GF@_lhs
+JUMP ?lte_op?skip_lhs_nil_conversion
+LABEL ?lte_op?skip_lhs_to_int_conversion
+JUMPIFNEQ ?lte_op?skip_lhs_to_string_conversion GF@_trhs string@string
+MOVE GF@_lhs string@
+TYPE GF@_tlhs GF@_lhs
+JUMP ?lte_op?skip_lhs_nil_conversion
+LABEL ?lte_op?skip_lhs_to_string_conversion
+MOVE GF@_lhs int@0
+INT2FLOAT GF@_lhs GF@_lhs
+TYPE GF@_tlhs GF@_lhs
+LABEL ?lte_op?skip_lhs_nil_conversion
+JUMPIFNEQ ?lte_op?skip_rhs_nil_conversion GF@_trhs string@nil
+JUMPIFEQ ?lte_op?skip_rhs_to_int_conversion GF@_tlhs string@string
+JUMPIFEQ ?lte_op?skip_rhs_to_int_conversion GF@_tlhs string@float
+MOVE GF@_rhs int@0
+TYPE GF@_trhs GF@_rhs
+JUMP ?lte_op?skip_rhs_nil_conversion
+LABEL ?lte_op?skip_rhs_to_int_conversion
+JUMPIFNEQ ?lte_op?skip_rhs_to_string_conversion GF@_tlhs string@string
+MOVE GF@_rhs string@
+TYPE GF@_trhs GF@_rhs
+JUMP ?lte_op?skip_rhs_nil_conversion
+LABEL ?lte_op?skip_rhs_to_string_conversion
+MOVE GF@_rhs int@0
+INT2FLOAT GF@_rhs GF@_rhs
+TYPE GF@_trhs GF@_rhs
+LABEL ?lte_op?skip_rhs_nil_conversion
+JUMPIFEQ ?lte_op?execute GF@_tlhs GF@_trhs
+JUMPIFNEQ ?lte_op?lhs_not_string GF@_tlhs string@string
+MOVE GF@_lhs bool@false
+JUMP ?lte_op?end
+LABEL ?lte_op?lhs_not_string
+JUMPIFNEQ ?lte_op?rhs_not_string GF@_trhs string@string
+MOVE GF@_lhs bool@false
+JUMP ?lte_op?end
+LABEL ?lte_op?rhs_not_string
+JUMPIFNEQ ?lte_op?skip_lhs_cast GF@_tlhs string@int
+INT2FLOAT GF@_lhs GF@_lhs
+LABEL ?lte_op?skip_lhs_cast
+JUMPIFNEQ ?lte_op?skip_rhs_cast GF@_trhs string@int
+INT2FLOAT GF@_rhs GF@_rhs
+LABEL ?lte_op?skip_rhs_cast
+LABEL ?lte_op?execute
+LT GF@_aux1 GF@_lhs GF@_rhs
+EQ GF@_lhs GF@_lhs GF@_rhs
+OR GF@_lhs GF@_lhs GF@_aux1
+LABEL ?lte_op?end
+PUSHS GF@_lhs
+RETURN
+
+
+
+LABEL &gte_op
+POPS GF@_lhs
+TYPE GF@_tlhs GF@_lhs
+JUMPIFNEQ ?type_ok_21 GF@_tlhs string@bool
+EXIT int@7
+LABEL ?type_ok_21
+POPS GF@_rhs
+TYPE GF@_trhs GF@_rhs
+JUMPIFNEQ ?type_ok_22 GF@_trhs string@bool
+EXIT int@7
+LABEL ?type_ok_22
+JUMPIFNEQ ?gte_op?skip_lhs_nil_conversion GF@_tlhs string@nil
+JUMPIFEQ ?gte_op?skip_lhs_to_int_conversion GF@_trhs string@string
+JUMPIFEQ ?gte_op?skip_lhs_to_int_conversion GF@_trhs string@float
+MOVE GF@_lhs int@0
+TYPE GF@_tlhs GF@_lhs
+JUMP ?gte_op?skip_lhs_nil_conversion
+LABEL ?gte_op?skip_lhs_to_int_conversion
+JUMPIFNEQ ?gte_op?skip_lhs_to_string_conversion GF@_trhs string@string
+MOVE GF@_lhs string@
+TYPE GF@_tlhs GF@_lhs
+JUMP ?gte_op?skip_lhs_nil_conversion
+LABEL ?gte_op?skip_lhs_to_string_conversion
+MOVE GF@_lhs int@0
+INT2FLOAT GF@_lhs GF@_lhs
+TYPE GF@_tlhs GF@_lhs
+LABEL ?gte_op?skip_lhs_nil_conversion
+JUMPIFNEQ ?gte_op?skip_rhs_nil_conversion GF@_trhs string@nil
+JUMPIFEQ ?gte_op?skip_rhs_to_int_conversion GF@_tlhs string@string
+JUMPIFEQ ?gte_op?skip_rhs_to_int_conversion GF@_tlhs string@float
+MOVE GF@_rhs int@0
+TYPE GF@_trhs GF@_rhs
+JUMP ?gte_op?skip_rhs_nil_conversion
+LABEL ?gte_op?skip_rhs_to_int_conversion
+JUMPIFNEQ ?gte_op?skip_rhs_to_string_conversion GF@_tlhs string@string
+MOVE GF@_rhs string@
+TYPE GF@_trhs GF@_rhs
+JUMP ?gte_op?skip_rhs_nil_conversion
+LABEL ?gte_op?skip_rhs_to_string_conversion
+MOVE GF@_rhs int@0
+INT2FLOAT GF@_rhs GF@_rhs
+TYPE GF@_trhs GF@_rhs
+LABEL ?gte_op?skip_rhs_nil_conversion
+JUMPIFEQ ?gte_op?execute GF@_tlhs GF@_trhs
+JUMPIFNEQ ?gte_op?lhs_not_string GF@_tlhs string@string
+MOVE GF@_lhs bool@false
+JUMP ?gte_op?end
+LABEL ?gte_op?lhs_not_string
+JUMPIFNEQ ?gte_op?rhs_not_string GF@_trhs string@string
+MOVE GF@_lhs bool@false
+JUMP ?gte_op?end
+LABEL ?gte_op?rhs_not_string
+JUMPIFNEQ ?gte_op?skip_lhs_cast GF@_tlhs string@int
+INT2FLOAT GF@_lhs GF@_lhs
+LABEL ?gte_op?skip_lhs_cast
+JUMPIFNEQ ?gte_op?skip_rhs_cast GF@_trhs string@int
+INT2FLOAT GF@_rhs GF@_rhs
+LABEL ?gte_op?skip_rhs_cast
+LABEL ?gte_op?execute
+GT GF@_aux1 GF@_lhs GF@_rhs
+EQ GF@_lhs GF@_lhs GF@_rhs
+OR GF@_lhs GF@_lhs GF@_aux1
+LABEL ?gte_op?end
+PUSHS GF@_lhs
+RETURN
+
+
+
+# HELPER FUNCTIONS END
+

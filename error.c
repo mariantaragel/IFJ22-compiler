@@ -2,7 +2,6 @@
  ** error.c
  ** Řešení IFJ-PROJEKT, 20.10.2022
  ** Autor: xhorva17, xtarag01
- ** Přeloženo:
  **/
 
 /**
