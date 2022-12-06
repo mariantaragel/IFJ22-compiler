@@ -2,7 +2,7 @@
  * @name parser.c
  * @brief Implementation of top-down parser
  * @authors Marián Tarageľ
- * @date 30.11.2022
+ * @date 6.12.2022
  */
 
 #include "parser.h"
@@ -171,10 +171,10 @@ void program_body(token_t *token, AST_node_t *parent)
 
 void php_end(token_t *token)
 {
-    if (token->type == END) {
+    if (token->type == END) { // last token EOF
         return;
     }
-    else if (token->type != EPILOG) {
+    else if (token->type != EPILOG) { // optional token ?>
         RETURN_ERROR(SYNTAX_ERROR);
     }
 
@@ -193,6 +193,7 @@ void func_def(token_t *token, AST_node_t *parent)
         RETURN_ERROR(SYNTAX_ERROR);
     }
 
+    // base AST node of function definition
     AST_node_t *n_func_def = AST_create_add_child(parent, FUNC_DEF_N);
     RETURN_INTERNAL_ERROR(n_func_def)
     
@@ -215,6 +216,7 @@ void func_def(token_t *token, AST_node_t *parent)
 
     token = get_token();
     RETURN_IF_ERROR;
+    // parse parameters of func def
     param_list(token, n_func_def);
     t_dstr(token);
     RETURN_IF_ERROR;
@@ -229,6 +231,7 @@ void func_def(token_t *token, AST_node_t *parent)
 
     token = get_token();
     RETURN_IF_ERROR;
+    // check return type
     return_type(token, n_func_def);
     t_dstr(token);
     RETURN_IF_ERROR;
@@ -243,6 +246,7 @@ void func_def(token_t *token, AST_node_t *parent)
 
     token = get_token();
     RETURN_IF_ERROR;
+    // create body of function definition
     AST_node_t *n_stmt_list = AST_create_add_child(n_func_def, BODY_N);
     RETURN_INTERNAL_ERROR(n_stmt_list)
     stmt_list_bracket_end(token, n_stmt_list);
@@ -276,6 +280,7 @@ void type(token_t *token, AST_node_t *parent)
 
 void param_list(token_t *token, AST_node_t *parent)
 {
+    // create parameter list node
     AST_node_t *n_param_list = AST_create_add_child(parent, PARAM_LIST_N);
     RETURN_INTERNAL_ERROR(n_param_list)
 
@@ -283,6 +288,7 @@ void param_list(token_t *token, AST_node_t *parent)
         return;
     }
 
+    // add parameter to AST
     AST_node_t *n_param = AST_create_add_child(n_param_list, PARAM_N);
     RETURN_INTERNAL_ERROR(n_param)
     type(token, n_param);
@@ -316,6 +322,7 @@ void param_next(token_t *token, AST_node_t *parent)
         RETURN_ERROR(SYNTAX_ERROR);
     }
 
+    // create parameter node
     AST_node_t *n_param = AST_create_add_child(parent, PARAM_N);
     RETURN_INTERNAL_ERROR(n_param)
 
@@ -345,6 +352,7 @@ void param_next(token_t *token, AST_node_t *parent)
 
 void stmt_list_bracket_end(token_t *token, AST_node_t *parent)
 {
+    // end of a statement list
     if (token->type == RCB) {
         return;
     }
@@ -358,6 +366,10 @@ void stmt_list_bracket_end(token_t *token, AST_node_t *parent)
         RETURN_IF_ERROR;
     }
     else {
+        // check for other errors
+        if (error == LEXICAL_ERROR || error == INTERNAL_ERROR) {
+            RETURN_IF_ERROR;
+        }
         error = OK;
         stmt_list_bracket_start(token, parent);
         RETURN_IF_ERROR;
@@ -416,6 +428,7 @@ void stmt(token_t *token, AST_node_t *parent)
         RETURN_INTERNAL_ERROR(array)
         expression(&token, FALSE, array);
         RETURN_IF_ERROR;
+        // call precedence parser
         token_array_t *postfix = parse_expression(array);
         RETURN_IF_ERROR;
         n_expr->data.expression = postfix;
@@ -540,6 +553,7 @@ void semantic_action(token_t *token, token_t *next_token, AST_node_t *parent)
 
 void exp_assignment(token_t *token, AST_node_t *parent, token_t *exp_token)
 {
+    // create node of expression assignment
     AST_node_t *n_ass_exp = AST_create_add_child(parent, ASS_EXPR_N);
     RETURN_INTERNAL_ERROR(n_ass_exp);
 
@@ -559,6 +573,7 @@ void exp_assignment(token_t *token, AST_node_t *parent, token_t *exp_token)
     RETURN_INTERNAL_ERROR(array)
     expression(&exp_token, FALSE, array);
     RETURN_IF_ERROR;
+    // call precedence parser
     token_array_t *postfix = parse_expression(array);
     RETURN_IF_ERROR;
     n_expr->data.expression = postfix;
@@ -600,6 +615,7 @@ void while_stmt(token_t *token, AST_node_t *parent)
     RETURN_INTERNAL_ERROR(array)
     expression(&token, TRUE, array);
     RETURN_IF_ERROR;
+    // call precedence parser
     token_array_t *postfix = parse_expression(array);
     RETURN_IF_ERROR;
     n_expr->data.expression = postfix;
@@ -637,6 +653,7 @@ void if_stmt(token_t *token, AST_node_t *parent)
     RETURN_INTERNAL_ERROR(array)
     expression(&token, TRUE, array);
     RETURN_IF_ERROR;
+    // call precedence parser
     token_array_t *postfix = parse_expression(array);
     RETURN_IF_ERROR;
     n_expr->data.expression = postfix;
