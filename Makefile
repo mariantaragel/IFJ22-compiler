@@ -28,7 +28,7 @@ expgen: expgen.o dynamic_string.o scanner.o token.o error.o token_array.o preced
 clean:
 	rm -f scanner parser parser_test codegen expgen main precedence_parser_test generator_test *.o
 
-run:
+run: clean
 	make scanner
 	cat ./tests/test1.php | ./scanner > ./tests/res1.txt
 
