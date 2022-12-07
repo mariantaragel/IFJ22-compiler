@@ -1,5 +1,5 @@
 # File: 	Makefile
-# Autor:	David Klajbl	(xklajb00@stud.fit.vutbr.cz)
+# Author:	David Klajbl	(xklajb00@stud.fit.vutbr.cz)
 #			Marián Tarageľ 	(xtarag01@stud.fit.vutbr.cz)
 #			Martin Horvát	(xhorva17@stud.fit.vutbr.cz)
 # Date:		2022-11-26

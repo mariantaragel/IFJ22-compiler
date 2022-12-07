@@ -1,9 +1,3 @@
-/****
- ** scanner.c
- ** Řešení IFJ-PROJEKT, 01.10.2022
- ** Autor: Martin Horvat, xhorva17
- **/
-
 /**
  * @file scanner.c
  * @author Martin Horvat, xhorva17
@@ -47,7 +41,7 @@ int float_write(dynamic_string_t * ds, int * c);
 
 /* Testing main, Makefile -> make scanner */
 // int main() {
-//
+
 // 	token_t * token;
 // 	do {
 // 		token = get_token();
@@ -287,6 +281,9 @@ void fi_handler(dynamic_string_t * ds, token_t * t, int * c) {
 void s_handler(dynamic_string_t * ds, token_t * t, int * c) {
 	while( (*c = fgetc(stdin)) != EOF && *c != '"') { // Write string to ds.
 		if(*c <= 32 || *c == 35) {
+			if(*c < 31) {
+				continue; // Skip unwritable characters.
+			}
 			/* Except unwriteable characters. */
 			if(*c < 10) {
 				if(ds_concat_str(ds, "\\00") || ds_write_uint(ds, *c)) {

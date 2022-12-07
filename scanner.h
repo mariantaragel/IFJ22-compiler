@@ -1,9 +1,3 @@
-/****
- ** scanner.h
- ** Řešení IFJ-PROJEKT, 01.10.2022
- ** Autor: Martin Horvat, xhorva17
- **/
-
 /**
  * @file scanner.h
  * @author Martin Horvat, xhorva17

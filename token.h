@@ -1,13 +1,6 @@
-/****
- ** token.h
- ** Řešení IFJ-PROJEKT, 7.10.2022
- ** Autor: xhorva17
- ** Přeloženo: 
- **/
-
 /**
  * @file token.h
- * @author
+ * @author Martin Horvat, xhorva17
  * @brief Token header file.
  * @date 2022-10-07
  */

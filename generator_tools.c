@@ -57,10 +57,10 @@ void G(const char* fmt, ...){
 char * gen_label(char * prefix, char * infix, char * suffix, bool gen_num) {
     static unsigned num = 1;
     dynamic_string_t * ds;
-    if(prefix != NULL) { ds = ds_strinit(prefix); } else { ds = ds_init(); }
-    if(infix != NULL) { ds_concat_str(ds, infix); }
-    if(suffix != NULL) { ds_concat_str(ds, suffix); }
-    if(gen_num) {
+    if(prefix != NULL) { ds = ds_strinit(prefix); } else { ds = ds_init(); } // Initialize prefix.
+    if(infix != NULL) { ds_concat_str(ds, infix); } // Concat infix.
+    if(suffix != NULL) { ds_concat_str(ds, suffix); } // Concat suffix.
+    if(gen_num) { // Attach num if user requires.
         ds_write(ds, '_');
         ds_write_uint(ds, num);
         num++;
@@ -74,6 +74,7 @@ bool gen_while_labels(char ** start, char ** body_start, char ** end) {
     dynamic_string_t * ds_body_start = ds_strinit("?while_body_start_");
     dynamic_string_t * ds_end = ds_strinit("?while_end_");
 
+    /* Generate labels and check for any errors. */
     if(ds_start == NULL || ds_body_start == NULL || ds_end == NULL) {
         ds_dstr(ds_start);
         ds_dstr(ds_body_start);
@@ -100,11 +101,12 @@ bool gen_while_labels(char ** start, char ** body_start, char ** end) {
 }
 
 bool gen_if_labels(char ** branch_true, char ** branch_false, char ** end) {
-    static unsigned if_count = 1; // Number of while loops generated in the program.
+    static unsigned if_count = 1; // Number if's generated in the program.
     dynamic_string_t * ds_branch_true = ds_strinit("?if_branch_true_");
     dynamic_string_t * ds_branch_false = ds_strinit("?if_branch_false_");
     dynamic_string_t * ds_end = ds_strinit("?if_end_");
     
+    /* Generate labels and check for any errors. */
     if(ds_branch_true == NULL || ds_branch_false == NULL || ds_end == NULL) {
         ds_dstr(ds_branch_true);
         ds_dstr(ds_branch_false);

@@ -1,12 +1,6 @@
-/****
- ** error.c
- ** Řešení IFJ-PROJEKT, 20.10.2022
- ** Autor: xhorva17, xtarag01
- **/
-
 /**
  * @file error.c
- * @author xhorva17, xtarag01
+ * @author Martin Horvat xhorva17, Marian Taragel xtarag01
  * @brief Error function implementation.
  * @date 2022-10-20
  */

@@ -1,13 +1,6 @@
-/****
- ** error.h
- ** Řešení IFJ-PROJEKT, 20.10.2022
- ** Autor: xhorva17 xtarag01
- ** Přeloženo:
- **/
-
 /**
  * @file error.h
- * @author xhorva17 xtarag01
+ * @author Martin Horvat xhorva17, Marian Taragel xtarag01
  * @brief Error handling header file.
  * @date 2022-10-20
  */

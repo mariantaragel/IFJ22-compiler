@@ -1,9 +1,3 @@
-/****
- ** dynamic_string.c
- ** Řešení IFJ-PROJEKT, 5.10.2022
- ** Autor: Martin Horvat, xhorva17
- **/
-
 /**
  * @file dynamic_string.h
  * @author Martin Horvat, xhorva17
@@ -30,6 +24,7 @@ dynamic_string_t * ds_init() {
 		free(ds);
 		return NULL;
 	}
+	/* Initialize dynamic string. */
 	ds->str = str;
 	ds->size = DS_SIZE;
 	ds->wi = 0;

@@ -1,13 +1,6 @@
-/****
- ** token.c
- ** Řešení IFJ-PROJEKT, 7.10.2022
- ** Autor: xhorva17
- ** Přeloženo:
- **/
-
 /**
  * @file token.c
- * @author xhorva17
+ * @author Martin Horvat, xhorva17
  * @brief Token implementation.
  * @date 2022-10-07
  */
@@ -32,23 +25,23 @@ token_t * t_dup(const token_t * t) {
 	if(new_token == NULL) {
 		return NULL;
 	}
-	if(t_attach(new_token, t->aval)) { // Attach associated value of duplicated token.
+	if(t_attach(new_token, t->aval)) { // Attach associated of old token to duplicated token.
 		free(new_token);
 		return NULL;
 	}
-	new_token->type = t->type;
-	return new_token;
+	new_token->type = t->type; // Set types.
+	return new_token; 
 }
 
 int t_attach(token_t * t, const char * str) {
-	if(str == NULL) {
+	if(str == NULL) { // Do nothing if no string.
 		return 0; // Noop
 	}
 	char * val_to_attach = (char*) malloc(strlen(str) + 1);
 	if(val_to_attach == NULL) {
 		return 1;
 	}
-	strcpy(val_to_attach, str);
+	strcpy(val_to_attach, str); // Copy string to token.
 	t->aval = val_to_attach;
 	return 0;
 }
@@ -145,7 +138,7 @@ void t_print(token_t * t) {
 	} else if(t->type == END) {
 		printf("\ttype: END\n");
 	}
-	if(t->aval != NULL) {
+	if(t->aval != NULL) { /* Associated value printing. */
 		printf("\tAssociated value: \"");
 		printf("\033[0;31m");
 		printf("%s", t->aval);

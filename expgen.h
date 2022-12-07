@@ -1,13 +1,6 @@
-/****
- ** expgen.h
- ** Řešení IFJ-PROJEKT, 13.11.2022
- ** Autor: xhorva17
- ** Přeloženo:
- **/
-
 /**
  * @file expgen.h
- * @author xhorva17
+ * @author Martin Horvat, xhorva17
  * @brief Expression generation.
  * @date 2022-13-11
  */

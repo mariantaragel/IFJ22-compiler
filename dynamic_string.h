@@ -1,9 +1,3 @@
-/****
- ** dynamic_string.h
- ** Řešení IFJ-PROJEKT, 5.10.2022
- ** Autor: Martin Horvat, xhorva17
- **/
-
 /**
  * @file dynamic_string.h
  * @author Martin Horvat, xhorva17

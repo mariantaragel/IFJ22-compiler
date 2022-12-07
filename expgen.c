@@ -1,13 +1,6 @@
-/****
- ** expgen.c
- ** Řešení IFJ-PROJEKT, 13.11.2022
- ** Autor: xhorva17
- ** Přeloženo:
- **/
-
 /**
  * @file expgen.c
- * @author xhorva17
+ * @author Martin Horvat, xhorva17
  * @brief Expression generation implementation.
  * @date 2022-13-11
  */
@@ -111,7 +104,7 @@ void gen_expression(token_array_t * tarr, generator_context_t * gc) {
                 case GT: G("CALL &gt_op"); break;
                 case GTE: G("CALL &gte_op"); break;
                 case LTE: G("CALL &lte_op"); break;
-                default: break; // Return error. 
+                default: break;
             }
         }
     }
@@ -119,13 +112,14 @@ void gen_expression(token_array_t * tarr, generator_context_t * gc) {
 
 void push_operand(const token_t * token, char * scope_label) {
     char * label;
+    /* Generate label for push based on token type. */
     switch(token->type) {
         case VAR_ID: label = gen_label(scope_label, token->aval, NULL, false); break;
         case FLT_LIT: label = gen_label("float@", token->aval, NULL, false); break;
         case STR_LIT: label = gen_label("string@", token->aval, NULL, false); break;
         case INT_LIT: label = gen_label("int@", token->aval, NULL, false); break;
         case NULL_LIT: label = gen_label("nil@nil", NULL, NULL, false); break;
-        default: break; // Return error.
+        default: break;
     }
     G("PUSHS %s", label);
     free(label);
@@ -140,7 +134,7 @@ bool isoperand(const token_t * token) {
 } // isoperand, OK
 
 void gen_arithmetic_operation(const token_type_t operation) {
-    if(operation != MUL && operation != SUB && operation != ADD) {
+    if(operation != MUL && operation != SUB && operation != ADD) { // Check for op type error.
         return;
     }
     char * execute, * convert_rhs;
@@ -150,9 +144,10 @@ void gen_arithmetic_operation(const token_type_t operation) {
         case ADD: G("LABEL &add_op"); execute = "?add_op?execute"; convert_rhs = "?add_op?convert_rhs"; break;
         default: break;
     }
+    /* Pop both operands and do basic type checks. */
     pop_operand_arithmetic(lhs, tlhs);
     pop_operand_arithmetic(rhs, trhs);
-    /* Type checking. */
+    /* Type checking for float/int compatibility. */
     G("JUMPIFEQ %s %s %s", execute, tlhs, trhs);
     G("JUMPIFEQ %s %s string@float", convert_rhs, tlhs);
     G("INT2FLOAT %s %s", lhs, lhs);
@@ -160,14 +155,14 @@ void gen_arithmetic_operation(const token_type_t operation) {
     G("LABEL %s", convert_rhs);
     G("INT2FLOAT %s %s", rhs, rhs);
     G("LABEL %s", execute);
-    /* Execution. */
+    /* Execution based on op type. */
     switch(operation) {
         case MUL: G("MUL %s %s %s", lhs, lhs, rhs); break;
         case SUB: G("SUB %s %s %s", lhs, lhs, rhs); break;
         case ADD: G("ADD %s %s %s", lhs, lhs, rhs); break;
         default: break;
     }
-    G("PUSHS %s", lhs);
+    G("PUSHS %s", lhs); // Result on top of stack.
     G("RETURN");
     G("\n\n");
 } // gen_arithmetic_operation, OK
@@ -195,8 +190,10 @@ void pop_operand_arithmetic(const char * operand, const char * operand_type) {
 
 void gen_division_operation() {
     G("LABEL &div_op");
+    /* Pop both operands and do type checks and conversions. */
     pop_operand_division(lhs, tlhs);
     pop_operand_division(rhs, trhs);
+    /* Division is automatically FLOAT X FLOAT, so we can execute operation immediatly. */
     G("DIV %s %s %s", lhs, lhs, rhs);
     G("PUSHS %s", lhs);
     G("RETURN");
@@ -212,10 +209,12 @@ void pop_operand_division(const char * operand, const char * operand_type) {
     }
     char * skip_int_conversion = gen_label(NULL, NULL, "?skip_int_conversion", true);
     G("TYPE %s %s", operand_type, operand);
+    /* Exit with error if a string type. */
     G("JUMPIFNEQ %s %s string@string", type_ok, operand_type);
     // G("WRITE string@RUNTIME\\032ERROR\\0327:\\032Incompatible\\032operand\\032types!\\010Exiting\\032program!\\010"); // DEBUGGING ONLY!
     G("EXIT int@7");
     G("LABEL %s", type_ok);
+    /* Convert to float from nil or int. */
     G("JUMPIFNEQ %s %s string@nil", skip_nil_conv, operand_type);
     G("MOVE %s int@0", operand);
     G("LABEL %s", skip_nil_conv);
@@ -230,8 +229,10 @@ void pop_operand_division(const char * operand, const char * operand_type) {
 
 void gen_string_operation() {
     G("LABEL &concat_op");
+    /* Pop both operands and check types. */
     pop_operand_string(lhs, tlhs);
     pop_operand_string(rhs, trhs);
+    /* Concatenation is only STRING X STRING, so type checking is done during pop, we can execute. */
     G("CONCAT %s %s %s", lhs, lhs, rhs);
     G("PUSHS %s", lhs);
     G("RETURN");
@@ -247,12 +248,14 @@ void pop_operand_string(const char * operand, const char * operand_type) {
         return;
     }
     G("TYPE %s %s", operand_type, operand);
+    /* Exit with error if operand is not nil or a string. */
     G("JUMPIFEQ %s %s string@string", type_ok, operand_type);
     G("JUMPIFEQ %s %s string@nil", type_ok, operand_type);
     // G("WRITE string@RUNTIME\\032ERROR\\0327:\\032Incompatible\\032operand\\032types!\\010Exiting\\032program!\\010"); // DEBUGGING ONLY!
     G("EXIT int@7");
     G("LABEL %s", type_ok);
     G("JUMPIFNEQ %s %s string@nil", skip_nil_conv, operand_type);
+    /* Set operand as empty string if nil. */
     G("MOVE %s string@", operand);
     G("LABEL %s", skip_nil_conv);
     G("TYPE %s %s", operand_type, operand);
@@ -262,27 +265,29 @@ void pop_operand_string(const char * operand, const char * operand_type) {
  
 void gen_equality_operation(const token_type_t operation) {
     if(operation != EQ && operation != NEQ) {
-        return; // Set error.
+        return;
     }
     char * execute, * end;
-    switch(operation) {
+    switch(operation) { // Set correct labels based on op type.
         case EQ: G("LABEL &eq_op"); execute = "?eq_op?execute"; end = "?eq_op?end"; break;
         case NEQ: G("LABEL &neq_op"); execute = "?neq_op?execute"; end = "?neq_op?end"; break;
         default: break;
     }
+    /* Pop operands and do basic type checks. */
     pop_operand_equality(lhs, tlhs);
     pop_operand_equality(rhs, trhs);
+    /* If types are equal we can compare directly. */
     G("JUMPIFEQ %s %s %s", execute, tlhs, trhs);
-    switch(operation) {
+    switch(operation) { // If types not equal we can finish operation with correct return (based on op type).
         case EQ: G("MOVE %s bool@false", lhs); break;
         case NEQ: G("MOVE %s bool@true", lhs); break;
         default: break;
     }
     G("JUMP %s", end);
-    G("LABEL %s", execute);
+    G("LABEL %s", execute); // Compare.
     G("EQ %s %s %s", lhs, lhs, rhs);
     if(operation == NEQ) {
-        G("NOT %s %s", lhs, lhs);
+        G("NOT %s %s", lhs, lhs); // If neq operation, negate result of EQ operation.
     }
     G("LABEL %s", end);
     G("PUSHS %s", lhs);
@@ -299,6 +304,7 @@ void pop_operand_equality(const char * operand, const char * operand_type) {
         return;
     }
     G("TYPE %s %s", operand_type, operand);
+    /* If the operand is of type bool, exit with error. */
     G("JUMPIFNEQ %s %s string@bool", type_ok, operand_type);
     // G("WRITE string@RUNTIME\\032ERROR\\0327:\\032Incompatible\\032operand\\032types!\\010Exiting\\032program!\\010"); // DEBUGGING ONLY!
     G("EXIT int@7");
@@ -311,8 +317,9 @@ void gen_ltgt_operation(token_type_t operation) {
     if(operation != LT && operation != GT) {
         return; // Set error.
     }
+    
+    
     /* Labels used */
-
     char * execute = "?lt_op?execute",
         * end = "?lt_op?end",
         * skip_lhs_cast = "?lt_op?skip_lhs_cast",
@@ -321,7 +328,7 @@ void gen_ltgt_operation(token_type_t operation) {
         * rhs_not_string = "?lt_op?rhs_not_string",
         * lhs_not_nil = "?lt_op?lhs_not_nil",
         * rhs_not_nil = "?lt_op?rhs_not_nil";
-    switch(operation) {
+    switch(operation) { // Set labels based on op type.
         case LT: 
                 G("LABEL &lt_op");
                 break;
@@ -338,21 +345,25 @@ void gen_ltgt_operation(token_type_t operation) {
                 break;
         default: break;
     }
+    /* Pop both operands a do basic type checks. */
     pop_operand_ltgt(lhs, tlhs);
     pop_operand_ltgt(rhs, trhs);
     
-    G("JUMPIFNEQ %s %s string@nil", lhs_not_nil, tlhs);
+
+
+    G("JUMPIFNEQ %s %s string@nil", lhs_not_nil, tlhs); // If operand is nil, result is false.
     G("MOVE %s bool@false", lhs);
     G("JUMP %s", end);
     G("LABEL %s", lhs_not_nil);
 
-    G("JUMPIFNEQ %s %s string@nil", rhs_not_nil, trhs);
+    G("JUMPIFNEQ %s %s string@nil", rhs_not_nil, trhs); // If operand is nil, result is false.
     G("MOVE %s bool@false", lhs);
     G("JUMP %s", end);
     G("LABEL %s", rhs_not_nil);
 
 
-    G("JUMPIFEQ %s %s %s", execute, tlhs, trhs); // Direct comparison.
+    G("JUMPIFEQ %s %s %s", execute, tlhs, trhs); // Types are equal, go to direct comparison.
+    /* Check if the comparison is between a float/int and a string, in that case the comparison is false. */
     G("JUMPIFNEQ %s %s string@string", lhs_not_string, tlhs);
     G("MOVE %s bool@false", lhs);
     G("JUMP %s", end);
@@ -362,7 +373,7 @@ void gen_ltgt_operation(token_type_t operation) {
     G("JUMP %s", end);
     G("LABEL %s", rhs_not_string);
 
-    /* Execute label, skip_lhs_cast, skip_rhs_cast, */
+    /* Type cast int to float */
     G("JUMPIFNEQ %s %s string@int", skip_lhs_cast,tlhs); // No type cast.
     G("INT2FLOAT %s %s", lhs, lhs);
     G("LABEL %s", skip_lhs_cast);
@@ -371,7 +382,7 @@ void gen_ltgt_operation(token_type_t operation) {
     G("LABEL %s", skip_rhs_cast);
 
     G("LABEL %s", execute);
-    switch(operation) {
+    switch(operation) { // Choose instruction based on op type. 
         case LT: G("LT %s %s %s", lhs, lhs, rhs); break;
         case GT: G("GT %s %s %s", lhs, lhs, rhs); break;
         default: break;
@@ -391,6 +402,7 @@ void pop_operand_ltgt(const char * operand, const char * operand_type) {
         return;
     }
     G("TYPE %s %s", operand_type, operand);
+    /* If the operand is of type bool, exit with error. */
     G("JUMPIFNEQ %s %s string@bool", type_ok, operand_type);
     // G("WRITE string@RUNTIME\\032ERROR\\0327:\\032Incompatible\\032operand\\032types!\\010Exiting\\032program!\\010"); // DEBUGGING ONLY!
     G("EXIT int@7");
@@ -404,6 +416,7 @@ void gen_ltegte_operation(token_type_t operation) {
         return; // Set errror.
     }
     
+    /* Set correct labels. */
     char * execute = "?lte_op?execute",
     * skip_lhs_nil_conversion = "?lte_op?skip_lhs_nil_conversion",
     * skip_rhs_nil_conversion = "?lte_op?skip_rhs_nil_conversion",
@@ -416,7 +429,7 @@ void gen_ltegte_operation(token_type_t operation) {
     * skip_lhs_cast = "?lte_op?skip_lhs_cast",
     * skip_rhs_cast = "?lte_op?skip_rhs_cast",
     * end = "?lte_op?end"; 
-    switch(operation) {
+    switch(operation) { // Set labels based on op type.
         case LTE: 
                 G("LABEL &lte_op");
                 break;
@@ -437,10 +450,11 @@ void gen_ltegte_operation(token_type_t operation) {
                 break;
         default: break;
     }
+    /* Pop both operands and do basic type checks. */
     pop_operand_ltegte(lhs, tlhs);
     pop_operand_ltegte(rhs, trhs);
 
-    /* LHS  NULL TYPE CHECK AND CONVERSION */
+    /* Conversion of nil left hand side to correct right hand side type. */
     G("JUMPIFNEQ %s %s string@nil", skip_lhs_nil_conversion, tlhs);
     G("JUMPIFEQ %s %s string@string", skip_lhs_to_int_conversion, trhs);
     G("JUMPIFEQ %s %s string@float", skip_lhs_to_int_conversion, trhs);
@@ -456,9 +470,9 @@ void gen_ltegte_operation(token_type_t operation) {
     G("MOVE %s int@0", lhs);
     G("INT2FLOAT %s %s", lhs, lhs);
     G("TYPE %s %s", tlhs, lhs);
-    G("LABEL %s", skip_lhs_nil_conversion);
+    G("LABEL %s", skip_lhs_nil_conversion); // Skip if not nil.
 
-    /* RHS NULL TYPE CHECK AND CONVERSION */
+    /* Conversion of nil right hand side to correct left hand side type. */
     G("JUMPIFNEQ %s %s string@nil", skip_rhs_nil_conversion, trhs);
     G("JUMPIFEQ %s %s string@string", skip_rhs_to_int_conversion, tlhs);
     G("JUMPIFEQ %s %s string@float", skip_rhs_to_int_conversion, tlhs);
@@ -474,10 +488,11 @@ void gen_ltegte_operation(token_type_t operation) {
     G("MOVE %s int@0", rhs);
     G("INT2FLOAT %s %s", rhs, rhs);
     G("TYPE %s %s", trhs, rhs);
-    G("LABEL %s", skip_rhs_nil_conversion);
+    G("LABEL %s", skip_rhs_nil_conversion); // Skip if not nil.
 
 
-    G("JUMPIFEQ %s %s %s", execute, tlhs, trhs); // Direct comparison.
+    G("JUMPIFEQ %s %s %s", execute, tlhs, trhs); // Direct comparison when types are equal..
+    /* Check if either type is string. If types not equal and one is string, return as false. */
     G("JUMPIFNEQ %s %s string@string", lhs_not_string, tlhs);
     G("MOVE %s bool@false", lhs);
     G("JUMP %s", end);
@@ -487,6 +502,7 @@ void gen_ltegte_operation(token_type_t operation) {
     G("JUMP %s", end);
     G("LABEL %s", rhs_not_string);
 
+    /* Float-int type casting. */
     G("JUMPIFNEQ %s %s string@int", skip_lhs_cast,tlhs); // No type cast.
     G("INT2FLOAT %s %s", lhs, lhs);
     G("LABEL %s", skip_lhs_cast);
@@ -494,19 +510,18 @@ void gen_ltegte_operation(token_type_t operation) {
     G("INT2FLOAT %s %s", rhs, rhs);
     G("LABEL %s", skip_rhs_cast);
 
-    /* NON NULL TYPE CHECKING */
 
     /* EXECUTE */
     G("LABEL %s", execute);
-    switch(operation) {
+    switch(operation) { // Instruction based on type.
         case LTE: G("LT %s %s %s", aux1, lhs, rhs); break;
         case GTE: G("GT %s %s %s", aux1, lhs, rhs); break;
         default: break;
     }
-    G("EQ %s %s %s", lhs, lhs, rhs); // Bool 
-    G("OR %s %s %s", lhs, lhs, aux1); // Bool && Bool
+    G("EQ %s %s %s", lhs, lhs, rhs); // Equality comparison (type safety is insured.)
+    G("OR %s %s %s", lhs, lhs, aux1); // Bool || Bool
     G("LABEL %s", end);
-    G("PUSHS %s", lhs);
+    G("PUSHS %s", lhs); // Result returned to stack.
     G("RETURN");
     G("\n\n");
 }
@@ -520,6 +535,7 @@ void pop_operand_ltegte(const char * operand, const char * operand_type) {
         return;
     }
     G("TYPE %s %s", operand_type, operand);
+    /* If the operand is of type bool, exit with error. */
     G("JUMPIFNEQ %s %s string@bool", type_ok, operand_type);
     // G("WRITE string@RUNTIME\\032ERROR\\0327:\\032Incompatible\\032operand\\032types!\\010Exiting\\032program!\\010"); // DEBUGGING ONLY!
     G("EXIT int@7");
@@ -554,6 +570,3 @@ void pop_operand_ltegte(const char * operand, const char * operand_type) {
 	
 // 	return parse_expression(ta);
 // }
-
-
-
