@@ -2,6 +2,7 @@
  * @file symtable.c
  * @author David Klajbl (xklajb00@stud.fit.vutbr.cz)
  * @brief Symbol table implementation (declared in symtable.h).
+ * The hashing function implemented in the IJC course (2022) was used as the basis of the implementation of symbol table.
  * @date 2022-11-26
  * 
  */
@@ -111,14 +112,6 @@ symtable_t *symtable_create(){
 
     //return created structure
     return t;
-}
-
-//============================
-
-// Returns number of symbols in symtable.
-size_t symtable_get_symbol_count(symtable_t* t){
-    if(t == NULL) return 0;
-    else return t->symbol_count;
 }
 
 //============================

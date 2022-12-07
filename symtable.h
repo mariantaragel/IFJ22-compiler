@@ -24,15 +24,15 @@ typedef int datatype_t;
 #endif
 
 /**
- * @brief Symbol structure data type.
+ * @brief Symbol information structure data type.
  *
  */
 typedef struct{
-	bool all_nested_calls_defined;
+	bool all_nested_calls_defined;	// flag indicating, that all called functions, from inside this function, were all defined
 	
-	AST_node_t* func_body_n;
+	AST_node_t* func_body_n;		// AST node of function body
 
-	datatype_t return_type;	// return type of function
+	datatype_t return_type;			// return type of function
 	
 } symbol_info_t;
 
@@ -78,15 +78,6 @@ void symtable_free(symtable_t *t);
  * @param t Symbol table to have elements freed.
  */
 void symtable_clear(symtable_t *t);
-
-
-/**
- * @brief Returns number of symbols in symtable.
- * 
- * @param t Symbol table to get symbol count of.
- * @return size_t Returns number of symbols in symtable.
- */
-size_t symtable_get_symbol_count(symtable_t* t);
 
 /**
  * @brief Searches symbol table for symbol with specified name and if found, returns pointer to corresponding symbol.
