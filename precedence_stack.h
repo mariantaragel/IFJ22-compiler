@@ -17,16 +17,6 @@
 #include "token_array.h"
 #include "token.h"
 
-
-/**
- * @brief Type of symbol stored in precedence stack.
- * 
- */
-typedef struct{
-    prec_rule_elem_t prec_rule_element;
-    token_array_t* token_array;
-}pstack_symbol_t;
-
 /**
  * @brief Precedence stack structure type.
  * 
