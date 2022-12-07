@@ -14,18 +14,38 @@
 #include <stdlib.h>
 #include <stdbool.h>
 
-
+/**
+ * @brief Context of code generator.
+ * 
+ */
 typedef struct{
     bool is_in_function;
 	char* func_end_label;
 }generator_context_t;
 
+/**
+ * @brief Global indentation variable. Specifies the number of tabs before printed instruction.
+ */
 extern unsigned ind;
 
+/**
+ * @brief Increments global indentation variable.
+ * 
+ */
 void inc_ind();
 
+/**
+ * @brief Decrements global indentation variable.
+ * 
+ */
 void dec_ind();
 
+/**
+ * @brief Prints generated instruction with indentation to stdout.
+ * 
+ * @param fmt Fmt format.
+ * @param ... Fmt format arguments.
+ */
 void G(const char* fmt, ...);
 
 char * gen_label(char * prefix, char * infix, char * suffix, bool gen_num);
