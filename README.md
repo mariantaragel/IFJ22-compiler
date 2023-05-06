@@ -16,3 +16,8 @@ Overall without extension: 93 % (1469/1576)
 - xklajb00 [David Klajbl](https://github.com/SuprisinglyBoring)
 - xtarag01 [Marián Tarageľ](https://github.com/mariantaragel)
 - xchrom19 [Ondřej Chromý](https://github.com/Xromi)
+
+## Resources
+[1] Alexander Meduna. Elements of compiler design. Auerbach Publications, 2007.<br>
+[2] Ozan Yigit. [A collection of non-cryptographic hash functions](http://www.cse.yorku.ca/~oz/hash.html#sdbm).<br>
+[3] [galloj](https://github.com/galloj). [IFJ22_Tester](https://github.com/galloj/IFJ22_Tester)
